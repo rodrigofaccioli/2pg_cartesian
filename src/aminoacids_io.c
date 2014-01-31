@@ -1,10 +1,40 @@
+#include<stdio.h>
+#include<string.h>
+
+#include "defines.h"
+#include "enums.h"
 #include "topologylib.h"
 #include "aminoacids_io.h"
+#include "protein.h"
+#include "futil.h"
+#include "string_owner.h"
+#include "messages.h"
+#include "aminoacids.h"
+
+#define MAX_LINE_FASTA 81
+#define MAX_LEN_PROTEIN 1000
+
+
+/** _check_pdb_fasta_file checks if line contains a pdbid which means that
+* this file is pdb fasta.
+* Example line: >1VII:A|PDBID|CHAIN|SEQUENCE
+*/
+static boolean_t _check_pdb_fasta_file(char *line){
+	char *pch;
+	pch = strtok (line,"|");
+	while (pch != NULL){
+		if (strcmp(pch,"PDBID") == 0){
+			return btrue;
+		}
+		pch = strtok (NULL, "|");
+	}
+	return bfalse;
+}
+
 
 /** _load_amino_seq loads a Fasta File
 
 */
-
 primary_seq_t *_load_amino_seq(const char *file_name_protein){	
 	/* load amino_t based on pdb fasta file.
 	 * Example of pdb fasta file:
@@ -17,8 +47,8 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	int fscanfError;	
     int seq_index;    
     char line[MAX_LINE_FASTA+1]; //represents Fasta lines
-    char seq_line[MAX_LEN_PROTEIN];//represents the primary sequence of protein
-    char c;
+    char seq_line[MAX_LEN_PROTEIN];//represents the primary sequence of protein    
+    char aux_line;
     int i;
     boolean_t first_line = btrue;
     boolean_t read_fasta_file = btrue;
@@ -52,16 +82,15 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	fclose(arq);
 	remove_character(seq_line, '\n');
 	n_residues = strlen(seq_line);
-	seq_prim = allocate_primary_seq(&n_residues){
-	
-	for (i = 0; i < *n_residues; i++){
-		c = seq_line[i];
-		strcpy(seq_prim->seq_res[i].id_1, c);
-		seq_prim->seq_res[i].id = get_amino_id(c);
+	seq_prim = allocate_primary_seq(&n_residues);
 
+	for (int i = 0; i < n_residues; i++){
+		aux_line = seq_line[i];
+		strcpy(seq_prim->seq_res[i].id_1, &aux_line);
+		seq_prim->seq_res[i].id = _get_amino_id_1(aux_line);
+		set_amino_id_3(seq_prim->seq_res[i].id_3, &seq_prim->seq_res[i].id);
         seq_index = seq_index + 1;
 	}
 	return seq_prim;
 
 }
-

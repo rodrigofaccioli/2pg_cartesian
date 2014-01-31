@@ -16,6 +16,8 @@
 #include "string_owner.h"
 #include "futil.h"
 #include "random_number_gsl.h"
+#include "aminoacids.h"
+#include "aminoacids_io.h"
 
 static void check_parameters(const input_parameters_t *in_para){
     /*Check the parameters to run EA mono*/
@@ -30,7 +32,11 @@ int ea_mono(const input_parameters_t *in_para){
 	//protein **population_p, **population_new, **population_sel_repro;
     primary_seq_t *primary_sequence; // Primary Sequence of Protein
 
-    fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");
+    primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
+
+    desallocate_primary_seq(primary_sequence);
+
+    //fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");
 
 /*    
     display_msg("Build Topology \n");
