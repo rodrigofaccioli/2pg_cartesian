@@ -196,11 +196,34 @@ int get_num_atom(const char *path_PDB_file_name){
 	while ( fgets(pdb_line,MAX_LINE_PDB,pdbfile) != NULL){
 		if (strncmp(pdb_line,"ATOM",4) == 0){
 			num_atom = num_atom + 1;
+		}else if (strncmp(pdb_line,"ENDMDL",6) == 0){ 
+			break;
 		}
 	}
 	fclose(pdbfile);
 	return num_atom;
 }
 
+void load_pdb_model_file(pdb_atom_t **atoms, pdb_seqres_t *seqres,
+		const char *path, const char *file_name, const int *numatom){
+	FILE *pdbfile=NULL;
+	char pdb_line [MAX_LINE_PDB];
+	char *aux = NULL;
+	int line_atm = -1;
+	int ind_model = 0;
+    char *fname = path_join_file(path,file_name);
+	pdbfile = open_file(fname, fREAD);
+	while ( fgets(pdb_line,MAX_LINE_PDB,pdbfile) != NULL){
+		if (strncmp(pdb_line,"ATOM",4) == 0){
+			line_atm = line_atm + 1;
+			load_pdb_atoms(pdb_line,atoms[ind_model], &line_atm);
+		}else if (strncmp(pdb_line,"ENDMDL",6) == 0){ 			
+			ind_model = ind_model + 1;
+			line_atm = -1;
+		}
+	}
+	free(fname);
+	fclose(pdbfile);
+}
 
 

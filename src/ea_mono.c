@@ -30,13 +30,28 @@ int ea_mono(const input_parameters_t *in_para){
 	check_parameters(in_para);
 	//Popoulations of EA
 	//protein **population_p, **population_new, **population_sel_repro;
+    int num_atoms_PDB;
+    char *path_pdb_file_name;
     primary_seq_t *primary_sequence; // Primary Sequence of Protein
+    pdb_atom_t** population_p;
 
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
+    //Allocating PDB ATOMS
+    path_pdb_file_name = path_join_file(in_para->path_local_execute, 
+        in_para->initial_pop_file_name);
+    num_atoms_PDB  = get_num_atom(path_pdb_file_name);
+    population_p = allocate_Population_pdb(&in_para->size_population, 
+        &num_atoms_PDB);
+
+    load_pdb_model_file(population_p,NULL, in_para->path_local_execute,
+             in_para->initial_pop_file_name,&num_atoms_PDB);
+
+    free(path_pdb_file_name);
+    desAllocate_Population_pdb(population_p, &in_para->size_population);
     desallocate_primary_seq(primary_sequence);
 
-    //fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");
+    fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");
 
 /*    
     display_msg("Build Topology \n");

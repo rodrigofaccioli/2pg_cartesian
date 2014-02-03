@@ -14,6 +14,8 @@ void load_pdb_file(pdb_atom_t *atoms, pdb_seqres_t *seqres,
 		const char *path, const char *file_name, const int *numatom);
 void load_pdb_file_without_num_atom(pdb_atom_t *atoms, pdb_seqres_t *seqres,
 		const char *path_file_name);
+void load_pdb_model_file(pdb_atom_t **atoms, pdb_seqres_t *seqres,
+		const char *path, const char *file_name, const int *numatom);
 int get_num_atom(const char *path_PDB_file_name);
 void save_model_pdb_file(const char *path, const char *file_name, const int *num_model, 
 	const int *numatom, pdb_atom_t **atoms_model, const pdb_seqres_t *seqres );
