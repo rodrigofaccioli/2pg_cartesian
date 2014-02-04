@@ -8,6 +8,7 @@ pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom);
 void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize);
 pdb_atom_t * allocate_pdbatom(const int *numatom);
 void desAllocate_pdbatom(pdb_atom_t *pdbatoms);
+void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source);
 void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,
 		const char *chain_name, const int *resnum, 	const float *x,
 		const float *y, const float *z, const int *index);

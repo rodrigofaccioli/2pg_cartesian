@@ -461,3 +461,15 @@ void rename_atom(pdb_atom_t *atoms, const char *name, const char *name_new,
 	strcpy(aux->atmname,name_new);
 	aux->atomid = *atomid_new;
 }
+
+
+void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source){
+	strcpy(dest->atmname, source->atmname);
+	strcpy(dest->resname, source->resname);
+	dest->resnum    = source->resnum;
+	dest->atomid    = source->atomid;
+	dest->atmnumber = source->atmnumber;
+	dest->coord.x   = source->coord.x; 
+	dest->coord.y   = source->coord.y; 
+	dest->coord.z   = source->coord.z; 
+}

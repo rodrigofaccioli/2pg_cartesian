@@ -73,22 +73,22 @@ void load_pdb_atoms(char line[], pdb_atom_t *atoms, const int *l){
 
 }
 
-static void writeHeader(FILE *pdbfile, float dif, const int *npdb ){
+void writeHeader(FILE *pdbfile, float dif, const int *npdb ){
 	fprintf(pdbfile,"HEADER    PROTEIN %lf %d \n",dif,*npdb);
 	fprintf(pdbfile,"COMPND\n");
 	fprintf(pdbfile,"SOURCE\n");
 }
 
-static void writeModel(FILE *pdbfile, const int *model){
+void writeModel(FILE *pdbfile, const int *model){
 	fprintf(pdbfile,"MODEL        %i\n",*model);
 }
 
-static void writeEndModel(FILE *pdbfile){
+void writeEndModel(FILE *pdbfile){
 	fprintf(pdbfile,"TER\n");
 	fprintf(pdbfile,"ENDMDL\n");
 }
 
-static void writeATOM(FILE *pdbfile, const pdb_atom_t *atoms, const int *npdb ){
+void writeATOM(FILE *pdbfile, const pdb_atom_t *atoms, const int *npdb ){
 	char chnname[2];
 	char resname_aux[4];
 	strcpy(chnname, "A");

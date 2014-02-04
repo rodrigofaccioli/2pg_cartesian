@@ -1,13 +1,11 @@
-#include "protein.h"
+#ifndef OLD_POPULATION_IO_H
+#define OLD_POPULATION_IO_H
 
-void write_initial_population_file(const char *path, const char *file_name,
-		protein ** pop, const int *pop_size);
-void _save_population_file(const char *path, const char *file_name,
-		protein ** pop, const int *pop_size);
-void _save_protein_path_file(const char *path_file_name, const protein *prot);
+#include "protein_type.h"
+#include "aminoacids_types.h"
 
-static void start_ind(FILE *pop_file);
-static void finish_ind(FILE *pop_file);
-static void write_individual(FILE *pop_file,protein **pop,
-		const int *ind);
-static void write_protein(FILE *pop_file, const protein *prot);
+void load_initial_population_file(protein_t *pop, const int *pop_size, const char *path, 
+	const char *file_name, const primary_seq_t *primary_sequence);
+void save_population_file(const protein_t *pop, const char *path, const char *file_name, 
+	const int *num_model );
+#endif

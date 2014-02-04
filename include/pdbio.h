@@ -21,11 +21,10 @@ void save_model_pdb_file(const char *path, const char *file_name, const int *num
 	const int *numatom, pdb_atom_t **atoms_model, const pdb_seqres_t *seqres );
 void load_pdb_atoms(char line[], pdb_atom_t *atoms, const int *l);
 
-//static functions
-static void writeHeader(FILE *pdbfile, float dif, const int *npdb );
-static void writeATOM(FILE *pdbfile, const pdb_atom_t *atoms, const int *npdb );
-static void writeModel(FILE *pdbfile, const int *model);
-static void writeEndModel(FILE *pdbfile);
+void writeHeader(FILE *pdbfile, float dif, const int *npdb );
+void writeATOM(FILE *pdbfile, const pdb_atom_t *atoms, const int *npdb );
+void writeModel(FILE *pdbfile, const int *model);
+void writeEndModel(FILE *pdbfile);
 #endif
 
 

@@ -1,14 +1,11 @@
 #ifndef OLD_TOPOLOGY_H
 #define OLD_TOPOLOGY_H
 
-#include "protein.h"
-#include "pdbatom.h"
 #include "topology_types.h"
-#include "parameters_type.h"
+#include "aminoacids_types.h"
 
-top_global_t *allocateTop_Global(const int *numatom, const int *numres,
-		const int *num_bond_angles, const int *num_side_chains,
-		const int *number_dihedrals_type);
+top_global_t *allocateTop_Global(const primary_seq_t *primary_sequence,
+	const int *numatom);
 
 void  desAllocateTop_Global(top_global_t *top_global);
 

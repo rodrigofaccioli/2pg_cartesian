@@ -1,65 +1,63 @@
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-//#include "protein.h"
 #include "populationio.h"
 #include "futil.h"
 #include "math_owner.h"
-#include <stdlib.h>
+#include "pdbatom.h"
+#include "topology.h"
+#include "pdbio.h"
+#include "pdbatom.h"
 
-static void start_ind(FILE *pop_file){
-	fprintf (pop_file,"##\n");
-}
 
-static void finish_ind(FILE *pop_file){
-	fprintf (pop_file,"$$\n");
-}
+void load_initial_population_file(protein_t *pop, const int *pop_size, const char *path, 
+	const char *file_name, const primary_seq_t *primary_sequence){
 
-static void write_individual(FILE *pop_file,protein **pop,
-		const int *ind){
-	write_protein(pop_file,pop[*ind]);
-}
+	pdb_atom_t **atoms;
+	const pdb_atom_t *atm_aux;
+    int num_atoms_PDB;
+    char *path_pdb_file_name;
 
-static void write_protein(FILE *pop_file, const protein *prot){
-	for (int r = 0; r < prot->nr_residues; r++){
-		fprintf(pop_file,"%f %f %f %d %d",radians2degree(&prot->residuo[r].phi) ,
-				radians2degree(&prot->residuo[r].psi), radians2degree(&prot->residuo[r].omega),
-				prot->residuo[r].number_late, prot->residuo[r].pos_late);
-		for (int s = 0; s < prot->residuo[r].number_late;s++){
-			fprintf(pop_file," %f", radians2degree(&prot->residuo[r].late[s]));
-		}
-		fprintf (pop_file," \n");
+
+    //Loading PDB File of initial population
+    path_pdb_file_name = path_join_file(path, 
+        file_name);
+    num_atoms_PDB  = get_num_atom(path_pdb_file_name);
+    atoms = allocate_Population_pdb(pop_size, &num_atoms_PDB);
+	load_pdb_model_file(atoms,NULL, path, file_name, &num_atoms_PDB);
+
+	//Allocation and Copy values to pop
+	for (int i = 0; i < *pop_size; i++){
+		pop[i].p_atoms = allocate_pdbatom(&num_atoms_PDB);
+		pop[i].p_topol = allocateTop_Global(primary_sequence, &num_atoms_PDB);
+		atm_aux = atoms[i];
+		for (int a = 0; a < num_atoms_PDB; a++){			
+			copy_pdb_atom(&pop[i].p_atoms[a], &atm_aux[a]);
+		}		
 	}
-}
-void _save_population_file(const char *path, const char *file_name,
-		protein ** pop, const int *pop_size){
-	write_initial_population_file(path, file_name,pop, pop_size);
-}
 
-void _save_protein_path_file(const char *path_file_name, const protein *prot){
-	/*Save a protein. Therefore, the individual number is 1 */
-	FILE *prot_file = open_file(path_file_name,fWRITE);
-	int ind = 0;
-
-	start_ind(prot_file);
-	write_protein(prot_file,&prot[ind]);
-	finish_ind(prot_file);
-
-	fclose(prot_file);
+	free(path_pdb_file_name);
+	desAllocate_Population_pdb(atoms, pop_size);
 
 }
 
-void write_initial_population_file(const char *path, const char *file_name,
-		protein ** pop, const int *pop_size){
-        char *fname = path_join_file(path,file_name);
-	FILE *pop_file = open_file(fname,fWRITE);
-
-	for (int ind = 0; ind < *pop_size; ind++){
-		start_ind(pop_file);
-		write_individual(pop_file,pop,&ind);
-		finish_ind(pop_file);
-	}
-	fclose(pop_file);
+void save_population_file(const protein_t *pop, const char *path, const char *file_name, 
+	const int *num_model ){
+	/* This function save a set of models in PDB format.
+	   atoms_model can be a population of pdb_atom_t
+	*/
+	FILE *pdbfile=NULL;
+	int m = 0;
+	char *fname = path_join_file(path,file_name);
+	pdbfile = open_file(fname, fWRITE);
+	writeHeader(pdbfile, 10.5, &pop[0].p_topol->numatom);
+	for (int i  =0; i < *num_model; i++){
+		m = m + 1;
+		writeModel(pdbfile, &m);
+		writeATOM(pdbfile, pop[i].p_atoms, &pop[i].p_topol->numatom);
+		writeEndModel(pdbfile);
+	}	
 	free(fname);
+	fclose(pdbfile);
 }
-
