@@ -2,11 +2,13 @@
 #define OLD_TOPOLOGYIO_H
 
 #include "topology_types.h"
-#include "protein.h"
+#include "protein_type.h"
 
-void _save_topology_file(const char *path, const char *file_name, const top_global_t *top);
-void _show_protein_backbone(const protein_backbone_t *prot_back,
-		const top_global_t *top);
+void save_topology_protein(const top_global_t *top, const char *path, 
+	const char *filename);
+void save_topology_population(const protein_t *pop, const int *popsize, 
+	const char *path, const char *prefix);
+
 void _create_fasta_pdb(const char *prot_name, const char *chain_name,
 		const char *prot_seq, const char *file_name_protein);
 

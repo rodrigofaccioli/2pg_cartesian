@@ -4,6 +4,7 @@
 #define NUM_ATOM_NAME 5
 #define NUM_RES_NAME 4
 
+#include "enums.h"
 #include "vector_types.h"
 
 typedef struct spdbatom{
