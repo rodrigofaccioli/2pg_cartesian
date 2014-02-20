@@ -23,6 +23,12 @@
 #include "topologyio.h"
 
 
+
+#include "rotation.h"
+#include "math_owner.h"
+
+
+
 static void check_parameters(const input_parameters_t *in_para){
     /*Check the parameters to run EA mono*/
 	if (in_para->number_individual_select_reproduce > in_para->size_population){
@@ -53,13 +59,20 @@ int ea_mono(const input_parameters_t *in_para){
     in_para->path_local_execute, prefix);    
     free(prefix);
 
-    /*
+    float angle_d = 180;
+    float angle = degree2radians(&angle_d);
+    int num_res_first = 1;
+    for (int p = 0; p < in_para->size_population; p++){
+        rotation_psi(&population_p[p], &num_res_first, &angle);
+        rotation_phi(&population_p[p], &num_res_first, &angle);
+    }
+
     char *file_name;
     file_name = Malloc(char, 100);
     strcpy(file_name, "teste_model.pdb");
     save_population_file(population_p, in_para->path_local_execute,
      file_name, &in_para->size_population );
-    */
+    
  
     desallocate_primary_seq(primary_sequence);
     desallocateProtein(population_p, &in_para->size_population);
