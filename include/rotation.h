@@ -5,5 +5,6 @@
 
 void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle);
 void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle);
+void rotation_omega(protein_t *prot, const int *num_res_first, const float *angle);
 
 #endif

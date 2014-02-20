@@ -113,3 +113,21 @@ void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle)
 		num_res_first, angle);
 }
 
+/** Rotates protein in a OMEGA dihedral movement
+* prot is the protein which will be moved (rotated)
+* num_res_first means the first residue will be moved. The dihedral moviment is continued in  
+*               foward residue until last.
+* angle is the value of rotated angle
+*/
+void rotation_omega(protein_t *prot, const int *num_res_first, const float *angle){
+
+	//rotates first residue
+	/* In omega dihedral movements are started by next residue. 
+	 * The first residue is not changed 
+	*/
+
+	// rotates all atoms from the forward residue
+	rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
+		&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
+		num_res_first, angle);
+}
