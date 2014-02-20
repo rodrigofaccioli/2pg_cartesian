@@ -87,7 +87,7 @@ static void write_top_residue_atom_info_phi(FILE *topolfile, const top_residue_a
 
 static void write_top_residue_atom_info_side_chains(FILE *topolfile, const top_residue_atom_info_t *side_chains, 
 	const int *num_res){
-	write_header_top_residue_atom_info_side_chains(topolfile); 
+	write_header_top_residue_atom_info_side_chains(topolfile);
 	for (int r = 0; r < *num_res; r++){
 		write_top_residue_atom_info(topolfile, &r, side_chains);
 	}	
@@ -114,7 +114,7 @@ void save_topology_protein(const top_global_t *top, const char *path,
 	write_top_residue_range_atoms(topolfile, top->range_atoms, &top->numres);
 	write_top_residue_atom_info_psi(topolfile, top->psi, &top->numres);
 	write_top_residue_atom_info_phi(topolfile, top->phi, &top->numres);
-	write_top_residue_atom_info_side_chains(topolfile, top->side_chains, &top->numres);
+	//write_top_residue_atom_info_side_chains(topolfile, top->side_chains, &top->numres);
 
 	fclose(topolfile);
 	free(fname);

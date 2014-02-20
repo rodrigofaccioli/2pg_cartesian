@@ -211,7 +211,7 @@ void build_topology_individual(protein_t *prot){
 	build_topology_individual_atoms(prot);
 	build_topology_individual_psi(prot);
 	build_topology_individual_phi(prot);
-	build_topology_individual_side_chains(prot);
+	//build_topology_individual_side_chains(prot);
 }
 
 void build_topology_population(protein_t *pop, const int *pop_size){
