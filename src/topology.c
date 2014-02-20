@@ -70,26 +70,25 @@ static int get_atom_index_by_resnum_atom_name(const pdb_atom_t *atoms,
 }
 
 static void build_topology_individual_psi(protein_t *prot){
-	char *atom_N, *atom_C, *atom_CA, *atom_O;
-	atom_N = Malloc(char, 2);
+	char *atom_C, *atom_CA, *atom_O;
+	
 	atom_CA = Malloc(char, 3);
 	atom_C = Malloc(char, 2);	
 	atom_O = Malloc(char, 2);
+	
 
-	strcpy(atom_N, "N");
 	strcpy(atom_CA, "CA");
 	strcpy(atom_C, "C");
 	strcpy(atom_O, "O");
+	
 
 	for (int r = 1; r <= prot->p_topol->numres; r++){
 		//Build Fixed Atoms		
-		prot->p_topol->psi[r-1].num_fixed = 3;
+		prot->p_topol->psi[r-1].num_fixed = 2;
 		prot->p_topol->psi[r-1].fixed_atoms = Malloc(int, prot->p_topol->psi[r-1].num_fixed);
 		prot->p_topol->psi[r-1].fixed_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-			&r, atom_N, &prot->p_topol->numatom);
-		prot->p_topol->psi[r-1].fixed_atoms[1] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 			&r, atom_CA, &prot->p_topol->numatom);
-		prot->p_topol->psi[r-1].fixed_atoms[2] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+		prot->p_topol->psi[r-1].fixed_atoms[1] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 			&r, atom_C, &prot->p_topol->numatom);
 		//Build Moved Atom
 		prot->p_topol->psi[r-1].num_moved = 1;
@@ -97,8 +96,7 @@ static void build_topology_individual_psi(protein_t *prot){
 		prot->p_topol->psi[r-1].moved_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 			&r, atom_O, &prot->p_topol->numatom);
 	}
-
-	free(atom_N);
+	
 	free(atom_CA);
 	free(atom_C);
 	free(atom_O);
@@ -107,7 +105,7 @@ static void build_topology_individual_psi(protein_t *prot){
 
 static void build_topology_individual_phi(protein_t *prot){
 	char *atom_N, *atom_C, *atom_CA, *atom_O;
-	int num_hydrogen_backbone;
+	//int num_hydrogen_backbone;
 	int i_af;
 
 	atom_N = Malloc(char, 2);
@@ -123,8 +121,8 @@ static void build_topology_individual_phi(protein_t *prot){
 	for (int r = 1; r <= prot->p_topol->numres; r++){
 		//Build Fixed Atoms
 		i_af = -1;
-		num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);				
-		prot->p_topol->phi[r-1].num_fixed = 4 + num_hydrogen_backbone;
+		//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
+		prot->p_topol->phi[r-1].num_fixed = 2;//2 + num_hydrogen_backbone;
 		prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
 		i_af++;
 		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
@@ -132,26 +130,19 @@ static void build_topology_individual_phi(protein_t *prot){
 		i_af++;
 		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				&r, atom_CA, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_C, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_O, &prot->p_topol->numatom);
-		//Fixed Hydrogens because they are connected with N		
+		/*Fixed Hydrogens because they are connected with N		
 		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
 			if ( is_hydrogen_backbone_Nitrogen(prot->p_atoms[i_a-1].atmname) == btrue){
 				i_af++;
 				prot->p_topol->phi[r-1].fixed_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
 			}			
-		}
+		}*/
 		//Build Moved Atom		
 		i_af = -1;
 		//It is considered moved atom all atoms that are not fixed atoms
 		prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
 		prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
-			
+		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){			
 			if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
 				prot->p_topol->phi[r-1].fixed_atoms, 
 				&prot->p_topol->phi[r-1].num_fixed) == bfalse){				
@@ -159,7 +150,6 @@ static void build_topology_individual_phi(protein_t *prot){
 				prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
 			}
 		}	
-	
 	}
 
 	free(atom_N);
