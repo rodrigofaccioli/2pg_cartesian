@@ -19,6 +19,8 @@
 #include "aminoacids.h"
 #include "aminoacids_io.h"
 #include "populationio.h"
+#include "topology.h"
+#include "topologyio.h"
 
 
 static void check_parameters(const input_parameters_t *in_para){
@@ -30,19 +32,26 @@ static void check_parameters(const input_parameters_t *in_para){
 
 int ea_mono(const input_parameters_t *in_para){
 	check_parameters(in_para);
-	//Popoulations of EA
-	//protein **population_p, **population_new, **population_sel_repro;
+
+    char *prefix;
     primary_seq_t *primary_sequence; // Primary Sequence of Protein
-    protein_t *population_p;
+    protein_t *population_p;    
 
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
     //Allocating PDB ATOMS
     population_p = allocateProtein(&in_para->size_population);
     
+    //Loading initial population
     load_initial_population_file(population_p, &in_para->size_population, 
         in_para->path_local_execute,in_para->initial_pop_file_name,
         primary_sequence);
+    
+    prefix = Malloc(char,10);
+    strcpy(prefix, "prot");
+    save_topology_population(population_p, &in_para->size_population, 
+    in_para->path_local_execute, prefix);    
+    free(prefix);
 
     /*
     char *file_name;
@@ -51,9 +60,9 @@ int ea_mono(const input_parameters_t *in_para){
     save_population_file(population_p, in_para->path_local_execute,
      file_name, &in_para->size_population );
     */
-
-    desallocateProtein(population_p, &in_para->size_population);
+ 
     desallocate_primary_seq(primary_sequence);
+    desallocateProtein(population_p, &in_para->size_population);
 
 
     fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");

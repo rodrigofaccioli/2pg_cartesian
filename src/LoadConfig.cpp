@@ -59,6 +59,6 @@ std::string LoadConfig::trim(std::string s){
 }
 
 
-char* LoadConfig::getParameterChar(const std::string &Parameter){
+char* LoadConfig::getParameterChar(const std::string &Parameter){  
 	return const_cast< char* > ( getParameter(Parameter).c_str() );
 }

@@ -4,6 +4,8 @@
 #include "protein.h"
 #include "defines.h"
 #include "messages.h"
+#include "pdbatom.h"
+#include "topology.h"
 
 
 protein_t * allocateProtein(const int *size){
@@ -21,16 +23,11 @@ protein_t * allocateProtein(const int *size){
 void desallocateProtein(protein_t *pop, const int *inPopSize){
 	for (int i =0; i < *inPopSize; i++){
 		if (pop[i].p_atoms != NULL){
-			free(pop[i].p_atoms);
+			desAllocate_pdbatom(pop[i].p_atoms);
 		}
 		if (pop[i].p_topol != NULL){
-			free(pop[i].p_topol);
+			desAllocateTop_Global(pop[i].p_topol);			
 		}
 	}
 	free(pop);
 }
-
-void allocate_topology_protein(protein_t * pop, const int *size){
-
-}
-
