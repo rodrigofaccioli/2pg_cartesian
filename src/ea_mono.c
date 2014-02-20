@@ -65,6 +65,7 @@ int ea_mono(const input_parameters_t *in_para){
     for (int p = 0; p < in_para->size_population; p++){
         rotation_psi(&population_p[p], &num_res_first, &angle);
         rotation_phi(&population_p[p], &num_res_first, &angle);
+        rotation_omega  (&population_p[p], &num_res_first, &angle);
     }
 
     char *file_name;
