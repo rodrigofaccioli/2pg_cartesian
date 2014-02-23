@@ -123,10 +123,12 @@ void rotation_omega(protein_t *prot, const int *num_res_first, const float *angl
 
 	int num_res_next;
 
-	//Here rotation is forward residue of num_res_first
+	//omega rotation is from forward residue of num_res_first
 	num_res_next = *num_res_first + 1;
 
-	/* Checking the number of residue. if num_res_next is greater than number of 
+	/* Checking the number of residue. 
+	* if num_res_next is greater than number of residue of protein 
+	* no makes rotation in protein.
 	*/
 	if (num_res_next <= prot->p_topol->numres){
 		//rotates all moved atoms of first residue
