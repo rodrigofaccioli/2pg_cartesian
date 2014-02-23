@@ -44,7 +44,7 @@ typedef struct stop_global{
 	top_residue_range_atoms_t *range_atoms;
 	top_residue_atom_info_t *phi;
 	top_residue_atom_info_t *psi;
-	//top_residue_atom_info_t *omega;
+	top_residue_atom_info_t *omega;
 	top_residue_atom_info_t *side_chains;
  }top_global_t;
 
