@@ -121,13 +121,25 @@ void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle)
 */
 void rotation_omega(protein_t *prot, const int *num_res_first, const float *angle){
 
-	//rotates first residue
-	/* In omega dihedral movements are started by next residue. 
-	 * The first residue is not changed 
-	*/
+	int num_res_next;
 
-	// rotates all atoms from the forward residue
-	rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
-		&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
-		num_res_first, angle);
+	//Here rotation is forward residue of num_res_first
+	num_res_next = *num_res_first + 1;
+
+	/* Checking the number of residue. if num_res_next is greater than number of 
+	*/
+	if (num_res_next <= prot->p_topol->numres){
+		//rotates all moved atoms of first residue
+		for (int i = 0; i < prot->p_topol->omega[num_res_next-1].num_moved; i++){
+			rotation_by_angle_dih(prot->p_atoms, 
+				&prot->p_topol->omega[num_res_next-1].fixed_atoms[0], 
+				&prot->p_topol->omega[num_res_next-1].fixed_atoms[1],
+		    	&prot->p_topol->omega[num_res_next-1].moved_atoms[i], angle);
+		}
+
+		// rotates all atoms from the forward residue
+		rotate_all_atoms(prot, &prot->p_topol->omega[num_res_next-1].fixed_atoms[0], 
+			&prot->p_topol->omega[num_res_next-1].fixed_atoms[1], 
+			&num_res_next, angle);
+	}
 }
