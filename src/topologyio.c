@@ -45,6 +45,26 @@ static void write_header_top_residue_atom_info_side_chains(FILE * topolfile){
 	fprintf(topolfile,"%s\n", header);
 }
 
+static void write_top_residue_atom_info_withoutmoved(FILE *topolfile, const int *res,
+	const top_residue_atom_info_t *info){
+	char *line, *aux;
+
+	line = Malloc(char, MAX_LINE_FILE);
+	aux = Malloc(char, 10);
+	fprintf(topolfile,"\tResidue: %i\n",*res+1);
+	//Printing fixed atoms
+	strcpy(line, "\tFixed Atoms: ");
+	for (int n = 0; n < info[*res].num_fixed; n++){
+		int2str(aux, &info[*res].fixed_atoms[n]);
+		strcat(line, aux);
+		strcat(line, " ");
+	}
+	fprintf(topolfile,"%s\n\n",line);
+	
+	free(aux);
+	free(line);
+}
+
 static void write_top_residue_atom_info(FILE *topolfile, const int *res,
 	const top_residue_atom_info_t *info){
 	char *line, *aux;
@@ -77,7 +97,7 @@ static void write_top_residue_atom_info(FILE *topolfile, const int *res,
 static void write_top_residue_atom_info_psi(FILE *topolfile, const top_residue_atom_info_t *psi, 
 	const int *num_res){
 	write_header_top_residue_atom_info_psi(topolfile); 
-	for (int r = 0; r < *num_res; r++){
+	for (int r = 0; r < *num_res-1; r++){
 		write_top_residue_atom_info(topolfile, &r, psi);
 	}	
 }
@@ -85,7 +105,7 @@ static void write_top_residue_atom_info_psi(FILE *topolfile, const top_residue_a
 static void write_top_residue_atom_info_phi(FILE *topolfile, const top_residue_atom_info_t *phi, 
 	const int *num_res){
 	write_header_top_residue_atom_info_phi(topolfile); 
-	for (int r = 0; r < *num_res; r++){
+	for (int r = 1; r < *num_res; r++){
 		write_top_residue_atom_info(topolfile, &r, phi);
 	}	
 }
@@ -93,8 +113,8 @@ static void write_top_residue_atom_info_phi(FILE *topolfile, const top_residue_a
 static void write_top_residue_atom_info_omega(FILE *topolfile, const top_residue_atom_info_t *omega, 
 	const int *num_res){
 	write_header_top_residue_atom_info_omega(topolfile); 
-	for (int r = 0; r < *num_res; r++){
-		write_top_residue_atom_info(topolfile, &r, omega);
+	for (int r = 0; r < *num_res-1; r++){
+		write_top_residue_atom_info_withoutmoved(topolfile, &r, omega);
 	}	
 }
 

@@ -77,17 +77,19 @@ static void rotate_all_atoms(protein_t *prot, const int *atomB, const int *atomC
 * angle is the value of rotated angle
 */
 void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle){
+	//last residue does not make rotation
+	if (*num_res_first < prot->p_topol->numres){
+		//rotates first residue
+		rotation_by_angle_dih(prot->p_atoms, 
+			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
+			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1],
+		    &prot->p_topol->psi[*num_res_first-1].moved_atoms[0], angle);
 
-	//rotates first residue
-	rotation_by_angle_dih(prot->p_atoms, 
-		&prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
-		&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1],
-	    &prot->p_topol->psi[*num_res_first-1].moved_atoms[0], angle);
-
-	// rotates all atoms from the forward residue
-	rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
-		&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
-		num_res_first, angle);
+		// rotates all atoms from the forward residue
+		rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
+			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
+			num_res_first, angle);
+	}
 }
 
 
@@ -99,18 +101,22 @@ void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle)
 */
 void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle){
 
-	//rotates all moved atoms of first residue
-	for (int i = 0; i < prot->p_topol->phi[*num_res_first-1].num_moved; i++){
-		rotation_by_angle_dih(prot->p_atoms, 
-			&prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
-			&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1],
-	    	&prot->p_topol->phi[*num_res_first-1].moved_atoms[i], angle);
+	//The first residue does not make rotation 
+	if (*num_res_first > 1){
+		//rotates all moved atoms of first residue
+		for (int i = 0; i < prot->p_topol->phi[*num_res_first-1].num_moved; i++){
+			rotation_by_angle_dih(prot->p_atoms, 
+				&prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
+				&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1],
+		    	&prot->p_topol->phi[*num_res_first-1].moved_atoms[i], angle);
+		}
+
+		// rotates all atoms from the forward residue
+		rotate_all_atoms(prot, &prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
+			&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1], 
+			num_res_first, angle);		
 	}
 
-	// rotates all atoms from the forward residue
-	rotate_all_atoms(prot, &prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
-		&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1], 
-		num_res_first, angle);
 }
 
 /** Rotates protein in a OMEGA dihedral movement
@@ -121,27 +127,22 @@ void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle)
 */
 void rotation_omega(protein_t *prot, const int *num_res_first, const float *angle){
 
-	int num_res_next;
-
-	//omega rotation is from forward residue of num_res_first
-	num_res_next = *num_res_first + 1;
-
 	/* Checking the number of residue. 
-	* if num_res_next is greater than number of residue of protein 
+	* if num_res_first is greater than number of residue of protein 
 	* no makes rotation in protein.
 	*/
-	if (num_res_next <= prot->p_topol->numres){
-		//rotates all moved atoms of first residue
+	if (*num_res_first < prot->p_topol->numres){
+		/*rotates all moved atoms of first residue
 		for (int i = 0; i < prot->p_topol->omega[num_res_next-1].num_moved; i++){
 			rotation_by_angle_dih(prot->p_atoms, 
 				&prot->p_topol->omega[num_res_next-1].fixed_atoms[0], 
 				&prot->p_topol->omega[num_res_next-1].fixed_atoms[1],
 		    	&prot->p_topol->omega[num_res_next-1].moved_atoms[i], angle);
-		}
+		}*/
 
 		// rotates all atoms from the forward residue
-		rotate_all_atoms(prot, &prot->p_topol->omega[num_res_next-1].fixed_atoms[0], 
-			&prot->p_topol->omega[num_res_next-1].fixed_atoms[1], 
-			&num_res_next, angle);
+		rotate_all_atoms(prot, &prot->p_topol->omega[*num_res_first-1].fixed_atoms[0], 
+			&prot->p_topol->omega[*num_res_first-1].fixed_atoms[1], 
+			num_res_first, angle);
 	}
 }

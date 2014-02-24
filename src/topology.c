@@ -70,50 +70,52 @@ static int get_atom_index_by_resnum_atom_name(const pdb_atom_t *atoms,
 }
 
 static void build_topology_individual_omega(protein_t *prot){
-	char *atom_N, *atom_C, *atom_CA;
+	char *atom_N, *atom_C;
 	int i_af;
+	int next_res; // next residue
 
 	atom_N = Malloc(char, 2);
-	atom_CA = Malloc(char, 3);
 	atom_C = Malloc(char, 2);	
 	
 
 	strcpy(atom_N, "N");
-	strcpy(atom_CA, "CA");
 	strcpy(atom_C, "C");
 	
+	//The last residue (C-Terminal) does not make rotation
 	for (int r = 1; r <= prot->p_topol->numres; r++){
-		//Build Fixed Atoms
-		i_af = -1;
-		//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
-		prot->p_topol->omega[r-1].num_fixed = 3;
-		prot->p_topol->omega[r-1].fixed_atoms = Malloc(int, prot->p_topol->omega[r-1].num_fixed);
-		i_af++;
-		prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_N, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_CA, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_C, &prot->p_topol->numatom);		
-		//Build Moved Atom		
-		i_af = -1;
-		//It is considered moved atom all atoms that are not fixed atoms
-		prot->p_topol->omega[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->omega[r-1].num_fixed);
-		prot->p_topol->omega[r-1].moved_atoms = Malloc(int, prot->p_topol->omega[r-1].num_moved);
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){			
-			if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
-				prot->p_topol->omega[r-1].fixed_atoms, 
-				&prot->p_topol->omega[r-1].num_fixed) == bfalse){				
-				i_af++;				
-				prot->p_topol->omega[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
-			}
-		}	
+		next_res = r + 1; //obtaing the next residue		
+		if (next_res <= prot->p_topol->numres){
+			//Build Fixed Atoms
+			i_af = -1;
+			//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
+			prot->p_topol->omega[r-1].num_fixed = 2;
+			prot->p_topol->omega[r-1].fixed_atoms = Malloc(int, prot->p_topol->omega[r-1].num_fixed);
+			i_af++;
+			prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					&r, atom_C, &prot->p_topol->numatom);		
+			i_af++;
+			prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					&next_res, atom_N, &prot->p_topol->numatom);
+
+			/*
+			//Build Moved Atom		
+			i_af = -1;
+			//It is considered moved atom all atoms of NEXT residue (execept N because it is fixed)
+			prot->p_topol->omega[r-1].num_moved = 2 + ((prot->p_topol->range_atoms[next_res-1].last_atom - prot->p_topol->range_atoms[next_res-1].first_atom) - prot->p_topol->omega[r-1].num_fixed);
+			prot->p_topol->omega[r-1].moved_atoms = Malloc(int, prot->p_topol->omega[r-1].num_moved);
+			for (int i_a = prot->p_topol->range_atoms[next_res-1].first_atom; i_a <= prot->p_topol->range_atoms[next_res-1].last_atom; i_a++){			
+				if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
+					prot->p_topol->omega[r-1].fixed_atoms, 
+					&prot->p_topol->omega[r-1].num_fixed) == bfalse){				
+					i_af++;				
+					prot->p_topol->omega[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
+				}
+			
+			}*/	
+		}		
 	}
 
-	free(atom_N);
-	free(atom_CA);
+	free(atom_N);	
 	free(atom_C);	
 }
 
@@ -129,8 +131,8 @@ static void build_topology_individual_psi(protein_t *prot){
 	strcpy(atom_C, "C");
 	strcpy(atom_O, "O");
 	
-
-	for (int r = 1; r <= prot->p_topol->numres; r++){
+	//The last residue does not make rotation
+	for (int r = 1; r < prot->p_topol->numres; r++){
 		//Build Fixed Atoms		
 		prot->p_topol->psi[r-1].num_fixed = 2;
 		prot->p_topol->psi[r-1].fixed_atoms = Malloc(int, prot->p_topol->psi[r-1].num_fixed);
@@ -166,7 +168,8 @@ static void build_topology_individual_phi(protein_t *prot){
 	strcpy(atom_C, "C");
 	strcpy(atom_O, "O");
 
-	for (int r = 1; r <= prot->p_topol->numres; r++){
+	//The first residue does not make rotation
+	for (int r = 2; r <= prot->p_topol->numres; r++){
 		//Build Fixed Atoms
 		i_af = -1;
 		//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
