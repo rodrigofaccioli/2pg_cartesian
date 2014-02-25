@@ -48,10 +48,10 @@ top_global_t *allocateTop_Global(const primary_seq_t *primary_sequence,
 	return top_aux;
 }
 void  desAllocateTop_Global(top_global_t *top_aux){
-	free(top_aux->range_atoms);
-	desAllocate_top_residue_atom_info(top_aux->psi);
 	desAllocate_top_residue_atom_info(top_aux->phi);
+	desAllocate_top_residue_atom_info(top_aux->psi);	
 	desAllocate_top_residue_atom_info(top_aux->omega);
+	free(top_aux->range_atoms);
 	//desAllocate_top_residue_atom_info(top_aux->side_chains);
 	free(top_aux);
 }
@@ -169,38 +169,38 @@ static void build_topology_individual_phi(protein_t *prot){
 	strcpy(atom_O, "O");
 
 	//The first residue does not make rotation
-	for (int r = 2; r <= prot->p_topol->numres; r++){
-		//Build Fixed Atoms
-		i_af = -1;
-		//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
-		prot->p_topol->phi[r-1].num_fixed = 2;//2 + num_hydrogen_backbone;
-		prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
-		i_af++;
-		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_N, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				&r, atom_CA, &prot->p_topol->numatom);
-		/*Fixed Hydrogens because they are connected with N		
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
-			if ( is_hydrogen_backbone_Nitrogen(prot->p_atoms[i_a-1].atmname) == btrue){
-				i_af++;
-				prot->p_topol->phi[r-1].fixed_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
-			}			
-		}*/
-		//Build Moved Atom		
-		i_af = -1;
-		//It is considered moved atom all atoms that are not fixed atoms
-		prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
-		prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){			
-			if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
-				prot->p_topol->phi[r-1].fixed_atoms, 
-				&prot->p_topol->phi[r-1].num_fixed) == bfalse){				
-				i_af++;				
-				prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
+	for (int r = 1; r <= prot->p_topol->numres; r++){
+		if (r > 1){
+			//Build Fixed Atoms
+			i_af = -1;
+			//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
+			prot->p_topol->phi[r-1].num_fixed = 2;//2 + num_hydrogen_backbone;
+			prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
+			i_af++;
+			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					&r, atom_N, &prot->p_topol->numatom);
+			i_af++;
+			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					&r, atom_CA, &prot->p_topol->numatom);
+			//Build Moved Atom		
+			i_af = -1;
+			//It is considered moved atom all atoms that are not fixed atoms
+			prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
+			prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
+			for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){			
+				if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
+					prot->p_topol->phi[r-1].fixed_atoms, 
+					&prot->p_topol->phi[r-1].num_fixed) == bfalse){				
+					i_af++;				
+					prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
+				}
 			}
-		}	
+		}else{
+			prot->p_topol->phi[r-1].num_fixed = 0;
+			prot->p_topol->phi[r-1].fixed_atoms = NULL;
+			prot->p_topol->phi[r-1].num_moved = 0;
+			prot->p_topol->phi[r-1].moved_atoms = NULL;
+		}
 	}
 
 	free(atom_N);
