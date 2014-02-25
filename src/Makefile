@@ -12,8 +12,8 @@ OPT_GSL = -static -Wall -lgsl -lgslcblas -lm -pedantic
 
  all:protpred-Gromacs-Mono_PSP
  
-protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o
-	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o $(OPT_GSL) 
+protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o
+	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o $(OPT_GSL) 
 
 protpred-Gromacs-Mono.o:	protpred-Gromacs-Mono.c
 	$(CXX) $(OPT) protpred-Gromacs-Mono.c -I../include
@@ -95,3 +95,6 @@ aminoacids_io.o:	aminoacids_io.c
 
 rotation.o:	rotation.c
 	$(CXX) $(OPT) rotation.c -I../include	
+
+solution.o:	solution.c
+	$(CXX) $(OPT) solution.c -I../include	

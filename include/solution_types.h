@@ -9,7 +9,7 @@
 */
 typedef struct ssolution {
    int num_obj;
-   long double *obj_values[];
+   double *obj_values;
    void *representation;
  }solution_t;
 

@@ -21,11 +21,9 @@
 #include "populationio.h"
 #include "topology.h"
 #include "topologyio.h"
-
-
-
 #include "rotation.h"
 #include "math_owner.h"
+#include "solution.h"
 
 
 
@@ -42,7 +40,9 @@ int ea_mono(const input_parameters_t *in_para){
     char *prefix;
     primary_seq_t *primary_sequence; // Primary Sequence of Protein
     protein_t *population_p;    
+    solution_t *solutions_p;
 
+    //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
     //Allocating PDB ATOMS
@@ -52,34 +52,48 @@ int ea_mono(const input_parameters_t *in_para){
     load_initial_population_file(population_p, &in_para->size_population, 
         in_para->path_local_execute,in_para->initial_pop_file_name,
         primary_sequence);
-    
+
+    //Saving topology of population 
     prefix = Malloc(char,10);
     strcpy(prefix, "prot");
     save_topology_population(population_p, &in_para->size_population, 
     in_para->path_local_execute, prefix);    
     free(prefix);
 
-    float angle_d = 180;
-    float angle = degree2radians(&angle_d);
-    int num_res_first = 1;
-    for (int p = 0; p < in_para->size_population; p++){
-        rotation_psi(&population_p[p], &num_res_first, &angle);
-        rotation_phi(&population_p[p], &num_res_first, &angle);
-        rotation_omega  (&population_p[p], &num_res_first, &angle);
-    }
-
-    char *file_name;
-    file_name = Malloc(char, 100);
-    strcpy(file_name, "teste_model.pdb");
-    save_population_file(population_p, in_para->path_local_execute,
-     file_name, &in_para->size_population );
+    //Setting solutions
+    solutions_p = allocate_solution(&in_para->size_population, &in_para->number_fitness);
+    set_proteins2solutions(solutions_p, population_p, &in_para->size_population);
     
- 
-    desallocate_primary_seq(primary_sequence);
+/**** TESTE ROTACAO ***************************************************/
+    float angle_d, angle;
+    int num_res_first;
+    char *file_name, *file_name_aux;
+    file_name = Malloc(char, 100);
+    file_name_aux= Malloc(char, 100);
+
+    angle_d = 0;    
+    for (int p = 0; p < in_para->size_population; p++){
+        if (angle_d >= 360){
+            angle_d = 0;    
+        } 
+        angle_d = angle_d + 10;
+        angle = degree2radians(&angle_d);
+        num_res_first = 21;
+        //rotation_psi(&population_p[p], &num_res_first, &angle);
+        //rotation_phi(&population_p[p], &num_res_first, &angle);
+        rotation_omega(&population_p[p], &num_res_first, &angle);
+    }    
+    sprintf(file_name_aux,"1VII_2PG_%i.pdb",num_res_first);
+    strcpy(file_name, file_name_aux);
+    save_population_file(population_p, in_para->path_local_execute,
+            file_name, &in_para->size_population );
+/**********************************************************************/
+
+
+    desallocate_solution(solutions_p, &in_para->size_population);
     desallocateProtein(population_p, &in_para->size_population);
+    desallocate_primary_seq(primary_sequence);
 
-
-    fatal_error("Em topologia buscar os nomes dos atomos pelo seu nome e nao tipo o qual tenho de remover");
 
 /*    
     display_msg("Build Topology \n");
