@@ -143,7 +143,7 @@ static void set_parameter_fitness_energies(input_parameters_t *param,
 			,param->number_fitness);
 	c_params = strtok(energy_parameters," ,");
 	while (c_params != NULL){
-		param->fitness_energies[i] = str2type_fitness_energies(c_params);
+		param->fitness_energies[i] = str2type_objective(c_params);
 		i++;
 		c_params = strtok(NULL," ,");
 	}
