@@ -18,6 +18,10 @@ float str2float(__const char *str){
 	return atof(str);
 }
 
+double str2double(__const char *str){
+	return strtod(str, NULL);
+}
+
 int length_char(__const char *str){
 	return strlen(str);
 }

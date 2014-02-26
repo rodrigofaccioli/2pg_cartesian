@@ -3,6 +3,7 @@
 void int2str(char *str, const int *number);
 int str2int(__const char *str);
 float str2float(__const char *__str);
+double str2double(__const char *str);
 int length_char(const char *__str);
 void append_char(char *dest, __const char *source, int max_num);
 void substring(char *dest, const char __source[], int begin, int end);
