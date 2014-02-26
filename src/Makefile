@@ -10,10 +10,10 @@ CXX=g++
 OPT=  -c -g
 OPT_GSL = -static -Wall -lgsl -lgslcblas -lm -pedantic 
 
- all:protpred-Gromacs-Mono_PSP
+all:protpred-Gromacs-Mono_PSP
  
-protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o
-	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o ea.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o $(OPT_GSL) 
+protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
+	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
 
 protpred-Gromacs-Mono.o:	protpred-Gromacs-Mono.c
 	$(CXX) $(OPT) protpred-Gromacs-Mono.c -I../include
@@ -41,9 +41,6 @@ energy_gromacs.o:	energy_gromacs.c
 
 ea_mono.o:	ea_mono.c
 	$(CXX) $(OPT) ea_mono.c -I../include
-
-ea.o:	ea.c
-	$(CXX) $(OPT) ea.c -I../include
 
 protein.o:	protein.c
 	$(CXX) $(OPT) protein.c -I../include
@@ -98,3 +95,12 @@ rotation.o:	rotation.c
 
 solution.o:	solution.c
 	$(CXX) $(OPT) solution.c -I../include	
+
+solutionio.o:	solutionio.c
+	$(CXX) $(OPT) solutionio.c -I../include	
+
+gromacs_objectives.o:	gromacs_objectives.c
+	$(CXX) $(OPT) gromacs_objectives.c -I../include	
+
+algorithms.o:	algorithms.c
+	$(CXX) $(OPT) algorithms.c -I../include
