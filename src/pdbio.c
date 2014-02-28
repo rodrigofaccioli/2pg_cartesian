@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "defines.h"
 #include "enums.h"
@@ -9,6 +9,88 @@
 #include "futil.h"
 #include "messages.h"
 #include "string_owner.h"
+
+#define MAX_VALUES 11
+
+/** Split a ATOM Section Line into an array. Insert this array in atoms
+* line is a line of ATOM section
+* atoms is an array which will receive the values of splitted line into l
+* l is index of atoms
+*/
+void load_pdb_atoms_split(char line[], pdb_atom_t *atoms, const int *l){
+	char *section;
+	int index_atom;
+	char *atmname;
+	char *resname_aux;
+	char *chain_name;
+	int atm_number;
+	char *atm_number_c;
+	int resnum;
+	char *resnum_c;
+	char *coord_c;
+	float x,y,z;
+
+	char *line_splited;
+	//Stores PDB line in an array. 
+  	char *line_array[MAX_VALUES]; 
+  	int n_v;
+
+	//Allocating
+	section = Malloc(char,7);
+	atmname = Malloc(char,6);
+	resname_aux = Malloc(char,4);
+	chain_name = Malloc(char,2);
+	atm_number_c = Malloc(char,6);
+	resnum_c = Malloc(char,10);//Malloc(char,5);
+	coord_c = Malloc(char,9);
+
+  	n_v = 0;
+ 	line_splited = strtok (line," ");  	
+  	while (line_splited != NULL){
+    	line_array[n_v++] = line_splited;
+    	line_splited = strtok(NULL, " ");
+  	}
+
+	//Section
+	strcpy(section, line_array[0]);
+	//Atom Number
+	atm_number = str2int(line_array[1]);
+	//Atom Name
+	strcpy(atmname, line_array[2]);
+	trim(atmname);
+	//Residue Name
+	strcpy(resname_aux,line_array[3]);
+	trim(resname_aux);
+	//ChainID	
+	strcpy(chain_name,line_array[4]);
+	//Residue Number
+	strcpy(resnum_c,line_array[5]);
+	trim(resnum_c);
+	resnum = str2int(resnum_c);
+	//Coordinates
+	strcpy(coord_c,line_array[6]);
+	trim(coord_c);
+	x = str2float(coord_c);
+	strcpy(coord_c,line_array[7]);
+	trim(coord_c);
+	y = str2float(coord_c);
+	strcpy(coord_c,line_array[8]);
+	trim(coord_c);
+	z = str2float(coord_c);
+
+	set_pdb_atom_coordinates(&atoms[*l], atmname, resname_aux, chain_name, &resnum,
+				&x, &y, &z,&atm_number);
+
+	free(line_splited);  	
+	free(section);
+	free(atmname);
+	free(resname_aux);
+	free(chain_name);
+	free(atm_number_c);
+	free(resnum_c);
+	free(coord_c);
+
+}
 
 void load_pdb_atoms(char line[], pdb_atom_t *atoms, const int *l){
 	char *section;
@@ -216,7 +298,8 @@ void load_pdb_model_file(pdb_atom_t **atoms, pdb_seqres_t *seqres,
 	while ( fgets(pdb_line,MAX_LINE_PDB,pdbfile) != NULL){
 		if (strncmp(pdb_line,"ATOM",4) == 0){
 			line_atm = line_atm + 1;
-			load_pdb_atoms(pdb_line,atoms[ind_model], &line_atm);
+			//load_pdb_atoms(pdb_line,atoms[ind_model], &line_atm);
+			load_pdb_atoms_split(pdb_line,atoms[ind_model], &line_atm);
 		}else if (strncmp(pdb_line,"ENDMDL",6) == 0){ 			
 			ind_model = ind_model + 1;
 			line_atm = -1;
