@@ -67,6 +67,19 @@ static void initialize_parameters(input_parameters_t *param){
 	param->path_dimo_sources = NULL;
 	param->path_call_GreedyTreeGenerator2PG = NULL;
 	param->number_individual_select_reproduce = 0;
+
+    //param->rate_mutation_phi = 0.0;
+    param->min_angle_mutation_phi = -180.0;
+	param->max_angle_mutation_phi = 180.0;
+
+    //param->rate_mutation_psi = 0.0;
+    param->min_angle_mutation_psi = -180.0;
+    param->max_angle_mutation_psi = 180.0;
+
+    //param->rate_mutation_omega = 0.0;
+    param->min_angle_mutation_omega = -180.0;
+    param->max_angle_mutation_omega = 180.0;
+    
 }
 
 static void set_number_individual_select_reproduce(input_parameters_t *param,
@@ -375,6 +388,19 @@ void load_parameters_from_file(input_parameters_t *param,
 			conf.getParameterChar("Program_Run_GreedyTreeGenerator2PG") );
 
 	set_number_individual_select_reproduce(param,conf.getParameterChar("PercentageImmigrantIndivuals"));
+
+    //param->rate_mutation_phi = atof(conf.getParameter("rate_mutation_phi").c_str());
+    param->min_angle_mutation_phi = atof(conf.getParameter("min_angle_mutation_phi").c_str());
+	param->max_angle_mutation_phi = atof(conf.getParameter("max_angle_mutation_phi").c_str());
+
+    //param->rate_mutation_psi = atof(conf.getParameter("rate_mutation_psi").c_str());
+    param->min_angle_mutation_psi = atof(conf.getParameter("min_angle_mutation_psi").c_str());
+    param->max_angle_mutation_psi = atof(conf.getParameter("max_angle_mutation_psi").c_str());
+
+    //param->rate_mutation_omega = atof(conf.getParameter("rate_mutation_omega").c_str());
+    param->min_angle_mutation_omega = atof(conf.getParameter("min_angle_mutation_omega").c_str());
+    param->max_angle_mutation_omega = atof(conf.getParameter("max_angle_mutation_omega").c_str());
+
 	
 }
 

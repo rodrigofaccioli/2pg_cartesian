@@ -77,13 +77,22 @@ typedef struct sinput_parameters
      */
     float *weights_fitness;
     float blx_alfa;
-    float max_mutation_range;
-    float individual_mutation_rate;
     int number_archive; //Indicates the number of archives that SPEA2 algorithm works
     type_rotamer_library_t rotamer_library; // shows what kind of rotamer library
     type_objective_analysis_t objective_analysis; // shows what kind of objective analysis
     char *path_dimo_sources; // shows where DIMO source is
     char *path_call_GreedyTreeGenerator2PG;
+    float max_mutation_range;
+    float individual_mutation_rate;
+//    float rate_mutation_phi;
+    float min_angle_mutation_phi;
+    float max_angle_mutation_phi;
+//    float rate_mutation_psi;
+    float min_angle_mutation_psi;
+    float max_angle_mutation_psi;
+//    float rate_mutation_omega;
+    float min_angle_mutation_omega;
+    float max_angle_mutation_omega;
 
  }input_parameters_t;
 
