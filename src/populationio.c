@@ -30,7 +30,8 @@ void load_initial_population_file(protein_t *pop, const int *pop_size, const cha
 	//Allocation and Copy values to pop
 	for (int i = 0; i < *pop_size; i++){
 		pop[i].p_atoms = allocate_pdbatom(&num_atoms_PDB);
-		pop[i].p_topol = allocateTop_Global(primary_sequence, &num_atoms_PDB);
+		pop[i].p_topol = allocateTop_Global(&primary_sequence->num_res, 
+			&num_atoms_PDB);
 		atm_aux = atoms[i];
 		for (int a = 0; a < num_atoms_PDB; a++){			
 			copy_pdb_atom(&pop[i].p_atoms[a], &atm_aux[a]);
@@ -44,11 +45,14 @@ void load_initial_population_file(protein_t *pop, const int *pop_size, const cha
 	build_topology_population(pop, pop_size);
 }
 
+/** Save a set of models in PDB format
+* pop is population
+* path is the path where file_name will  be saved
+* file_name is the name of file
+* num_model the number of models. It can be be the number of individuals
+*/
 void save_population_file(const protein_t *pop, const char *path, const char *file_name, 
 	const int *num_model ){
-	/* This function save a set of models in PDB format.
-	   atoms_model can be a population of pdb_atom_t
-	*/
 	FILE *pdbfile=NULL;
 	int m = 0;
 	char *fname = path_join_file(path,file_name);
