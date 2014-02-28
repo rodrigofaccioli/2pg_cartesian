@@ -32,11 +32,6 @@ void initialize_algorithm_execution(const primary_seq_t *primary_sequence_aux,
 	in_para = in_para_aux;
 }
 
-/** Building the name of population file  */
-static void set_population_file_name(const int *tag){
-    sprintf(pop_file_name,"pop_%d.pdb",*tag);
-}
-
 static void set_objective_file_name(const int *fit, const int *generation){
     char fitness_name[MAX_RANDOM_STRING];
     char sger[MAX_RANDOM_STRING];
@@ -55,6 +50,11 @@ static void build_fitness_files(const solution_t *solutions, const int *generati
         save_solution_file(in_para->path_local_execute, fitness_file_name, &f, 
             solutions, pop_size, generation, in_para);
     }
+}
+
+/** Building the name of population file  */
+static void set_population_file_name(const int *tag){
+    sprintf(pop_file_name,"pop_%d.pdb",*tag);
 }
 
 
