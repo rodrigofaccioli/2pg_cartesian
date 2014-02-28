@@ -47,10 +47,17 @@ void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size
 /** Copies p_source to p_dest */
 void copy_protein(protein_t *p_dest, const protein_t *p_source){
 	//Coping atoms
-	for (int a = 0; a < p_source->p_topol->numatom; a++){			
+	if (p_dest->p_atoms == NULL){
+		p_dest->p_atoms = allocate_pdbatom(&p_source->p_topol->numatom);
+	}
+	for (int a = 0; a < p_source->p_topol->numatom; a++){
 		copy_pdb_atom(&p_dest->p_atoms[a], &p_source->p_atoms[a]);
-	}		
+	}
 	//Building Topology of p_dest
+	if (p_dest->p_topol == NULL){
+		p_dest->p_topol = allocateTop_Global(&p_source->p_topol->numres, 
+			&p_source->p_topol->numatom);
+	}		
 	build_topology_individual(p_dest);
 }
 
@@ -79,3 +86,19 @@ void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_sou
 }
 
 
+/** Initializes the atoms of protein */
+void initialize_protein_atoms(protein_t *protein){
+	//set 0 to coordenates of protein
+	for (int a = 0; a < protein->p_topol->numatom; a++){			
+		protein->p_atoms[a].coord.x = 0.00;
+		protein->p_atoms[a].coord.y = 0.00;
+		protein->p_atoms[a].coord.z = 0.00;
+	}
+}
+
+/** Initializes the atoms of each individual of protein */
+void initialize_protein_population_atoms(protein_t *protein, const int *popsize){
+	for (int i = 0; i < *popsize; i++){
+		initialize_protein_atoms(protein);
+	}
+}

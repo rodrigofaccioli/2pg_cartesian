@@ -13,4 +13,6 @@ void copy_protein_population(protein_t *pop_dest, const protein_t *pop_source,
 void copy_protein_atoms(protein_t *p_dest, const protein_t *p_source);
 void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_source, 
 	const int *popsize);
+void initialize_protein_atoms(protein_t *protein);
+void initialize_protein_population_atoms(protein_t *protein, const int *popsize);
 #endif
