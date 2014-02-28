@@ -31,13 +31,13 @@ static void desAllocate_top_residue_atom_info(top_residue_atom_info_t *info){
 	}
 }
 
-top_global_t *allocateTop_Global(const primary_seq_t *primary_sequence,
+top_global_t *allocateTop_Global(const int *numres,
 	const int *numatom){
 	top_global_t *top_aux;
 
 	top_aux = Malloc(top_global_t,1);
 	top_aux->numatom = *numatom;
-	top_aux->numres  = primary_sequence->num_res;
+	top_aux->numres  = *numres; //primary_sequence->num_res;
 
 	top_aux->range_atoms  = Malloc(top_residue_range_atoms_t, top_aux->numres);
 	top_aux->phi          = Malloc(top_residue_atom_info_t, top_aux->numres);

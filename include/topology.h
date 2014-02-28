@@ -2,12 +2,11 @@
 #define OLD_TOPOLOGY_H
 
 #include "topology_types.h"
-#include "aminoacids_types.h"
 #include "protein_type.h"
 #include "pdb_types.h"
 #include "enums.h"
 
-top_global_t *allocateTop_Global(const primary_seq_t *primary_sequence,
+top_global_t *allocateTop_Global(const int *numres,
 	const int *numatom);
 
 void  desAllocateTop_Global(top_global_t *top_aux);
