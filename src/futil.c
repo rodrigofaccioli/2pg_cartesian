@@ -1,5 +1,6 @@
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "messages.h"
 #include "defines.h"
@@ -78,4 +79,45 @@ boolean_t check_exists_file(const char *path_file_name){
 		return btrue;
 	}
 	return bfalse;
+}
+
+/** Get the size of FILE
+*/
+long get_file_size(FILE *fp){
+    long fsize = 0;
+
+    fseek(fp,0,SEEK_END);
+    fsize = ftell(fp); 
+    fseek(fp,0,SEEK_SET);
+
+    return fsize;
+}
+
+/** Get the last line of file
+*/
+char *get_last_line(const char *filepath){
+    FILE *fp;
+    char buff[4096+1];
+    int size,i;
+    long fsize;
+    if(NULL==(fp=fopen(filepath, "r"))){
+        perror("file cannot open at lastline");
+        return NULL;
+    }
+    fsize= -1L*get_file_size(fp);
+    if(size=fseek(fp, MAX(fsize, -4096L), SEEK_END)){
+        perror("cannot seek");
+        exit(1);
+    }
+    size=fread(buff, sizeof(char), 4096, fp);
+    fclose(fp);
+    buff[size] = '\0';
+    i=size-1;
+    if(buff[i]=='\n'){
+        buff[i] = '\0';
+    }
+    while(i >=0 && buff[i] != '\n')
+        --i;
+    ++i;
+    return strdup(&buff[i]);
 }
