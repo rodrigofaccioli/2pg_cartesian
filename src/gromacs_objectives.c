@@ -16,8 +16,8 @@
 
 
 #define TAM_LINE_ENER 50
-#define MAX_ENERGY 999999999
-#define MIN_ENERGY -999999999
+#define MAX_ENERGY 999999999.99
+#define MIN_ENERGY -999999999.99
 
 static char gyrate_file[MAX_FILE_NAME];
 
@@ -223,28 +223,35 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	char aux [20];
 	char aux_ind[5];
 	char msg [50];	
-	char c_charge_value[15];
-	option_g_energy *opt_fitness=NULL;
+	option_g_energy *opt_objective;
 
-	opt_fitness = Malloc(option_g_energy,1);
-	opt_fitness[0] = get_option_g_energy_t_from_type_fitness_energy(in_para->fitness_energies) ; //gmx_potential_ener
+	//getting the gromacs objectives from input parameters
+	opt_objective = Malloc(option_g_energy,in_para->number_fitness);
+	for (int ob = 0; ob < in_para->number_fitness; ob++){
+		opt_objective[ob] = get_option_g_energy_t_from_type_fitness_energy(&in_para->fitness_energies[ob]);
+	}
+	// calculating the objectivies of population
 	for (int ind = 0; ind < in_para->size_population; ind++){
 		//getting the protein from solution
 		population_aux = (protein_t*) solutions[ind].representation;
+		// saving pdb file of protein
     	int2str(aux_ind,&ind);
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
    	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
    	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-   	    if (opt_fitness[0] == gmx_gyrate) {
-   	    	compute_gyrate_mono(&solutions[ind],in_para->path_local_execute,
-   	    			in_para->path_gromacs_programs,pdbfile_aux,opt_fitness,
-   	    			in_para->path_program_g_gyrate,
-   	    			in_para->path_program_read_g_gyrate,
-   	    			in_para->computed_radius_g_gyrate_file,
-   	    			in_para->path_program_clean_simulation);
+   	    // obtaing the values of objectivies
+   	    for (int ob = 0; ob < in_para->number_fitness; ob++){
+	   	    if (opt_objective[ob] == gmx_gyrate) {
+   		    	compute_gyrate_mono(&solutions[ind],in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs,pdbfile_aux,opt_objective,
+   	    				in_para->path_program_g_gyrate,
+   	    				in_para->path_program_read_g_gyrate,
+   	    				in_para->computed_radius_g_gyrate_file,
+   	    				in_para->path_program_clean_simulation);
+   	    	}
    	    }
 	}
 
-	free(opt_fitness);
+	free(opt_objective);
 
 }
