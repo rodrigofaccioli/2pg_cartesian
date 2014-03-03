@@ -18,6 +18,7 @@
 #define TAM_LINE_ENER 50
 #define MAX_ENERGY 999999999.99
 #define MIN_ENERGY -999999999.99
+#define MAX_VALUE 10
 
 static char gyrate_file[MAX_FILE_NAME];
 
@@ -103,29 +104,20 @@ static int clean_gromacs_simulation(const char *path_clean_simulation_program){
 /* Sets the value of objective in solution 
 * sol represents the solution (individual). The value of objective will be 
 *     set in obj_values field.
-* path_file_ener is the name of file that contain the value of objective
+* value the calculated value that will be set in solution
 * fit represents the index of objective
 */
-static void set_objective_from_gromacs_file_in_solution(solution_t *sol,char *path_file_ener,
+static void set_objective_from_gromacs_in_solution(solution_t *sol,char *value,
 		const int *fit){
-	char *line;
-	line = Malloc(char, TAM_LINE_ENER);
-	strcpy(line, " ");
 	double aux = -1;
-	FILE *file_ener = open_file(path_file_ener,fREAD);
-	if (*fit > sol->num_obj){
-		fatal_error("Error when try to execute set_objective_from_gromacs_file_in_solution function \n");
-	}
-	fgets(line, TAM_LINE_ENER, file_ener);
-	//sscanf(line,"%f",&aux);
-	trim(line);
-	aux = str2double(line);
+
+	aux = str2double(value);
 	if (aux ==  -1.000000){ //This value means that Gromacs considered the energy as an infinitive value
 		aux = MAX_ENERGY;
 	}
 	sol->obj_values[*fit] = aux;
-	fclose(file_ener);
-	free(line);
+	
+	
 }
 
 static void build_gromacs_command_for_gyrate(char *command,
@@ -183,22 +175,31 @@ int compute_gyrate_mono(solution_t *sol, const char *local_execute,
 	int ret;
 	int fit = 0;
 	char *command;
-	char *gyrate_path_file_name;
+	char *last_line, *line_splited;
+	char *value;
 
 	command = Malloc(char,MAX_COMMAND);
+	value = Malloc(char,MAX_VALUE);
 	build_gromacs_command_for_gyrate(command, local_execute, computed_g_gyrate_program,
 			path_gromacs_programs, pdbfile, computed_g_gyrate_value_file);
 	ret = system(command); //calls to run g_gyrate
 	if (check_exists_file(computed_g_gyrate_value_file) == btrue){
-		build_file_gyrate();
-		build_command_read_xvg_gyrate_file(command,local_execute,
-				path_program_read_g_gyrate, computed_g_gyrate_value_file);
-		ret = system(command); //calls to read g_gyrate xvg
-		gyrate_path_file_name = path_join_file(local_execute,gyrate_file);
+		//get the last line of xvg file
+		last_line = get_last_line(computed_g_gyrate_value_file);
+		// Split last line by space and obtaing the first value
+ 		line_splited = strtok (last_line," ");
+ 		// Obtaining the second value. It will be set in solution
+ 		line_splited = strtok(NULL, " ");
+ 		strcpy(value, line_splited);
+ 		//Looking the end of line_splited
+	  	while (line_splited != NULL){	    	
+    		line_splited = strtok(NULL, " ");
+  		}
 		//Set the value of radius option in solution
-	    set_objective_from_gromacs_file_in_solution(sol,gyrate_path_file_name, &fit);
-	    free(gyrate_path_file_name);
-
+	    set_objective_from_gromacs_in_solution(sol,value, &fit);
+	    free(line_splited);
+	    free(last_line);
+	    free(value);
 	}else{
 		sol->obj_values[fit] = MAX_ENERGY; //MAX energy value
 	}
