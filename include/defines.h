@@ -19,6 +19,7 @@
 #define PREFIX_PDB_FILE_NAME_EA "PROT_IND_"
 #define PREFIX_PDB_FILE_NAME_EA_FINAL "PROT_IND_FINAL_"
 #define PREFIX_PDB_FILE_NAME_AUX "PROT_AUX_"
+#define MAX_FORCE_FIELD_NAME 50
 
 /* These defines are used for distance crowding*/
 #define MIN_DIST -999999999
