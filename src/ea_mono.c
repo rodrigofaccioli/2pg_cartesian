@@ -201,8 +201,8 @@ int ea_mono(const input_parameters_t *in_para){
 /**************** STARTING Mono-Objetive Evolutionary Algorithm *************************/
     display_msg("Starting Mono-Objetive Evolutionary Algorithm \n");
     initialize_algorithm_execution(primary_sequence, in_para);
+    init_gromacs_execution();
     index_solutions_to_reproduce = Malloc(int, in_para->size_population);
-
     //Setting solutions
     solutions_p = allocate_solution(&in_para->size_population, &in_para->number_fitness);        
     //Setting reference of proteins to solution 
@@ -228,7 +228,9 @@ int ea_mono(const input_parameters_t *in_para){
 
     // Saving sorted population
 
+    finish_gromacs_execution();
     free(index_solutions_to_reproduce);
+
 /**************** FINISHED Mono-objetive Evolutionary Algorithm *************************/     
 
     desallocate_solution(solutions_p, &in_para->size_population);

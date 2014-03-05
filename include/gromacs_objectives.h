@@ -23,5 +23,7 @@ typedef struct soption_fitness_gromacs{
 
 
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para);
+void init_gromacs_execution();
+void finish_gromacs_execution();
 
 #endif
