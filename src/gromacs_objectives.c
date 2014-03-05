@@ -447,6 +447,130 @@ static void build_pdb_file_name(char *pdb_file_name, const char *aux_name,
 	strcat(pdb_file_name,".pdb");
 }
 
+/** Creates a tpr file
+*/
+void build_tpr_file(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs, const char *force_field, const char *mdp_file){
+
+	const protein_t *protein_aux;	
+	char *opt_f;
+	char *opt_o;
+	char *opt_c;
+	char *opt_ff;
+	char *opt_water;
+	char *opt_none;
+	char *opt_p;
+	char *opt_ignh;
+	char *pdbfile_aux;
+	char *force_field_aux;
+	char *mdp_file_aux;
+
+	char *pdb2gmx_args[13];
+	char *grompp_args[11];
+
+	opt_f = Malloc(char, 3);
+	opt_o  = Malloc(char, 3);
+	opt_ff  = Malloc(char, 4);
+	opt_water = Malloc(char, 7);
+	opt_none = Malloc(char, 6);
+	opt_p =  Malloc(char, 3);
+	opt_ignh = Malloc(char, 7);
+	opt_c = Malloc(char, 3);
+	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
+	force_field_aux = Malloc(char, MAX_FORCE_FIELD_NAME);
+	mdp_file_aux = Malloc(char, MAX_FILE_NAME);
+
+	//Setting variables to use
+	strcpy(opt_f, "-f");	
+	strcpy(opt_o, "-o");
+	strcpy(opt_ff, "-ff");
+	strcpy(opt_water, "-water");
+	strcpy(opt_none, "none");
+	strcpy(opt_p, "-p");
+	strcpy(opt_ignh, "-ignh");
+	strcpy(opt_c, "-c");
+
+	/* pdb2gmx */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "pdb2gmx");
+	pdb2gmx_args[0] = program;
+	//pdb
+	strcpy(pdbfile_aux, pdbfile);
+	pdb2gmx_args[1] = opt_f;
+	strcpy(filenm1, local_execute);	
+	strcat(filenm1, pdbfile_aux);
+	pdb2gmx_args[2] = filenm1;
+	//gro
+	pdb2gmx_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot.gro");
+	pdb2gmx_args[4] = filenm2;
+	//top
+	pdb2gmx_args[5] = opt_p;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "prot.top");
+	pdb2gmx_args[6] = filenm3;
+	//force field
+	pdb2gmx_args[7] = opt_ff;
+	strcpy(force_field_aux, force_field);
+	pdb2gmx_args[8] = force_field_aux;
+	//water
+	pdb2gmx_args[9] = opt_water;
+	pdb2gmx_args[10] = opt_none;
+	//Hydrogen
+	pdb2gmx_args[11] = opt_ignh;
+
+	pdb2gmx_args[12] = NULL;	
+
+	if (!run_program(program, pdb2gmx_args)){
+		fatal_error("Failed to run pdb2gmx at build_tpr_file function \n");
+	}
+
+	/* grompp */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "grompp");
+	grompp_args[0] = program;
+	//mdp
+	grompp_args[1] = opt_f;
+	strcpy(mdp_file_aux, mdp_file);
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, mdp_file_aux);
+	grompp_args[2] = filenm1;
+	//top
+	grompp_args[3] = opt_p;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot.top");
+	grompp_args[4] = filenm2;
+	//tpŕ
+	grompp_args[5] = opt_o;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "prot.tpr");
+	grompp_args[6] = filenm3;
+	//gro
+	grompp_args[7] = opt_c;
+	strcpy(filenm4, local_execute);
+	strcat(filenm4, "prot.gro");
+	grompp_args[8] = filenm4;
+
+	grompp_args[9] = NULL;
+	grompp_args[10] = NULL;
+
+	if (!run_program(program, grompp_args))
+		fatal_error("Failed to run grompp at build_tpr_file function \n");
+
+	free(pdbfile_aux);
+	free(force_field_aux);
+	free(mdp_file_aux);
+	free(opt_f);
+	free(opt_o);
+	free(opt_ff);
+	free(opt_water);
+	free(opt_none);
+	free(opt_p);
+	free(opt_ignh);
+	free(opt_c);
+}
+
 /** Calculates the objectives by GROMACS
 */
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para){
@@ -470,7 +594,10 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
     	int2str(aux_ind,&ind);
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
    	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
-   	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);   	  
+   	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
+   	    //Building Generic tpr file. It will be used in all GROMACS execution
+    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+        	in_para->force_field, in_para->mdp_file);
    	    // obtaing the values of objectivies
    	    for (int ob = 0; ob < in_para->number_fitness; ob++){
 	   	    if (opt_objective[ob] == gmx_gyrate) {

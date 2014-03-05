@@ -25,5 +25,6 @@ typedef struct soption_fitness_gromacs{
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para);
 void init_gromacs_execution();
 void finish_gromacs_execution();
-
+void build_tpr_file(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs, const char *force_field, const char *mdp_file);
 #endif
