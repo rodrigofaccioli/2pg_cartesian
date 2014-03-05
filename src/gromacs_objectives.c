@@ -360,38 +360,16 @@ static void set_objective_from_gromacs_in_solution(solution_t *sol,char *value,
 	
 }
 
-static void build_gromacs_command_for_gyrate(char *command,
-		const char *local_execute, const char *computed_g_gyrate_program,
-		const char *path_gromacs_programs, const char *pdbfile,
-		const char *computed_g_gyrate_value_file){
-	char space [] = " ";
 
-	strcpy(command,computed_g_gyrate_program);
-	strcat(command,space);
-	strcat(command,path_gromacs_programs);
-	strcat(command,space);
-	strcat(command,local_execute);
-	strcat(command,space);
-	strcat(command,pdbfile);
-	strcat(command,space);
-	strcat(command,computed_g_gyrate_value_file);
-}
-
-
-	
 /** runs g_gyrate program and evaluates the radius of gyration of the protein
  * based on alpha-carbons only
  */
-int compute_gyrate_mono(solution_t *sol, const char *local_execute,
+static int compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
-		const option_g_energy *opt_fitness,
-		const char *computed_g_gyrate_program,
-		const char *path_program_read_g_gyrate,
-		const char *computed_g_gyrate_value_file,
+		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file,
 		const char *path_program_clean_simulation){
 	int ret;
-	int fit = 0;
-	char *command;
+	
 	char *last_line, *line_splited;
 	char *value;
 	char *opt_f;
@@ -402,12 +380,8 @@ int compute_gyrate_mono(solution_t *sol, const char *local_execute,
 	opt_f = Malloc(char,2);
 	opt_s = Malloc(char,2);
 	opt_o = Malloc(char,2);
-
-	command = Malloc(char,MAX_COMMAND);
+	
 	value = Malloc(char,MAX_VALUE);
-	build_gromacs_command_for_gyrate(command, local_execute, computed_g_gyrate_program,
-			path_gromacs_programs, pdbfile, computed_g_gyrate_value_file);
-	ret = system(command); //calls to run g_gyrate
 
 	//Setting variables to use
 	strcpy(opt_f, "-f");
@@ -452,19 +426,18 @@ int compute_gyrate_mono(solution_t *sol, const char *local_execute,
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
-	    set_objective_from_gromacs_in_solution(sol,value, &fit);
+	    set_objective_from_gromacs_in_solution(sol,value, fit);
 	    free(line_splited);
 	    free(last_line);
 	    free(value);
 	}else{
-		sol->obj_values[fit] = MAX_ENERGY; //MAX energy value
+		sol->obj_values[*fit] = MAX_ENERGY; //MAX energy value
 	}
 
 	clean_gromacs_simulation(path_program_clean_simulation);
 	free(opt_f);
 	free(opt_s);
 	free(opt_o);
-	free(command);
 }
 
 static void build_pdb_file_name(char *pdb_file_name, const char *aux_name,
@@ -497,14 +470,12 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
     	int2str(aux_ind,&ind);
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
    	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
-   	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
+   	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);   	  
    	    // obtaing the values of objectivies
    	    for (int ob = 0; ob < in_para->number_fitness; ob++){
 	   	    if (opt_objective[ob] == gmx_gyrate) {
-   		    	compute_gyrate_mono(&solutions[ind],in_para->path_local_execute,
-   	    				in_para->path_gromacs_programs,pdbfile_aux,opt_objective,
-   	    				in_para->path_program_g_gyrate,
-   	    				in_para->path_program_read_g_gyrate,
+   		    	compute_gyrate(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
    	    				in_para->computed_radius_g_gyrate_file,
    	    				in_para->path_program_clean_simulation);
    	    	}
@@ -512,5 +483,4 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	}
 
 	free(opt_objective);
-
 }
