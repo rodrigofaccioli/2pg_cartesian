@@ -80,6 +80,9 @@ static void initialize_parameters(input_parameters_t *param){
     param->min_angle_mutation_omega = -180.0;
     param->max_angle_mutation_omega = 180.0;
     
+    param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
+    param->mdp_file = Malloc(char, MAX_FILE_NAME);
+    
 }
 
 static void set_number_individual_select_reproduce(input_parameters_t *param,
@@ -302,6 +305,8 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->path_program_g_hbond);
 	free(param->path_program_read_g_hbond);
 	free(param->path_program_stride);
+	free(param->force_field);
+	free(param->mdp_file);
 	if (param->crossovers != NULL){
 		free(param->crossovers);
 	}
@@ -401,7 +406,9 @@ void load_parameters_from_file(input_parameters_t *param,
     param->min_angle_mutation_omega = atof(conf.getParameter("min_angle_mutation_omega").c_str());
     param->max_angle_mutation_omega = atof(conf.getParameter("max_angle_mutation_omega").c_str());
 
-	
+	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
+	strcpy(param->force_field,conf.getParameterChar("force_field"));
+
 }
 
 void set_parameters_extended_chain(input_parameters_extended_chain_t *param,

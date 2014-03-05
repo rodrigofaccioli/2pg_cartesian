@@ -93,7 +93,10 @@ typedef struct sinput_parameters
 //    float rate_mutation_omega;
     float min_angle_mutation_omega;
     float max_angle_mutation_omega;
-
+    /*Informs the force field*/
+    char *force_field;
+    /*Informs the mdp file name*/
+    char *mdp_file;
  }input_parameters_t;
 
 #endif
