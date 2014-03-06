@@ -34,7 +34,31 @@ static char *filenm3 = NULL;
 static char *filenm4 = NULL;
 static char *filenm5 = NULL;
 
-
+static char *f_step0 = NULL;
+static char *prot_gro = NULL;
+static char *prot_top = NULL;
+static char *prot_tpr = NULL;
+static char *prot_trr = NULL;
+static char *confout_gro = NULL;
+static char *posre_itp = NULL;
+static char *mdout_mdp = NULL;
+static char *file_energy_computed_ener_edr = NULL;
+static char *prot_sys_trr = NULL;
+static char *prot_sys_tpr = NULL;
+static char *prot_sys_top = NULL;
+static char *prot_sys_gro = NULL;
+static char *energy_xvg = NULL;
+static char *traj_xtc = NULL;
+static char *opt_f = NULL;
+static char *opt_s = NULL;
+static char *opt_o = NULL;
+static char *opt_c = NULL;
+static char *opt_ff = NULL;
+static char *opt_water = NULL;
+static char *opt_none = NULL;
+static char *opt_p = NULL;
+static char *opt_ignh = NULL;
+static char *xvg_1 = NULL;
 //It is based on GROMACS version 4.5.3
 static option_fitness_gromacs_t option_g_energy_program [] = {
       		                                                  {gmx_potential_ener, "12","Potential"},
@@ -253,12 +277,69 @@ static inline int run_programs_with_pipe(int nprogs, char ***const argv_list,
  * Call finish_gromacs_execution when done using Gromacs
  */
 void init_gromacs_execution (){
+
 	program = Malloc(char, MAX_COMMAND);
 	filenm1 = Malloc(char, MAX_COMMAND);
 	filenm2 = Malloc(char, MAX_COMMAND);
 	filenm3 = Malloc(char, MAX_COMMAND);
 	filenm4 = Malloc(char, MAX_COMMAND);
 	filenm5 = Malloc(char, MAX_COMMAND);
+
+	f_step0 = Malloc(char, MAX_FILE_NAME);
+	prot_gro = Malloc(char, MAX_FILE_NAME);
+	prot_top = Malloc(char, MAX_FILE_NAME);
+	prot_tpr = Malloc(char, MAX_FILE_NAME);
+	prot_trr = Malloc(char, MAX_FILE_NAME);
+	confout_gro = Malloc(char, MAX_FILE_NAME);
+	posre_itp = Malloc(char, MAX_FILE_NAME);
+	mdout_mdp = Malloc(char, MAX_FILE_NAME);
+	file_energy_computed_ener_edr = Malloc(char, MAX_FILE_NAME);
+	prot_sys_trr = Malloc(char, MAX_FILE_NAME);
+	prot_sys_tpr = Malloc(char, MAX_FILE_NAME);
+	prot_sys_top = Malloc(char, MAX_FILE_NAME);
+	prot_sys_gro = Malloc(char, MAX_FILE_NAME);
+	energy_xvg = Malloc(char, MAX_FILE_NAME);
+	traj_xtc = Malloc(char, MAX_FILE_NAME);
+	xvg_1  = Malloc(char, MAX_FILE_NAME);
+	opt_f = Malloc(char,3);
+	opt_s = Malloc(char,3);
+	opt_o = Malloc(char,3);
+	opt_ff  = Malloc(char, 4);
+	opt_water = Malloc(char, 7);
+	opt_none = Malloc(char, 6);
+	opt_p =  Malloc(char, 3);
+	opt_ignh = Malloc(char, 7);
+	opt_c = Malloc(char, 3);
+	
+	strcpy(opt_f, "-f");	
+	strcpy(opt_o, "-o");
+	strcpy(opt_ff, "-ff");
+	strcpy(opt_water, "-water");
+	strcpy(opt_none, "none");
+	strcpy(opt_p, "-p");
+	strcpy(opt_ignh, "-ignh");
+	strcpy(opt_c, "-c");
+	strcpy(opt_f, "-f");
+	strcpy(opt_s, "-s");
+	strcpy(opt_o, "-o");
+	strcpy(f_step0, "step0*.pdb");
+	strcpy(prot_gro, "prot.gro");
+	strcpy(prot_top, "prot.top");
+	strcpy(prot_tpr, "prot.tpr");
+	strcpy(prot_trr, "prot.trr");
+	strcpy(confout_gro, "confout.gro");
+	strcpy(posre_itp, "posre.itp");
+	strcpy(mdout_mdp, "mdout.mdp");
+	strcpy(file_energy_computed_ener_edr, "file_energy_computed.ener.edr");
+	strcpy(prot_sys_trr, "prot_sys.trr");
+	strcpy(prot_sys_tpr, "prot_sys.tpr");
+	strcpy(prot_sys_top, "prot_sys.top");
+	strcpy(prot_sys_gro, "prot_sys.gro");
+	strcpy(energy_xvg, "energy.xvg");
+	strcpy(traj_xtc, "traj.xtc");
+	strcpy(xvg_1, "*.xvg_1*");
+	
+
 }
 
 /** Finish GROMACS execution 
@@ -266,12 +347,38 @@ void init_gromacs_execution (){
 * be used in order to release memory used by internal variables 
 */
 void finish_gromacs_execution(){
+
 	free(program);
 	free(filenm1);
 	free(filenm2);
 	free(filenm3);
 	free(filenm4);
 	free(filenm5);
+	free(f_step0);
+	free(prot_gro);
+	free(prot_top);
+	free(prot_tpr);
+	free(prot_trr);
+	free(confout_gro);
+	free(posre_itp);
+	free(mdout_mdp);
+	free(file_energy_computed_ener_edr);
+	free(prot_sys_trr);
+	free(prot_sys_tpr);
+	free(prot_sys_top);
+	free(prot_sys_gro);
+	free(energy_xvg);
+	free(traj_xtc);
+	free(opt_f);
+	free(opt_s);
+	free(opt_o);
+	free(opt_ff);
+	free(opt_water);
+	free(opt_none);
+	free(opt_p);
+	free(opt_ignh);
+	free(opt_c);
+	free(xvg_1);
 
 	program = NULL;
 	filenm1 = NULL;
@@ -317,28 +424,27 @@ option_g_energy_t get_option_g_energy_t_from_type_fitness_energy(const type_fitn
 	}
 }
 
-/* Copies to command the program which cleans the simulation.
-*/
-static void build_clean_command(char * command,
-		const char *path_clean_simulation_program){
-	strcpy(command,path_clean_simulation_program);
-	strcat(command, " > /dev/null 2> /dev/null");
-}
-
-/** Calls script which remove files used in simulation.
+/** Calls toremove files used in simulation.
 * Simulation means an execution to calculate the objectives by GROMACS.
 */
-static int clean_gromacs_simulation(const char *path_clean_simulation_program){
-	int ret;
-	char *command;
+static void clean_gromacs_simulation(const char *path_local_execute){
+	delete_file(path_local_execute, f_step0);
+	delete_file(path_local_execute, prot_gro);
+	delete_file(path_local_execute, prot_top);
+	delete_file(path_local_execute, prot_tpr);
+	delete_file(path_local_execute, prot_trr);
+	delete_file(path_local_execute, confout_gro);
+	delete_file(path_local_execute, posre_itp);
+	delete_file(path_local_execute, mdout_mdp);
+	delete_file(path_local_execute, file_energy_computed_ener_edr);
+	delete_file(path_local_execute, prot_sys_trr);
+	delete_file(path_local_execute, prot_sys_tpr);
+	delete_file(path_local_execute, prot_sys_top);
+	delete_file(path_local_execute, prot_sys_gro);
+	delete_file(path_local_execute, energy_xvg);
+	delete_file(path_local_execute, traj_xtc);
+	delete_file(path_local_execute, xvg_1);
 
-	command = Malloc(char,MAX_COMMAND);
-	build_clean_command(command, path_clean_simulation_program);
-
-	ret = system(command);
-    free(command);
-
-	return ret;
 }
 
 /* Sets the value of objective in solution 
@@ -366,27 +472,14 @@ static void set_objective_from_gromacs_in_solution(solution_t *sol,char *value,
  */
 static int compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
-		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file,
-		const char *path_program_clean_simulation){
-	int ret;
+		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file){	
 	
 	char *last_line, *line_splited;
 	char *value;
-	char *opt_f;
-	char *opt_s;
-	char *opt_o;
 
 	char *g_gyrate_args[8];
-	opt_f = Malloc(char,2);
-	opt_s = Malloc(char,2);
-	opt_o = Malloc(char,2);
-	
-	value = Malloc(char,MAX_VALUE);
 
-	//Setting variables to use
-	strcpy(opt_f, "-f");
-	strcpy(opt_s, "-s");
-	strcpy(opt_o, "-o");
+	value = Malloc(char,MAX_VALUE);
 
 	/* g_gyrate - radius of gyration */
 	strcpy(program, path_gromacs_programs);
@@ -430,14 +523,10 @@ static int compute_gyrate(solution_t *sol, const int *fit, const char *local_exe
 	    free(line_splited);
 	    free(last_line);
 	    free(value);
+	    delete_file(local_execute, computed_g_gyrate_value_file);
 	}else{
 		sol->obj_values[*fit] = MAX_ENERGY; //MAX energy value
 	}
-
-	clean_gromacs_simulation(path_program_clean_simulation);
-	free(opt_f);
-	free(opt_s);
-	free(opt_o);
 }
 
 static void build_pdb_file_name(char *pdb_file_name, const char *aux_name,
@@ -453,14 +542,7 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field, const char *mdp_file){
 
 	const protein_t *protein_aux;	
-	char *opt_f;
-	char *opt_o;
-	char *opt_c;
-	char *opt_ff;
-	char *opt_water;
-	char *opt_none;
-	char *opt_p;
-	char *opt_ignh;
+	
 	char *pdbfile_aux;
 	char *force_field_aux;
 	char *mdp_file_aux;
@@ -468,27 +550,9 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	char *pdb2gmx_args[13];
 	char *grompp_args[11];
 
-	opt_f = Malloc(char, 3);
-	opt_o  = Malloc(char, 3);
-	opt_ff  = Malloc(char, 4);
-	opt_water = Malloc(char, 7);
-	opt_none = Malloc(char, 6);
-	opt_p =  Malloc(char, 3);
-	opt_ignh = Malloc(char, 7);
-	opt_c = Malloc(char, 3);
 	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
 	force_field_aux = Malloc(char, MAX_FORCE_FIELD_NAME);
 	mdp_file_aux = Malloc(char, MAX_FILE_NAME);
-
-	//Setting variables to use
-	strcpy(opt_f, "-f");	
-	strcpy(opt_o, "-o");
-	strcpy(opt_ff, "-ff");
-	strcpy(opt_water, "-water");
-	strcpy(opt_none, "none");
-	strcpy(opt_p, "-p");
-	strcpy(opt_ignh, "-ignh");
-	strcpy(opt_c, "-c");
 
 	/* pdb2gmx */
 	strcpy(program, path_gromacs_programs);
@@ -561,14 +625,6 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	free(pdbfile_aux);
 	free(force_field_aux);
 	free(mdp_file_aux);
-	free(opt_f);
-	free(opt_o);
-	free(opt_ff);
-	free(opt_water);
-	free(opt_none);
-	free(opt_p);
-	free(opt_ignh);
-	free(opt_c);
 }
 
 /** Calculates the objectives by GROMACS
@@ -603,10 +659,10 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	   	    if (opt_objective[ob] == gmx_gyrate) {
    		    	compute_gyrate(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
-   	    				in_para->computed_radius_g_gyrate_file,
-   	    				in_para->path_program_clean_simulation);
+   	    				in_para->computed_radius_g_gyrate_file);
    	    	}
    	    }
+   	    clean_gromacs_simulation(in_para->path_local_execute);
 	}
 
 	free(opt_objective);
