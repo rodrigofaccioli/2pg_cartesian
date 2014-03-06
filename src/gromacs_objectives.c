@@ -39,6 +39,7 @@ static char *prot_gro = NULL;
 static char *prot_top = NULL;
 static char *prot_tpr = NULL;
 static char *prot_trr = NULL;
+static char *prot_log = NULL;
 static char *confout_gro = NULL;
 static char *posre_itp = NULL;
 static char *mdout_mdp = NULL;
@@ -59,6 +60,11 @@ static char *opt_none = NULL;
 static char *opt_p = NULL;
 static char *opt_ignh = NULL;
 static char *xvg_1 = NULL;
+static char *opt_rerun = NULL;
+static char *opt_e = NULL;
+static char *opt_g = NULL;
+
+
 //It is based on GROMACS version 4.5.3
 static option_fitness_gromacs_t option_g_energy_program [] = {
       		                                                  {gmx_potential_ener, "12","Potential"},
@@ -290,6 +296,7 @@ void init_gromacs_execution (){
 	prot_top = Malloc(char, MAX_FILE_NAME);
 	prot_tpr = Malloc(char, MAX_FILE_NAME);
 	prot_trr = Malloc(char, MAX_FILE_NAME);
+	prot_log = Malloc(char, MAX_FILE_NAME);
 	confout_gro = Malloc(char, MAX_FILE_NAME);
 	posre_itp = Malloc(char, MAX_FILE_NAME);
 	mdout_mdp = Malloc(char, MAX_FILE_NAME);
@@ -310,6 +317,9 @@ void init_gromacs_execution (){
 	opt_p =  Malloc(char, 3);
 	opt_ignh = Malloc(char, 7);
 	opt_c = Malloc(char, 3);
+	opt_rerun  = Malloc(char, 10);
+	opt_e = Malloc(char, 3);
+	opt_g = Malloc(char, 3);
 	
 	strcpy(opt_f, "-f");	
 	strcpy(opt_o, "-o");
@@ -327,6 +337,7 @@ void init_gromacs_execution (){
 	strcpy(prot_top, "prot.top");
 	strcpy(prot_tpr, "prot.tpr");
 	strcpy(prot_trr, "prot.trr");
+	strcpy(prot_log, "prot.log");
 	strcpy(confout_gro, "confout.gro");
 	strcpy(posre_itp, "posre.itp");
 	strcpy(mdout_mdp, "mdout.mdp");
@@ -334,11 +345,13 @@ void init_gromacs_execution (){
 	strcpy(prot_sys_trr, "prot_sys.trr");
 	strcpy(prot_sys_tpr, "prot_sys.tpr");
 	strcpy(prot_sys_top, "prot_sys.top");
-	strcpy(prot_sys_gro, "prot_sys.gro");
+	strcpy(prot_sys_gro, "prot_sys.gro");	
 	strcpy(energy_xvg, "energy.xvg");
 	strcpy(traj_xtc, "traj.xtc");
 	strcpy(xvg_1, "*.xvg_1*");
-	
+	strcpy(opt_rerun, "-rerun");
+	strcpy(opt_e, "-e");	
+	strcpy(opt_g, "-g");
 
 }
 
@@ -359,6 +372,7 @@ void finish_gromacs_execution(){
 	free(prot_top);
 	free(prot_tpr);
 	free(prot_trr);
+	free(prot_log);
 	free(confout_gro);
 	free(posre_itp);
 	free(mdout_mdp);
@@ -379,7 +393,9 @@ void finish_gromacs_execution(){
 	free(opt_ignh);
 	free(opt_c);
 	free(xvg_1);
-
+	free(opt_rerun);
+	free(opt_e);
+	free(opt_g);
 	program = NULL;
 	filenm1 = NULL;
 	filenm2 = NULL;
@@ -433,6 +449,7 @@ static void clean_gromacs_simulation(const char *path_local_execute){
 	delete_file(path_local_execute, prot_top);
 	delete_file(path_local_execute, prot_tpr);
 	delete_file(path_local_execute, prot_trr);
+	delete_file(path_local_execute, prot_log);	
 	delete_file(path_local_execute, confout_gro);
 	delete_file(path_local_execute, posre_itp);
 	delete_file(path_local_execute, mdout_mdp);
@@ -627,6 +644,51 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	free(mdp_file_aux);
 }
 
+/** Calls mdrun program to calculate energies
+* Energies will be used as objectivies
+* It execution was based on http://www.gromacs.org/Documentation/How-tos/Single-Point_Energy
+*/
+void call_mdrun2energy(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs){
+	char *mdrun_args[13];
+	/* mdrun */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "mdrun");
+	mdrun_args[0] = program;
+	//tpŕ
+	mdrun_args[1] = opt_s;		
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, prot_tpr);
+	mdrun_args[2] = filenm1;
+	//pdb
+	mdrun_args[3] = opt_rerun;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, pdbfile);
+	mdrun_args[4] = filenm2;
+	//trr
+	mdrun_args[5] = opt_o;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, prot_trr);
+	mdrun_args[6] = filenm3;
+	//energy file
+	mdrun_args[7] = opt_e;
+	strcpy(filenm4, local_execute);
+	strcat(filenm4, file_energy_computed_ener_edr);
+	mdrun_args[8] = filenm4;
+	//log file
+	mdrun_args[9] = opt_g;
+	strcpy(filenm5, local_execute);
+	strcat(filenm5, prot_log);
+	mdrun_args[10] = filenm5;
+
+	mdrun_args[11] = NULL;
+	mdrun_args[12] = NULL;
+
+	if (!run_program(program, mdrun_args))
+		fatal_error("Failed to run mdrun at call_mdrun2energy function \n");
+}
+
+
 /** Calculates the objectives by GROMACS
 */
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para){
@@ -654,6 +716,9 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
    	    //Building Generic tpr file. It will be used in all GROMACS execution
     	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
         	in_para->force_field, in_para->mdp_file);
+    	//Check if call mdrun to calculate the energies
+    	call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+    		in_para->path_gromacs_programs);
    	    // obtaing the values of objectivies
    	    for (int ob = 0; ob < in_para->number_fitness; ob++){
 	   	    if (opt_objective[ob] == gmx_gyrate) {
