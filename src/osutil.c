@@ -7,6 +7,7 @@
 #include "messages.h"
 #include "string_owner.h"
 #include "osutil.h"
+#include "futil.h"
 
 
 int get_pid(){
@@ -25,12 +26,10 @@ void set_current_working_directory(char *path){
 
 void delete_file(const char *path, const char *filename){
 	/*Deletes file*/
-	char command[MAX_PATH_FILE_NAME+30];
-	strcpy(command,"rm ");
-	strcat(command,path);
-	strcat(command,filename);
-	strcat(command, " > /dev/null 2> /dev/null");
-	system(command);
+	char *path_file_name;
+	path_file_name = path_join_file(path, filename);
+	remove(path_file_name);
+	free(path_file_name);
 }
 
 static void check_path(char *path){
