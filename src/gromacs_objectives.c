@@ -25,7 +25,7 @@
 #define TAM_LINE_ENER 50
 #define MAX_ENERGY 999999999999999999999999999999.9999
 #define MIN_ENERGY -99999999999999999999999999999.9999
-#define MAX_VALUE 10
+#define MAX_VALUE 40
 
 static char *program = NULL; /* program (executable) file name */
 static char *filenm1 = NULL; /* data file names */
@@ -464,23 +464,29 @@ static void clean_gromacs_simulation(const char *path_local_execute){
 
 }
 
+/** Obtaing the value of objective in Double representation
+* This function was created to be a pattern for getting
+* the value of objective when it will be in Double
+* instead of char.
+*/
+double get_objective_value(const char *value){
+	double aux = MAX_ENERGY;
+	aux = str2double(value);
+	if ( (aux ==  -1.000000) || (isnan(aux) == btrue)){
+		aux = MAX_ENERGY;
+	}
+	return aux;
+}
+
 /* Sets the value of objective in solution 
 * sol represents the solution (individual). The value of objective will be 
 *     set in obj_values field.
 * value the calculated value that will be set in solution
-* fit represents the index of objective
+* obj represents the index of objective
 */
-static void set_objective_from_gromacs_in_solution(solution_t *sol,char *value,
-		const int *fit){
-	double aux = -1;
-
-	aux = str2double(value);
-	if (aux ==  -1.000000){ //This value means that Gromacs considered the energy as an infinitive value
-		aux = MAX_ENERGY;
-	}
-	sol->obj_values[*fit] = aux;
-	
-	
+static void set_objective_from_gromacs_in_solution(solution_t *sol, char *value,
+		const int *obj){
+	sol->obj_values[*obj] = get_objective_value(value);
 }
 
 
@@ -496,8 +502,6 @@ static int compute_gyrate(solution_t *sol, const int *fit, const char *local_exe
 
 	char *g_gyrate_args[8];
 
-	value = Malloc(char,MAX_VALUE);
-
 	/* g_gyrate - radius of gyration */
 	strcpy(program, path_gromacs_programs);
 	strcat(program, "g_gyrate");
@@ -510,7 +514,7 @@ static int compute_gyrate(solution_t *sol, const int *fit, const char *local_exe
 	//tpr
 	g_gyrate_args[3] = opt_s;
 	strcpy(filenm2, local_execute);
-	strcat(filenm2, "prot.tpr"); /* local_execute/prot.tpr */
+	strcat(filenm2, prot_tpr); /* local_execute/prot.tpr */
 	g_gyrate_args[4] = filenm2;
 	//xvg
 	g_gyrate_args[5] = opt_o;
@@ -521,9 +525,10 @@ static int compute_gyrate(solution_t *sol, const int *fit, const char *local_exe
 	g_gyrate_args[7] = NULL;
 
 	if (!run_program_after_pipe("C-alpha", program, g_gyrate_args))
-		fatal_error("Failed to run g_gyrate\n");
+		fatal_error("Failed to run g_gyrate at compute_gyrate function\n");
 
 	if (check_exists_file(computed_g_gyrate_value_file) == btrue){
+		value = Malloc(char,MAX_VALUE);
 		//get the last line of xvg file
 		last_line = get_last_line(computed_g_gyrate_value_file);
 		// Split last line by space and obtaing the first value
@@ -688,6 +693,145 @@ void call_mdrun2energy(const char *pdbfile, const char *local_execute,
 		fatal_error("Failed to run mdrun at call_mdrun2energy function \n");
 }
 
+/** Checks the opt_objective is one energy objective
+*/
+boolean_t is_energy_objective(const option_g_energy *opt_objective){
+
+	if ( (*opt_objective == gmx_elel_ener) ||
+		 (*opt_objective == gmx_edw_ener) ||
+		 (*opt_objective == gmx_potential_ener)	||
+		 (*opt_objective == gmx_GBSA_Solvatation) ){
+		 	return btrue;
+	}
+	return bfalse;
+}	
+
+/** Calls the g_energy program
+*/
+void call_g_energy(const char *local_execute, const char *path_gromacs_programs, 
+	const char *opt_energy ){
+
+	char *g_energy_args[7];
+
+	/*g_energy*/	
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "g_energy");
+	g_energy_args[0] = program;
+	//Energy file
+	g_energy_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, file_energy_computed_ener_edr);
+	g_energy_args[2] = filenm1;
+	//xvg
+	g_energy_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, energy_xvg);	
+	g_energy_args[4] = filenm2;
+
+	g_energy_args[5] = NULL;
+	g_energy_args[6] = NULL;
+	
+	if (!run_program_after_pipe(opt_energy, program, g_energy_args))
+		fatal_error("Failed to run g_energy at compute_energy_minimum function\n");
+
+
+}
+
+/** Calculates the energies, except GBSA Solvatation
+*/
+void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
+		const char *path_gromacs_programs, const char *opt_energy ){
+	char *last_line, *line_splited;
+	char *value;
+	//Call g_energy
+	call_g_energy(local_execute, path_gromacs_programs, opt_energy);
+	if (check_exists_file(energy_xvg) == btrue){
+		value = Malloc(char,MAX_VALUE);
+		//get the last line of xvg file
+		last_line = get_last_line(energy_xvg);
+		// Split last line by space and obtaing the first value
+ 		line_splited = strtok (last_line," ");
+ 		// Obtaining the second value. It will be set in solution
+ 		line_splited = strtok(NULL, " ");
+ 		strcpy(value, line_splited);
+ 		//Looking the end of line_splited
+	  	while (line_splited != NULL){	    	
+    		line_splited = strtok(NULL, " ");
+  		}
+		//Set the value of energy option in solution
+	    set_objective_from_gromacs_in_solution(sol,value, obj);	
+	    free(line_splited);
+	    free(last_line);
+	    free(value);
+	    delete_file(local_execute, energy_xvg);
+	}else{
+		sol->obj_values[*obj] = MAX_ENERGY; //MAX energy value
+	}
+
+}
+
+/** Calculates GBSA Solvatation energy
+*/
+void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_execute,
+		const char *path_gromacs_programs, const char *opt_energy ){
+	char *last_line, *line_splited;
+	char *value;
+	double G_solv, G_pol, G_np;
+	//Call g_energy - gmx_GB_Polarization
+	call_g_energy(local_execute, path_gromacs_programs, 
+		option_g_energy_program[gmx_GB_Polarization].option_name);
+	if (check_exists_file(energy_xvg) == btrue){
+		value = Malloc(char,MAX_VALUE);
+		//get the last line of xvg file
+		last_line = get_last_line(energy_xvg);
+		// Split last line by space and obtaing the first value
+ 		line_splited = strtok (last_line," ");
+ 		// Obtaining the second value. It will be set in solution
+ 		line_splited = strtok(NULL, " ");
+ 		strcpy(value, line_splited);
+ 		//Looking the end of line_splited
+	  	while (line_splited != NULL){	    	
+    		line_splited = strtok(NULL, " ");
+  		}
+		//Set the value of energy option in solution
+	    G_pol = get_objective_value(value);
+	    free(line_splited);
+	    free(last_line);
+	    free(value);
+	    delete_file(local_execute, energy_xvg);
+	}else{
+		G_pol = MAX_ENERGY; //MAX energy value
+	}
+	//Call g_energy - gmx_Nonpolar_Sol
+	call_g_energy(local_execute, path_gromacs_programs, 
+		option_g_energy_program[gmx_Nonpolar_Sol].option_name);
+	if (check_exists_file(energy_xvg) == btrue){
+		value = Malloc(char,MAX_VALUE);
+		//get the last line of xvg file
+		last_line = get_last_line(energy_xvg);
+		// Split last line by space and obtaing the first value
+ 		line_splited = strtok (last_line," ");
+ 		// Obtaining the second value. It will be set in solution
+ 		line_splited = strtok(NULL, " ");
+ 		strcpy(value, line_splited);
+ 		//Looking the end of line_splited
+	  	while (line_splited != NULL){	    	
+    		line_splited = strtok(NULL, " ");
+  		}
+		//Set the value of energy option in solution
+	    G_np = get_objective_value(value);
+	    free(line_splited);
+	    free(last_line);
+	    free(value);	    
+	    delete_file(local_execute, energy_xvg);
+	}else{
+		G_np = MAX_ENERGY; //MAX energy value
+	}
+	//Getting the value of GBSA Solvatation
+	G_solv = G_pol + G_np;
+	sol->obj_values[*obj] = G_solv;
+
+}
 
 /** Calculates the objectives by GROMACS
 */
@@ -698,11 +842,16 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	char aux_ind[5];
 	char msg [50];	
 	option_g_energy *opt_objective;
+	int has_energy_objective;
 
+	has_energy_objective = 0;
 	//getting the gromacs objectives from input parameters
 	opt_objective = Malloc(option_g_energy,in_para->number_fitness);
 	for (int ob = 0; ob < in_para->number_fitness; ob++){
 		opt_objective[ob] = get_option_g_energy_t_from_type_fitness_energy(&in_para->fitness_energies[ob]);
+		if ( is_energy_objective(&opt_objective[ob]) == btrue){
+			has_energy_objective = has_energy_objective + 1;
+		}
 	}
 	// calculating the objectivies of population
 	for (int ind = 0; ind < in_para->size_population; ind++){
@@ -713,18 +862,32 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
    	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
    	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-   	    //Building Generic tpr file. It will be used in all GROMACS execution
+   	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
     	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
-        	in_para->force_field, in_para->mdp_file);
-    	//Check if call mdrun to calculate the energies
-    	call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
-    		in_para->path_gromacs_programs);
+	        	in_para->force_field, in_para->mdp_file);
+    	/*Check if call mdrun to calculate the energies. 
+    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+    	*/
+    	if (has_energy_objective > 0){
+    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+	    		in_para->path_gromacs_programs);
+    	}
    	    // obtaing the values of objectivies
    	    for (int ob = 0; ob < in_para->number_fitness; ob++){
 	   	    if (opt_objective[ob] == gmx_gyrate) {
    		    	compute_gyrate(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
    	    				in_para->computed_radius_g_gyrate_file);
+   	    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
+   	    	 			(opt_objective[ob] == gmx_elel_ener) ||
+   	    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+   	    		compute_energy(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs,
+   	    				option_g_energy_program[opt_objective[ob]].value_opt );
+   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+   	    		compute_energy_GBSA(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs,
+   	    				option_g_energy_program[opt_objective[ob]].value_opt );
    	    	}
    	    }
    	    clean_gromacs_simulation(in_para->path_local_execute);
