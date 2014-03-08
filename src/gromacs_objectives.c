@@ -23,8 +23,8 @@
 
 
 #define TAM_LINE_ENER 50
-#define MAX_ENERGY 9999999999999999999.9999
-#define MIN_ENERGY -9999999999999999999.9999
+#define MAX_ENERGY 9999999999999999999999999.9999
+#define MIN_ENERGY -9999999999999999999999999.9999
 #define MAX_VALUE 40
 #define MAX_VALUE_G_SAS 3
 
@@ -789,12 +789,20 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 }
 
 /** Calculates GBSA Solvatation energy
+* It value is composed by two values: gmx_GB_Polarization and gmx_Nonpolar_Sol
+* Therefore g_energy program is called twice. The value of gmx_GB_Polarization
+* is stored at G_pol. the value of gmx_Nonpolar_Sol is stored at G_np. Therefore,
+* the value of GBSA is stored at G_solv. 
+* G_solv variable is setted in solution.
+* Important: When error is found either gmx_GB_Polarization or gmx_Nonpolar_Sol 
+* solution will set MAX value
 */
 void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_execute,
 		const char *path_gromacs_programs, const char *opt_energy ){
 	char *last_line, *line_splited;
 	char *value;
-	double G_solv, G_pol, G_np;
+	double G_solv, G_pol, G_np;	
+
 	//Call g_energy - gmx_GB_Polarization
 	call_g_energy(local_execute, path_gromacs_programs, 
 		option_g_energy_program[gmx_GB_Polarization].option_name);
@@ -817,38 +825,37 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 	    free(last_line);
 	    free(value);
 	    delete_file(local_execute, energy_xvg);
+		//Call g_energy - gmx_Nonpolar_Sol
+		call_g_energy(local_execute, path_gromacs_programs, 
+			option_g_energy_program[gmx_Nonpolar_Sol].option_name);
+		if (check_exists_file(energy_xvg) == btrue){
+			value = Malloc(char,MAX_VALUE);
+			//get the last line of xvg file
+			last_line = get_last_line(energy_xvg);
+			// Split last line by space and obtaing the first value
+ 			line_splited = strtok (last_line," ");
+ 			// Obtaining the second value. It will be set in solution
+ 			line_splited = strtok(NULL, " ");
+ 			strcpy(value, line_splited);
+ 			//Looking the end of line_splited
+	  		while (line_splited != NULL){	    	
+    			line_splited = strtok(NULL, " ");
+  			}
+			//Set the value of energy option in solution
+	    	G_np = get_objective_value(value);
+			//Getting the value of GBSA Solvatation
+			G_solv = G_pol + G_np;
+			sol->obj_values[*obj] = G_solv;
+	    	free(line_splited);
+	    	free(last_line);
+	    	free(value);	    
+	    	delete_file(local_execute, energy_xvg);
+		}else{
+			sol->obj_values[*obj] = MAX_ENERGY;
+		}
 	}else{
-		G_pol = MAX_ENERGY; //MAX energy value
+		sol->obj_values[*obj] = MAX_ENERGY;
 	}
-	//Call g_energy - gmx_Nonpolar_Sol
-	call_g_energy(local_execute, path_gromacs_programs, 
-		option_g_energy_program[gmx_Nonpolar_Sol].option_name);
-	if (check_exists_file(energy_xvg) == btrue){
-		value = Malloc(char,MAX_VALUE);
-		//get the last line of xvg file
-		last_line = get_last_line(energy_xvg);
-		// Split last line by space and obtaing the first value
- 		line_splited = strtok (last_line," ");
- 		// Obtaining the second value. It will be set in solution
- 		line_splited = strtok(NULL, " ");
- 		strcpy(value, line_splited);
- 		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
-    		line_splited = strtok(NULL, " ");
-  		}
-		//Set the value of energy option in solution
-	    G_np = get_objective_value(value);
-	    free(line_splited);
-	    free(last_line);
-	    free(value);	    
-	    delete_file(local_execute, energy_xvg);
-	}else{
-		G_np = MAX_ENERGY; //MAX energy value
-	}
-	//Getting the value of GBSA Solvatation
-	G_solv = G_pol + G_np;
-	sol->obj_values[*obj] = G_solv;
-
 }
 
 /** Checks the opt_objective is one sas objective
