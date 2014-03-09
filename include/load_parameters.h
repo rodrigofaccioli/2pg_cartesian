@@ -5,10 +5,6 @@
 
 void load_parameters_from_file(input_parameters_t *in_param,
 		const char *conf_file_name);
-void set_parameters_extended_chain(input_parameters_extended_chain_t *param,
-		char *argv[]);
 void deAllocateload_parameters(input_parameters_t *param);
-void deAllocateload_parameters_extended_chain(
-		input_parameters_extended_chain_t *param);
 
 #endif
