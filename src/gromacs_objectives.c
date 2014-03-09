@@ -1011,6 +1011,70 @@ void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
 	}
 }
 
+/** Runs g_hbond program to compute the number of hydrogen bonds of the protein 
+* The Group is "MainChain+H MainChain+H"
+*/
+void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execute,
+		const char *path_gromacs_programs, const char *pdbfile,
+		const option_g_energy *opt_fitness, const char *computed_hbond_value_file){	
+	
+	char *last_line, *line_splited;
+	char *value;
+
+	char *g_hbond_args[9];
+
+	/* g_hbond */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "g_hbond");
+	g_hbond_args[0] = program;
+	//gro instead of pdb
+	g_hbond_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, prot_gro);
+	g_hbond_args[2] = filenm1;
+	//tpr
+	g_hbond_args[3] = opt_s;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, prot_tpr);
+	g_hbond_args[4] = filenm2;
+	//xvg
+	g_hbond_args[5] = opt_num;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, computed_hbond_value_file);
+	g_hbond_args[6] = filenm3;
+
+	g_hbond_args[7] = NULL;
+	g_hbond_args[8] = NULL;
+
+	if (!run_program_after_pipe("MainChain+H MainChain+H", program, g_hbond_args))
+		fatal_error("Failed to run g_hbond at compute_hbond_main function\n");
+
+	if (check_exists_file(computed_hbond_value_file) == btrue){
+		value = Malloc(char,MAX_VALUE);
+		//get the last line of xvg file
+		last_line = get_last_line(computed_hbond_value_file);
+		// Split last line by space and obtaing the first value
+ 		line_splited = strtok (last_line," ");
+ 		// Obtaining the second value. It will be set in solution
+ 		line_splited = strtok(NULL, " ");
+ 		strcpy(value, line_splited);
+ 		//Looking the end of line_splited
+	  	while (line_splited != NULL){	    	
+    		line_splited = strtok(NULL, " ");
+  		}
+		//Set the value of radius option in solution
+	    set_objective_from_gromacs_in_solution(sol,value, fit);
+	    //It will be maximized that means minimize its opposite value
+	    sol->obj_values[*fit] = sol->obj_values[*fit] * (-1);
+	    free(line_splited);
+	    free(last_line);
+	    free(value);
+	    delete_file(local_execute, computed_hbond_value_file);
+	}else{
+		sol->obj_values[*fit] = MIN_ENERGY;
+	}
+}
+
 /** Initialize values for next solution
 * This function is used to guarantee that the values for next
 * solution will be initialized
@@ -1090,6 +1154,10 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
    	    		solutions[ind].obj_values[ob] = g_sas_values[2];
    	    	}else if ( opt_objective[ob] == gmx_hbond){
    		    	compute_hbond(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+   	    				in_para->computed_g_hbond_file);   	    		
+   	    	}else if ( opt_objective[ob] == gmx_hbond_main){
+   		    	compute_hbond_main(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
    	    				in_para->computed_g_hbond_file);   	    		
    	    	}
