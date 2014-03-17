@@ -5,6 +5,7 @@
 
 #include "defines.h"
 #include "topology.h"
+#include "topologylib.h"
 #include "consts.h"
 #include "messages.h"
 #include "topology_types.h"
@@ -31,6 +32,16 @@ static void desAllocate_top_residue_atom_info(top_residue_atom_info_t *info){
 	}
 }
 
+static void desAllocate_top_residue_side_chains(top_residue_side_chains_t *side_chains,
+	const int *numres){
+	for (int r = 0; r <*numres;r++){
+		if (side_chains[r].num_chi > 0){
+			desAllocate_top_residue_atom_info(side_chains[r].atoms_chi);
+		}
+	}
+
+}
+
 top_global_t *allocateTop_Global(const int *numres,
 	const int *numatom){
 	top_global_t *top_aux;
@@ -43,7 +54,7 @@ top_global_t *allocateTop_Global(const int *numres,
 	top_aux->phi          = Malloc(top_residue_atom_info_t, top_aux->numres);
 	top_aux->psi          = Malloc(top_residue_atom_info_t, top_aux->numres);
 	top_aux->omega        = Malloc(top_residue_atom_info_t, top_aux->numres);
-	top_aux->side_chains  = Malloc(top_residue_atom_info_t, top_aux->numres);
+	top_aux->side_chains  = Malloc(top_residue_side_chains_t, top_aux->numres);
 
 	return top_aux;
 }
@@ -51,23 +62,11 @@ void  desAllocateTop_Global(top_global_t *top_aux){
 	desAllocate_top_residue_atom_info(top_aux->phi);
 	desAllocate_top_residue_atom_info(top_aux->psi);	
 	desAllocate_top_residue_atom_info(top_aux->omega);
-	free(top_aux->range_atoms);
-	//desAllocate_top_residue_atom_info(top_aux->side_chains);
+	desAllocate_top_residue_side_chains(top_aux->side_chains, &top_aux->numres);
+	free(top_aux->range_atoms);	
 	free(top_aux);
 }
 
-
-static int get_atom_index_by_resnum_atom_name(const pdb_atom_t *atoms,
-		const int *res_num, const char *atomname, const int *num_atom){
-	const pdb_atom_t * aux;
-
-	aux = search_pdb_atom_from_resnum_atom_name(atoms, res_num, atomname, num_atom);
-	if (aux == NULL){
-		fatal_error("Atom not found at get_atom_index_by_resnum_atom_name\n");
-	}
-	return aux->atmnumber;
-
-}
 
 static void build_topology_individual_omega(protein_t *prot){
 	char *atom_N, *atom_C;
@@ -209,30 +208,67 @@ static void build_topology_individual_phi(protein_t *prot){
 	free(atom_O);
 }
 
+/** Assigns the fixed and moved atoms at side chain based on residue name
+* prot protein that will build the side chain topology
+* res_num number of residue
+* res_name means the name of residue
+* chi represents what chi of residue 
+*/
+static void set_fixed_moved_atoms_side_chains_chi(protein_t *prot, 
+	const int *res_num, const char *res_name, const int *chi){
+
+	if ( strcmp(res_name, "SER") == 0){
+		set_fixed_moved_atoms_side_chains_SER(prot, res_num, chi);
+	}else if ( strcmp(res_name, "CYS") == 0){
+		set_fixed_moved_atoms_side_chains_CYS(prot, res_num, chi);
+	}else if ( strcmp(res_name, "THR") == 0){
+		set_fixed_moved_atoms_side_chains_THR(prot, res_num, chi);
+	}else if ( strcmp(res_name, "VAL") == 0){
+		set_fixed_moved_atoms_side_chains_VAL(prot, res_num, chi);
+	}else if ( strcmp(res_name, "ASP") == 0){
+		set_fixed_moved_atoms_side_chains_ASP(prot, res_num, chi);
+	}else if ( strcmp(res_name, "ASN") == 0){
+		set_fixed_moved_atoms_side_chains_ASN(prot, res_num, chi);
+	}else if ( strcmp(res_name, "LEU") == 0){
+		set_fixed_moved_atoms_side_chains_LEU(prot, res_num, chi);
+	}else if ( strcmp(res_name, "PRO") == 0){
+		set_fixed_moved_atoms_side_chains_PRO(prot, res_num, chi);
+	}else if ( strcmp(res_name, "PHE") == 0){
+		set_fixed_moved_atoms_side_chains_PHE(prot, res_num, chi);
+	}else if ( strcmp(res_name, "HIS") == 0){
+		set_fixed_moved_atoms_side_chains_HIS(prot, res_num, chi);
+	}else if ( strcmp(res_name, "TYR") == 0){
+		set_fixed_moved_atoms_side_chains_TYR(prot, res_num, chi);
+	}else if ( strcmp(res_name, "TRP") == 0){
+		set_fixed_moved_atoms_side_chains_TRP(prot, res_num, chi);
+	}else if ( strcmp(res_name, "MET") == 0){
+		set_fixed_moved_atoms_side_chains_MET(prot, res_num, chi);
+	}else if ( strcmp(res_name, "GLN") == 0){
+		set_fixed_moved_atoms_side_chains_GLN(prot, res_num, chi);
+	}else if ( strcmp(res_name, "GLU") == 0){
+		set_fixed_moved_atoms_side_chains_GLU(prot, res_num, chi);
+	}else if ( strcmp(res_name, "LYS") == 0){
+		set_fixed_moved_atoms_side_chains_LYS(prot, res_num, chi);
+	}else if ( strcmp(res_name, "ARG") == 0){
+		set_fixed_moved_atoms_side_chains_ARG(prot, res_num, chi);
+	}
+}
+
 static void build_topology_individual_side_chains(protein_t *prot){
-	int i_af;
+	char *res_name;
+	res_name = Malloc(char,4);
 	for (int r = 1; r <= prot->p_topol->numres; r++){
-		//Build Fixed Atoms - All backbone atoms
-		i_af = -1;
-		prot->p_topol->side_chains[r-1].num_fixed = get_number_atoms_backbone(prot, &r);
-		prot->p_topol->side_chains[r-1].fixed_atoms = Malloc(int, prot->p_topol->side_chains[r-1].num_fixed);
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
-			if ( is_backbone_atom(prot->p_atoms[i_a-1].atmname) == btrue){
-				i_af++;
-				prot->p_topol->side_chains[r-1].fixed_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
-			}			
-		}
-		//Build Moved Atom - All atoms that are not backbone
-		i_af = -1;
-		prot->p_topol->side_chains[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->side_chains[r-1].num_fixed);
-		prot->p_topol->side_chains[r-1].moved_atoms = Malloc(int, prot->p_topol->side_chains[r-1].num_moved);
-		for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
-			if ( is_backbone_atom(prot->p_atoms[i_a-1].atmname) == bfalse){
-				i_af++;
-				prot->p_topol->side_chains[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
-			}			
+		get_res_name_from_res_num(res_name, &r, prot->p_atoms, &prot->p_topol->numatom);
+		prot->p_topol->side_chains[r-1].num_chi = get_number_chi(res_name);
+		if (prot->p_topol->side_chains[r-1].num_chi > 0){
+			prot->p_topol->side_chains[r-1].atoms_chi = Malloc(top_residue_atom_info_t, 
+				prot->p_topol->side_chains[r-1].num_chi);
+			for (int chi = 1; chi <= prot->p_topol->side_chains[r-1].num_chi; chi++){
+				set_fixed_moved_atoms_side_chains_chi(prot, &r, res_name, &chi);				
+			}
 		}
 	}
+	free(res_name);
 }
 
 /** Builds the range of atoms per residue
@@ -258,15 +294,23 @@ static void build_topology_individual_atoms(protein_t *prot){
 	}	
 }
 
+
+
+/** Builds the topology of protein
+* prot is the protein building the topology
+*/
 void build_topology_individual(protein_t *prot){
 	build_topology_individual_atoms(prot);
 	build_topology_individual_psi(prot);
 	build_topology_individual_phi(prot);
 	build_topology_individual_omega(prot);
-
-	//build_topology_individual_side_chains(prot);
+	build_topology_individual_side_chains(prot);
 }
 
+/** Builds the topology of each protein (individual) which composes the population
+* pop means the population
+* pop_size size of population 
+*/
 void build_topology_population(protein_t *pop, const int *pop_size){
 	for (int i = 0; i < *pop_size; i++){
 		build_topology_individual(&pop[i]);
@@ -333,4 +377,51 @@ boolean_t is_backbone_atom(const char *atomname){
 		}
 	}
 	return bfalse;
+}
+
+/** Returns the number of chi basead on residue name
+* res_name is the residue name that wants to know the number
+* of chi
+*/
+int get_number_chi(const char *res_name){
+		
+	if( strcmp(res_name,"SER")==0 ){
+		return 1;
+	}else if( strcmp(res_name,"CYS")==0 ){
+		return 1;	
+	}else if( strcmp(res_name,"THR")==0 ){
+		return 1;	
+	}else if( strcmp(res_name,"VAL")==0 ){
+		return 1;	
+	}else if( strcmp(res_name,"ASP")==0 ){
+		return 2;	
+	}else if( strcmp(res_name,"ASN")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"ILE")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"LEU")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"PRO")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"PHE")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"HIS")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"TYR")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"TRP")==0 ){
+		return 2;
+	}else if( strcmp(res_name,"MET")==0 ){
+		return 3;
+	}else if( strcmp(res_name,"GLN")==0 ){
+		return 3;
+	}else if( strcmp(res_name,"GLU")==0 ){
+		return 3;
+	}else if( strcmp(res_name,"LYS")==0 ){
+		return 4;
+	}else if( strcmp(res_name,"ARG")==0 ){
+		return 5;
+	}else{
+		return 0;
+	}
 }
