@@ -93,7 +93,7 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
     float angle_radians, angle_degree, rate;
     int num_residue_choose;
     int what_rotation;
-    int max_kind_of_rotation = 3;  
+    int max_kind_of_rotation = 4;  
 
     rate = _get_float();
     num_residue_choose = 0;
@@ -103,7 +103,7 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
             num_residue_choose = _get_int_random_number(&ind_new->p_topol->numres);
         }
         //Obtaing kind of rotation
-        what_rotation = _get_int_random_number(&max_kind_of_rotation);
+        what_rotation = _get_int_random_number(&max_kind_of_rotation);        
         //Appling the rotation 
         if (what_rotation == 0){
             //Obtaing a random degree angule 
@@ -126,6 +126,31 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
             //Cast to radians
             angle_radians = degree2radians(&angle_degree);
             rotation_omega(ind_new, &num_residue_choose, &angle_radians);            
+        }else if (what_rotation == 3){
+            int chi = 0;
+            int max_chi = -1;
+            char *res_name;
+            res_name = Malloc(char, 4);
+            get_res_name_from_res_num(res_name, &num_residue_choose, 
+                ind_new->p_atoms, &ind_new->p_topol->numatom);
+            max_chi = get_number_chi(res_name);                        
+            if (max_chi > 0){
+                //Choose a chi of residue. It must be started 1 untill number of residue
+                if (max_chi == 1){
+                    chi = 1;
+                }else{
+                    while (chi == 0){                
+                        chi = _get_int_random_number(&max_chi);
+                    }                    
+                }                
+                //Obtaing a random degree angule 
+                angle_degree = _get_float_random_interval(&in_para->min_angle_mutation_side_chain, 
+                &in_para->max_angle_mutation_side_chain);
+                //Cast to radians
+                angle_radians = degree2radians(&angle_degree);
+                rotation_chi(ind_new, &num_residue_choose, &chi, &angle_radians);
+            }
+            free(res_name);
         }
     }
 
