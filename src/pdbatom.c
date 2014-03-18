@@ -402,9 +402,15 @@ int get_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom){
 	 */
 	return atoms[*num_atom - 1].resnum;
 }
+
+/** Informs the residue name from residue number
+* res_name assined the name of residue
+* num_res the number of residue which wants to know the name.
+* atoms means the atoms of protein.
+* num_atom number of atoms that composes atoms.
+*/
 void get_res_name_from_res_num(char *res_name, const int *num_res,
-		const pdb_atom_t *atoms, const int *num_atom){
-	/*Returns the residue name from residue number*/
+		const pdb_atom_t *atoms, const int *num_atom){	
 	int a;
 	for (a = 0; a < *num_atom; a++){
 		if (atoms[a].resnum == *num_res){
