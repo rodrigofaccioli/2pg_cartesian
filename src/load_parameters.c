@@ -37,6 +37,9 @@ static void initialize_parameters(input_parameters_t *param){
     param->min_angle_mutation_omega = -180.0;
     param->max_angle_mutation_omega = 180.0;
     
+    param->min_angle_mutation_side_chain = -180.0;
+    param->max_angle_mutation_side_chain = 180.0;
+
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
     param->mdp_file = Malloc(char, MAX_FILE_NAME);
     
@@ -184,6 +187,10 @@ void load_parameters_from_file(input_parameters_t *param,
 
     param->min_angle_mutation_omega = atof(conf.getParameter("min_angle_mutation_omega").c_str());
     param->max_angle_mutation_omega = atof(conf.getParameter("max_angle_mutation_omega").c_str());
+
+    param->min_angle_mutation_side_chain = atof(conf.getParameter("min_angle_mutation_side_chain").c_str());
+    param->max_angle_mutation_side_chain = atof(conf.getParameter("max_angle_mutation_side_chain").c_str());
+
 
 	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
 	strcpy(param->force_field,conf.getParameterChar("force_field"));

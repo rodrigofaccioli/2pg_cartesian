@@ -38,6 +38,8 @@ typedef struct sinput_parameters{
     float max_angle_mutation_psi;
     float min_angle_mutation_omega;
     float max_angle_mutation_omega;
+    float min_angle_mutation_side_chain;
+    float max_angle_mutation_side_chain;
     /*Informs the force field*/
     char *force_field;
     /*Informs the mdp file name*/
