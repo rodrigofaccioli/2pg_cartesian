@@ -144,3 +144,29 @@ void rotation_omega(protein_t *prot, const int *num_res_first, const float *angl
 			num_res_first, angle);
 	}
 }
+
+
+/** Rotates protein in a CHI dihedral movement
+* prot is the protein which will be moved (rotated)
+* num_res_first means the first residue will be moved. The dihedral moviment is continued in  
+*               foward residue until last.
+* chi means chi of side chain will be moved.
+* angle is the value of rotated angle
+*/
+void rotation_chi(protein_t *prot, const int *num_res_first, const int *chi,
+	const float *angle){
+
+	//rotates all moved atoms of first residue
+	for (int i = 0; i < prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].num_moved; i++){
+		rotation_by_angle_dih(prot->p_atoms, 
+			&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[0], 
+			&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[1],
+	    	&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].moved_atoms[i], angle);
+	}
+	if (*num_res_first < prot->p_topol->numres){
+		// rotates all atoms from the forward residue
+		rotate_all_atoms(prot, &prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[0], 
+			&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[1], 
+			num_res_first, angle);		
+	}
+}
