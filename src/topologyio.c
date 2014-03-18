@@ -94,6 +94,46 @@ static void write_top_residue_atom_info(FILE *topolfile, const int *res,
 	free(line);
 }
 
+static void write_top_residue_atom_info_side_chain(FILE *topolfile, const int *res,
+	const top_residue_side_chains_t *side_chains){
+	char *line, *aux;
+		 
+	line = Malloc(char, MAX_LINE_FILE);
+	aux = Malloc(char, 10);
+	fprintf(topolfile,"\tResidue: %i\n",*res+1);
+	if (side_chains[*res].num_chi == 0){
+		fprintf(topolfile,"\tNO SIDE CHAIN\n\n");
+	}else{
+		for (int chi = 1; chi <= side_chains[*res].num_chi;chi++){
+			strcpy(line, "\tchi ");
+			int2str(aux, &chi);
+			strcat(line, aux);
+			strcat(line, ":\n");
+			fprintf(topolfile, line);
+			//Printing fixed atoms
+			strcpy(line, "\tFixed Atoms: ");
+			for (int n = 0; n < side_chains[*res].atoms_chi[chi-1].num_fixed; n++){
+				int2str(aux, &side_chains[*res].atoms_chi[chi-1].fixed_atoms[n]);
+				strcat(line, aux);
+				strcat(line, " ");
+			}
+			fprintf(topolfile,"%s\n",line);
+			//Printing moved atoms
+			strcpy(line, "\tMoved Atoms: ");
+			for (int n = 0; n < side_chains[*res].atoms_chi[chi-1].num_moved; n++){
+				int2str(aux, &side_chains[*res].atoms_chi[chi-1].moved_atoms[n]);
+				strcat(line, aux);
+				strcat(line, " ");
+			}
+			fprintf(topolfile,"%s\n",line);			
+		}
+		fprintf(topolfile,"\n");
+	}	
+	free(aux);
+	free(line);
+}
+
+
 static void write_top_residue_atom_info_psi(FILE *topolfile, const top_residue_atom_info_t *psi, 
 	const int *num_res){
 	write_header_top_residue_atom_info_psi(topolfile); 
@@ -118,11 +158,11 @@ static void write_top_residue_atom_info_omega(FILE *topolfile, const top_residue
 	}	
 }
 
-static void write_top_residue_atom_info_side_chains(FILE *topolfile, const top_residue_atom_info_t *side_chains, 
-	const int *num_res){
+static void write_top_residue_atom_info_side_chains(FILE *topolfile, 
+	const top_residue_side_chains_t *side_chains, const int *num_res){
 	write_header_top_residue_atom_info_side_chains(topolfile);
 	for (int r = 0; r < *num_res; r++){
-		write_top_residue_atom_info(topolfile, &r, side_chains);
+		write_top_residue_atom_info_side_chain(topolfile, &r, side_chains);
 	}	
 }
 
@@ -148,7 +188,7 @@ void save_topology_protein(const top_global_t *top, const char *path,
 	write_top_residue_atom_info_psi(topolfile, top->psi, &top->numres);
 	write_top_residue_atom_info_phi(topolfile, top->phi, &top->numres);
 	write_top_residue_atom_info_omega(topolfile, top->omega, &top->numres);
-	//write_top_residue_atom_info_side_chains(topolfile, top->side_chains, &top->numres);
+	write_top_residue_atom_info_side_chains(topolfile, top->side_chains, &top->numres);
 
 	fclose(topolfile);
 	free(fname);
