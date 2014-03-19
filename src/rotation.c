@@ -163,10 +163,12 @@ void rotation_chi(protein_t *prot, const int *num_res_first, const int *chi,
 			&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[1],
 	    	&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].moved_atoms[i], angle);
 	}
+	/*
 	if (*num_res_first < prot->p_topol->numres){
 		// rotates all atoms from the forward residue
 		rotate_all_atoms(prot, &prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[0], 
 			&prot->p_topol->side_chains[*num_res_first-1].atoms_chi[*chi-1].fixed_atoms[1], 
 			num_res_first, angle);		
 	}
+	*/
 }
