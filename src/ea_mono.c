@@ -25,6 +25,56 @@
 #include "gromacs_objectives.h"
 #include "algorithms.h"
 #include "randomlib.h"
+#include "objective.h"
+#include "solutionio.h"
+
+static int compare_solution(const void *x, const void *y){
+    double fx, fy;
+    fx = ((solution_t *)x)->obj_values[0];
+    fy = ((solution_t *)y)->obj_values[0];
+    if (fx > fy){
+        return 1;
+    }else if ( (fx -fy) == 0.0001){
+        return 0;
+    }else{
+        return -1;
+    }
+}
+
+static void build_final_results(solution_t *pop,const input_parameters_t *in_para ){
+
+    char *sorted_pop_file, *sorted_fit_file;
+    int obj;
+    protein_t *population_aux;
+    const protein_t *prot;
+
+
+    sorted_pop_file = Malloc(char, MAX_FILE_NAME);
+    sorted_fit_file = Malloc(char, MAX_FILE_NAME);
+    population_aux = allocateProtein(&in_para->size_population);
+
+    obj = 0;
+    strcpy(sorted_pop_file, "pop_sorted_file.pdb");
+    type_fitness_energies2str(sorted_fit_file, &in_para->fitness_energies[obj]);
+    strcat(sorted_fit_file,"_sort.fit");
+
+    //sorting population
+    qsort (pop, in_para->size_population, sizeof (solution_t), compare_solution);
+    //Saving population
+    for (int p = 0; p < in_para->size_population; p++){
+        prot = (protein_t*) pop[p].representation;
+        copy_protein(&population_aux[p], prot);
+    }
+    save_population_file(population_aux, in_para->path_local_execute, sorted_pop_file, 
+        &in_para->size_population);
+    //Saving objective values
+    save_solution_file(in_para->path_local_execute, sorted_fit_file, &obj, 
+            pop, &in_para->size_population, &in_para->number_generation, in_para);
+
+    desallocateProtein(population_aux, &in_para->size_population);
+    free(sorted_pop_file); 
+    free(sorted_fit_file);
+}
 
 
 /** Implementation of 1 point crossover
@@ -281,8 +331,7 @@ int ea_mono(const input_parameters_t *in_para){
         //Saving information of generation
         update_execution_algorithms(solutions_p, &g);
     }
-    // Sorting solutions_p
-    // Saving sorted population
+    build_final_results(solutions_p, in_para);    
     finish_gromacs_execution();
     free(index_solutions_to_reproduce);
 /**************** FINISHED Mono-objetive Evolutionary Algorithm *************************/     
