@@ -85,6 +85,27 @@ void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_sou
 	}
 }
 
+/** Copies atoms of p_source to p_dest based on residue
+* p_dest means protein that will receive the atoms
+* res_num_ini is number of residue starting the copy of atoms
+* res_num_end is number of residue finishing the copy of atoms
+* p_source means protein where the atoms are
+*
+* Important: res_ini and res_end are considered the number of
+* residue. Therefore, it is not index of residue. 
+*/
+void copy_protein_atoms_by_residues(protein_t *p_dest, const int *res_num_ini, 
+	const int *res_num_end, const protein_t *p_source){
+	if (*res_num_ini <= 0){
+		fatal_error("In copy_protein_atoms_by_residues function the value of res_num_ini must be more than zero!");
+	}
+	for (int r = *res_num_ini; r <= *res_num_end; r++ ){
+		//Coping atoms
+		for (int a = p_source->p_topol->range_atoms[r-1].first_atom; a < p_source->p_topol->range_atoms[r].last_atom; a++){			
+			copy_pdb_atom(&p_dest->p_atoms[a-1], &p_source->p_atoms[a-1]);
+		}
+	}
+}
 
 /** Initializes the atoms of protein */
 void initialize_protein_atoms(protein_t *protein){
