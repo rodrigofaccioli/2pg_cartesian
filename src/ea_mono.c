@@ -26,6 +26,32 @@
 #include "algorithms.h"
 #include "randomlib.h"
 
+
+/** Implementation of 1 point crossover
+* p_new represents the new solution
+* p1 means the solution 1 that will build s_new
+* p2 means the solution 2 that will build s_new
+*/
+static void crossover_1_part(protein_t *p_new, const protein_t *p1, 
+    const protein_t *p2){
+    int res_aux, res_ini;
+    res_aux = 0;
+    res_ini = 1;
+    //getting a random residue
+    while (res_aux == 0){
+        res_aux = _get_int_random_number(&p1->p_topol->numres);
+    }
+    //coping from solution s1
+    copy_protein_atoms_by_residues(p_new, &res_ini, &res_aux, p1);
+    //coping from solution s2
+    res_ini = res_aux + 1;
+    if (res_ini <= p2->p_topol->numres){
+        res_aux = p2->p_topol->numres;
+        copy_protein_atoms_by_residues(p_new, &res_ini, &res_aux, p2);
+    }
+    build_topology_individual(p_new);
+}
+
  /** Implementation of tournament for chosing individual to reproduce 
  * solutions represents the population of solutions
  * in_para represents the parameters
@@ -81,8 +107,14 @@ void crossover_parents(protein_t *p_new, const protein_t *p1,
 */
 void apply_crossover(protein_t *ind_new, const protein_t *prot_1, 
     const protein_t * prot_2){
-
-    crossover_parents(ind_new, prot_1, prot_2);
+    int choose;
+    int aux = 2;
+    choose = _get_int_random_number(&aux);
+    if (choose == 0){
+        crossover_parents(ind_new, prot_1, prot_2);
+    }else{
+        crossover_1_part(ind_new, prot_1, prot_2);
+    }
 }
 
 /** Applies the mutation operator
