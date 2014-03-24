@@ -10,10 +10,16 @@ CXX=g++
 OPT=  -c -g
 OPT_GSL = -static -Wall -lgsl -lgslcblas -lm -pedantic 
 
-all:protpred-Gromacs-Mono_PSP
+all:protpred-Gromacs-Mono_PSP protpred-Gromacs-MC_Metropolis_PSP
  
 protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
 	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
+
+protpred-Gromacs-MC_Metropolis_PSP:protpred-Gromacs-MC_Metropolis.o mc_metropolis.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
+	$(CXX) -o protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-MC_Metropolis.o mc_metropolis.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
+
+protpred-Gromacs-MC_Metropolis.o:	protpred-Gromacs-MC_Metropolis.c
+	$(CXX) $(OPT) protpred-Gromacs-MC_Metropolis.c -I../include
 
 protpred-Gromacs-Mono.o:	protpred-Gromacs-Mono.c
 	$(CXX) $(OPT) protpred-Gromacs-Mono.c -I../include
@@ -104,3 +110,6 @@ gromacs_objectives.o:	gromacs_objectives.c
 
 algorithms.o:	algorithms.c
 	$(CXX) $(OPT) algorithms.c -I../include
+
+mc_metropolis.o:	mc_metropolis.c
+	$(CXX) $(OPT) mc_metropolis.c -I../include

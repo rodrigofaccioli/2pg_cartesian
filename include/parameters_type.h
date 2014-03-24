@@ -44,6 +44,8 @@ typedef struct sinput_parameters{
     char *force_field;
     /*Informs the mdp file name*/
     char *mdp_file;
+    /* Number of steps to Monte Carlo Algorithm */
+    int MonteCarloSteps;
  }input_parameters_t;
 
 #endif

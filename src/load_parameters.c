@@ -42,6 +42,7 @@ static void initialize_parameters(input_parameters_t *param){
 
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
     param->mdp_file = Malloc(char, MAX_FILE_NAME);
+    param->MonteCarloSteps = 100;
     
 }
 
@@ -194,5 +195,7 @@ void load_parameters_from_file(input_parameters_t *param,
 
 	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
 	strcpy(param->force_field,conf.getParameterChar("force_field"));
+
+	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
 
 }
