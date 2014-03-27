@@ -12,4 +12,4 @@ void rtrim (char *str);
 void ltrim (char *str);
 void remove_character(char *str, const char ch);
 boolean_t is_equal(const char *c1, const char *c2);
-
+boolean_t is_letter(const char letter);

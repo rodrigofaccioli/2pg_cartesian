@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "messages.h"
 #include "defines.h"
@@ -114,4 +115,13 @@ boolean_t is_equal(const char *c1, const char *c2){
 	}else{
 		return bfalse;
 	}
+}
+
+/** Returns True when letter is an alphabetic character. Otherwise, returns False
+*/
+boolean_t is_letter(const char letter){
+	if (isalpha(letter) > 0){
+		return btrue;
+	}
+	return bfalse;
 }

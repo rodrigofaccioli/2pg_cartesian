@@ -35,6 +35,13 @@ void load_pdb_atoms_split(char line[], pdb_atom_t *atoms, const int *l){
   	char *line_array[MAX_VALUES]; 
   	int n_v;
 
+  	/* It is used to check if file has chain or not.
+  	*  In GROMACS it is no used chain. In 2PG is used chain information
+  	* Default is considered no user chain. Therefore this value is 1. When
+  	* chain is found, its valus is 0 because the index of line_array changes.
+  	*/
+  	int no_chain;
+
 	//Allocating
 	section = Malloc(char,7);
 	atmname = Malloc(char,6);
@@ -44,6 +51,7 @@ void load_pdb_atoms_split(char line[], pdb_atom_t *atoms, const int *l){
 	resnum_c = Malloc(char,10);//Malloc(char,5);
 	coord_c = Malloc(char,9);
 
+	no_chain = 1;
   	n_v = 0;
  	line_splited = strtok (line," ");  	
   	while (line_splited != NULL){
@@ -61,20 +69,23 @@ void load_pdb_atoms_split(char line[], pdb_atom_t *atoms, const int *l){
 	//Residue Name
 	strcpy(resname_aux,line_array[3]);
 	trim(resname_aux);
-	//ChainID	
-	strcpy(chain_name,line_array[4]);
+	//ChainID - It is necessary checks if it exists
+	if (is_letter(*line_array[4]) == btrue) {		
+		strcpy(chain_name,line_array[4]);
+		no_chain = 0; //There is chain in file. Therefore, index of line_array changes 
+	}	
 	//Residue Number
-	strcpy(resnum_c,line_array[5]);
+	strcpy(resnum_c,line_array[5-no_chain]);
 	trim(resnum_c);
 	resnum = str2int(resnum_c);
 	//Coordinates
-	strcpy(coord_c,line_array[6]);
+	strcpy(coord_c,line_array[6-no_chain]);
 	trim(coord_c);
 	x = str2float(coord_c);
-	strcpy(coord_c,line_array[7]);
+	strcpy(coord_c,line_array[7-no_chain]);
 	trim(coord_c);
 	y = str2float(coord_c);
-	strcpy(coord_c,line_array[8]);
+	strcpy(coord_c,line_array[8-no_chain]);
 	trim(coord_c);
 	z = str2float(coord_c);
 
