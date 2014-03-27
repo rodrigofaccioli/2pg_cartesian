@@ -335,12 +335,12 @@ int ea_mono(const input_parameters_t *in_para){
     finish_gromacs_execution();
     free(index_solutions_to_reproduce);
 /**************** FINISHED Mono-objetive Evolutionary Algorithm *************************/     
-
+    
     desallocate_solution(solutions_p, &in_para->size_population);
     desallocateProtein(population_p, &in_para->size_population);
     desallocate_primary_seq(primary_sequence);
-    _finish_random_gsl();
+    _finish_random_gsl(); 
 
-	return 0;
+    return 0;    
 }
 
