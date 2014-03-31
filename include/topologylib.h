@@ -22,6 +22,8 @@ void set_fixed_moved_atoms_side_chains_ASP(protein_t *prot,
 	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_ASN(protein_t *prot, 
 	const int *res_num, const int *chi);
+void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot, 
+	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_LEU(protein_t *prot, 
 	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_PRO(protein_t *prot, 

@@ -229,6 +229,8 @@ static void set_fixed_moved_atoms_side_chains_chi(protein_t *prot,
 		set_fixed_moved_atoms_side_chains_ASP(prot, res_num, chi);
 	}else if ( strcmp(res_name, "ASN") == 0){
 		set_fixed_moved_atoms_side_chains_ASN(prot, res_num, chi);
+	}else if ( strcmp(res_name, "ILE") == 0){
+		set_fixed_moved_atoms_side_chains_ILE(prot, res_num, chi);
 	}else if ( strcmp(res_name, "LEU") == 0){
 		set_fixed_moved_atoms_side_chains_LEU(prot, res_num, chi);
 	}else if ( strcmp(res_name, "PRO") == 0){
@@ -251,6 +253,10 @@ static void set_fixed_moved_atoms_side_chains_chi(protein_t *prot,
 		set_fixed_moved_atoms_side_chains_LYS(prot, res_num, chi);
 	}else if ( strcmp(res_name, "ARG") == 0){
 		set_fixed_moved_atoms_side_chains_ARG(prot, res_num, chi);
+	}else{
+		char msg[200];
+		sprintf(msg," In set_fixed_moved_atoms_side_chains_chi function residue name %s was not found", res_name);
+		fatal_error(msg);
 	}
 }
 
