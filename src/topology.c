@@ -233,8 +233,6 @@ static void set_fixed_moved_atoms_side_chains_chi(protein_t *prot,
 		set_fixed_moved_atoms_side_chains_ILE(prot, res_num, chi);
 	}else if ( strcmp(res_name, "LEU") == 0){
 		set_fixed_moved_atoms_side_chains_LEU(prot, res_num, chi);
-	}else if ( strcmp(res_name, "PRO") == 0){
-		set_fixed_moved_atoms_side_chains_PRO(prot, res_num, chi);
 	}else if ( strcmp(res_name, "PHE") == 0){
 		set_fixed_moved_atoms_side_chains_PHE(prot, res_num, chi);
 	}else if ( strcmp(res_name, "HIS") == 0){
@@ -408,7 +406,7 @@ int get_number_chi(const char *res_name){
 	}else if( strcmp(res_name,"LEU")==0 ){
 		return 2;
 	}else if( strcmp(res_name,"PRO")==0 ){
-		return 2;
+		return 0; //It is considered without chi, because it will be not moved.
 	}else if( strcmp(res_name,"PHE")==0 ){
 		return 2;
 	}else if( strcmp(res_name,"HIS")==0 ){
@@ -426,7 +424,7 @@ int get_number_chi(const char *res_name){
 	}else if( strcmp(res_name,"LYS")==0 ){
 		return 4;
 	}else if( strcmp(res_name,"ARG")==0 ){
-		return 5;
+		return 4;
 	}else{
 		return 0;
 	}

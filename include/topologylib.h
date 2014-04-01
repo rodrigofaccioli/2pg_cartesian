@@ -26,8 +26,6 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_LEU(protein_t *prot, 
 	const int *res_num, const int *chi);
-void set_fixed_moved_atoms_side_chains_PRO(protein_t *prot, 
-	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_PHE(protein_t *prot, 
 	const int *res_num, const int *chi);
 void set_fixed_moved_atoms_side_chains_HIS(protein_t *prot, 
