@@ -868,6 +868,7 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 	exists_atom_HD3	  = 0;
 	
 	if (*chi == 1){
+
 		atom_CA = Malloc(char, 3);
 		atom_CB = Malloc(char, 3);
 		atom_CG1 = Malloc(char, 4);
@@ -886,14 +887,15 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 		strcpy(atom_CA, "CA");
 		strcpy(atom_CB, "CB");
 		strcpy(atom_CG1, "CG1");
+		strcpy(atom_CD, "CD");		
 		strcpy(atom_CG2, "CG2");
+		strcpy(atom_HB, "HB");
+
 		strcpy(atom_1HG1, "1HG1");
 		strcpy(atom_2HG1, "2HG1");		
 		strcpy(atom_1HG2, "1HG2");
 		strcpy(atom_2HG2, "2HG2");
 		strcpy(atom_3HG2, "3HG2");
-		strcpy(atom_HB, "HB");
-		strcpy(atom_CD, "CD");
 		strcpy(atom_HD1, "HD1");
 		strcpy(atom_HD2, "HD2");
 		strcpy(atom_HD3, "HD3");
@@ -915,7 +917,7 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 				res_num, atom_HB, &prot->p_topol->numatom) == btrue){
 			num_moved = num_moved + 1;
 			exists_atom_HB = 1;
-		}	
+		}
 		if (atom_name_exists_in_resnum(prot->p_atoms,
 				res_num, atom_1HG1, &prot->p_topol->numatom) == btrue){
 			num_moved = num_moved + 1;
@@ -925,6 +927,21 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 				res_num, atom_2HG1, &prot->p_topol->numatom) == btrue){
 			num_moved = num_moved + 1;
 			exists_atom_2HG1 = 1;
+		}
+		if (atom_name_exists_in_resnum(prot->p_atoms,
+				res_num, atom_HD1, &prot->p_topol->numatom) == btrue){
+			num_moved = num_moved + 1;
+			exists_atom_HD1 = 1;
+		}
+		if (atom_name_exists_in_resnum(prot->p_atoms,
+				res_num, atom_HD2, &prot->p_topol->numatom) == btrue){
+			num_moved = num_moved + 1;
+			exists_atom_HD2 = 1;
+		}
+		if (atom_name_exists_in_resnum(prot->p_atoms,
+				res_num, atom_HD3, &prot->p_topol->numatom) == btrue){
+			num_moved = num_moved + 1;
+			exists_atom_HD3 = 1;
 		}
 		if (atom_name_exists_in_resnum(prot->p_atoms,
 				res_num, atom_1HG2, &prot->p_topol->numatom) == btrue){
@@ -941,34 +958,20 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 			num_moved = num_moved + 1;
 			exists_atom_3HG2 = 1;
 		}
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HD1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HD2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD2 = 1;
-		}				
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HD3, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD3 = 1;
-		}
+
 		i_af = -1;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved);
-		i_af++;				
+		i_af++;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				res_num, atom_CG1, &prot->p_topol->numatom);
-		i_af++;				
+		i_af++;
+		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+				res_num, atom_CD, &prot->p_topol->numatom);
+		i_af++;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				res_num, atom_CG2, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CD, &prot->p_topol->numatom);
 
 		if (exists_atom_HB == 1){
 			i_af++;				
@@ -985,6 +988,21 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 					res_num, atom_2HG1, &prot->p_topol->numatom);		
 		}
+		if (exists_atom_HD1 == 1){
+			i_af++;				
+			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					res_num, atom_HD1, &prot->p_topol->numatom);		
+		}
+		if (exists_atom_HD2 == 1){
+			i_af++;				
+			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					res_num, atom_HD2, &prot->p_topol->numatom);		
+		}
+		if (exists_atom_HD3 == 1){
+			i_af++;				
+			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					res_num, atom_HD3, &prot->p_topol->numatom);		
+		}
 		if (exists_atom_1HG2 == 1){
 			i_af++;				
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
@@ -1000,21 +1018,7 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 					res_num, atom_3HG2, &prot->p_topol->numatom);		
 		}
-		if (exists_atom_HD1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD1, &prot->p_topol->numatom);		
-		}		
-		if (exists_atom_HD2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD2, &prot->p_topol->numatom);		
-		}		
-		if (exists_atom_HD3 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD3, &prot->p_topol->numatom);		
-		}		
+		
 		free(atom_CA);
 		free(atom_CB);
 		free(atom_CG1);
@@ -1033,32 +1037,22 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 	}else if (*chi == 2){		
 		
 		atom_CB = Malloc(char, 3);
-		atom_CG1 = Malloc(char, 4);
-		atom_CG2 = Malloc(char, 4);	
-		atom_1HG1 = Malloc(char, 5); 
-		atom_2HG1 = Malloc(char, 5); 		
-		atom_1HG2 = Malloc(char, 5);
-		atom_2HG2 = Malloc(char, 5); 
-		atom_3HG2 = Malloc(char, 5);
-		atom_HB = Malloc(char, 3);
-		atom_CD =  Malloc(char, 3);
+		atom_CD = Malloc(char, 3);			
+		atom_CG1 = Malloc(char, 4);		
 		atom_HD1 = Malloc(char, 4);
 		atom_HD2 = Malloc(char, 4);
 		atom_HD3 = Malloc(char, 4);		
-
+		atom_1HG1 = Malloc(char, 5); 
+		atom_2HG1 = Malloc(char, 5); 		
+		
 		strcpy(atom_CB, "CB");
-		strcpy(atom_CG1, "CG1");
-		strcpy(atom_CG2, "CG2");
-		strcpy(atom_1HG1, "1HG1");
-		strcpy(atom_2HG1, "2HG1");		
-		strcpy(atom_1HG2, "1HG2");
-		strcpy(atom_2HG2, "2HG2");
-		strcpy(atom_3HG2, "3HG2");
-		strcpy(atom_HB, "HB");
 		strcpy(atom_CD, "CD");
+		strcpy(atom_CG1, "CG1");		
 		strcpy(atom_HD1, "HD1");
 		strcpy(atom_HD2, "HD2");
 		strcpy(atom_HD3, "HD3");
+		strcpy(atom_1HG1, "1HG1");
+		strcpy(atom_2HG1, "2HG1");		
 
 		//Building Fixed Atoms
 		i_af = -1;
@@ -1072,37 +1066,8 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				res_num, atom_CG1, &prot->p_topol->numatom);
 		//Building Moved Atoms
-		num_moved = 2; 
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HB, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HB = 1;
-		}	
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_1HG1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_1HG1 = 1;
-		}
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_2HG1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_2HG1 = 1;
-		}
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_1HG2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_1HG2 = 1;
-		}
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_2HG2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_2HG2 = 1;
-		}
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_3HG2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_3HG2 = 1;
-		}
+		num_moved = 1; 
+		
 		if (atom_name_exists_in_resnum(prot->p_atoms,
 				res_num, atom_HD1, &prot->p_topol->numatom) == btrue){
 			num_moved = num_moved + 1;
@@ -1117,48 +1082,25 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 				res_num, atom_HD3, &prot->p_topol->numatom) == btrue){
 			num_moved = num_moved + 1;
 			exists_atom_HD3 = 1;
+		}		
+		if (atom_name_exists_in_resnum(prot->p_atoms,
+				res_num, atom_1HG1, &prot->p_topol->numatom) == btrue){
+			num_moved = num_moved + 1;
+			exists_atom_1HG1 = 1;
 		}
+		if (atom_name_exists_in_resnum(prot->p_atoms,
+				res_num, atom_2HG1, &prot->p_topol->numatom) == btrue){
+			num_moved = num_moved + 1;
+			exists_atom_2HG1 = 1;
+		}		
 		i_af = -1;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved);
 		i_af++;				
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CG2, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				res_num, atom_CD, &prot->p_topol->numatom);
 
-		if (exists_atom_HB == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HB, &prot->p_topol->numatom);		
-		}
-		if (exists_atom_1HG1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_1HG1, &prot->p_topol->numatom);		
-		}
-		if (exists_atom_2HG1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_2HG1, &prot->p_topol->numatom);		
-		}
-		if (exists_atom_1HG2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_1HG2, &prot->p_topol->numatom);		
-		}
-		if (exists_atom_2HG2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_2HG2, &prot->p_topol->numatom);		
-		}
-		if (exists_atom_3HG2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_3HG2, &prot->p_topol->numatom);		
-		}
 		if (exists_atom_HD1 == 1){
 			i_af++;				
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
@@ -1173,23 +1115,30 @@ void set_fixed_moved_atoms_side_chains_ILE(protein_t *prot,
 			i_af++;				
 			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 					res_num, atom_HD3, &prot->p_topol->numatom);		
-		}		
+		}
+		if (exists_atom_1HG1 == 1){
+			i_af++;				
+			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					res_num, atom_1HG1, &prot->p_topol->numatom);		
+		}
+		if (exists_atom_2HG1 == 1){
+			i_af++;				
+			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+					res_num, atom_2HG1, &prot->p_topol->numatom);		
+		}
 
 		free(atom_CB);
-		free(atom_CG1);
-		free(atom_CG2);
-		free(atom_HB);
-		free(atom_1HG1);
-		free(atom_2HG1);
-		free(atom_1HG2);
-		free(atom_2HG2);
-		free(atom_3HG2);
 		free(atom_CD);
+		free(atom_CG1);
 		free(atom_HD1);
 		free(atom_HD2);
 		free(atom_HD3);
+		free(atom_1HG1);
+		free(atom_2HG1);
+		
 	}
 }
+
 /** Assigens the fixed and moved atoms for LEU
 */
 void set_fixed_moved_atoms_side_chains_LEU(protein_t *prot, 
@@ -1513,233 +1462,6 @@ void set_fixed_moved_atoms_side_chains_LEU(protein_t *prot,
 }
 
 
-/** Assigens the fixed and moved atoms for PRO
-*/
-void set_fixed_moved_atoms_side_chains_PRO(protein_t *prot, 
-	const int *res_num, const int *chi){
-
-	char *atom_CA, *atom_CB, *atom_CG, *atom_CD, *atom_HG1, 
-	*atom_HG2, *atom_HB1, *atom_HB2, *atom_HD1, *atom_HD2;
-	int exists_atom_HG1, exists_atom_HG2, exists_atom_HB1, exists_atom_HB2, 
-	exists_atom_HD1, exists_atom_HD2;
-	int num_moved;
-	int i_af;
-
-	exists_atom_HG1 = 0;
-	exists_atom_HG2 = 0;
-	exists_atom_HB1 = 0;
-	exists_atom_HB2 = 0;
-	exists_atom_HD1 = 0;
-	exists_atom_HD2 = 0;
-
-	
-	if (*chi == 1){
-		atom_CA = Malloc(char, 3);
-		atom_CB = Malloc(char, 3);
-		atom_CG = Malloc(char, 3);
-		atom_CD = Malloc(char, 3);		
-		atom_HG1 = Malloc(char, 4);
-		atom_HG2 = Malloc(char, 4);
-		atom_HB1 = Malloc(char, 4);
-		atom_HB2 = Malloc(char, 4);
-		atom_HD1 = Malloc(char, 4);
-		atom_HD2 = Malloc(char, 4);
-
-		strcpy(atom_CA, "CA");
-		strcpy(atom_CB, "CB");
-		strcpy(atom_CG, "CG");
-		strcpy(atom_CD, "CD");	
-		strcpy(atom_HG1, "HG1");
-		strcpy(atom_HG2, "HG2");
-		strcpy(atom_HB1, "HB1");
-		strcpy(atom_HB2, "HB2");
-		strcpy(atom_HD1, "HD1");
-		strcpy(atom_HD2, "HD2");
-
-		//Building Fixed Atoms
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed = 2;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CA, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CB, &prot->p_topol->numatom);
-		//Building Moved Atoms
-		num_moved = 2;
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HD1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HD2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD2 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HB1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HB1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HB2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HB2 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HG1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HG1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HG2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HG2 = 1;
-		}
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved);
-		i_af++;				
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CG, &prot->p_topol->numatom);
-		i_af++;				
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CD, &prot->p_topol->numatom);
-		if (exists_atom_HB1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HB1, &prot->p_topol->numatom);
-		}	
-		if (exists_atom_HB2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HB2, &prot->p_topol->numatom);
-		}		
-		if (exists_atom_HG1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HG1, &prot->p_topol->numatom);			
-		}
-		if (exists_atom_HG2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HG2, &prot->p_topol->numatom);			
-		}
-		if (exists_atom_HD1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD1, &prot->p_topol->numatom);
-		}	
-		if (exists_atom_HD2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD2, &prot->p_topol->numatom);
-		}		
-		free(atom_CA);
-		free(atom_CB);
-		free(atom_CG);
-		free(atom_CD);
-		free(atom_HG1);
-		free(atom_HG2);
-		free(atom_HB1);
-		free(atom_HB2);	
-		free(atom_HD1);
-		free(atom_HD2);	
-
-	}else if (*chi == 2){
-		
-		atom_CB = Malloc(char, 3);
-		atom_CG = Malloc(char, 3);
-		atom_CD = Malloc(char, 3);		
-		atom_HG1 = Malloc(char, 4);
-		atom_HG2 = Malloc(char, 4);
-		atom_HD1 = Malloc(char, 4);
-		atom_HD2 = Malloc(char, 4);
-
-		strcpy(atom_CB, "CB");
-		strcpy(atom_CG, "CG");
-		strcpy(atom_CD, "CD");		
-		strcpy(atom_HG1, "HG1");
-		strcpy(atom_HG2, "HG2");
-		strcpy(atom_HD1, "HD1");
-		strcpy(atom_HD2, "HD2");
-
-		//Building Fixed Atoms
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed = 2;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CB, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CG, &prot->p_topol->numatom);
-		//Building Moved Atoms
-		num_moved = 1;
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HD1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HD2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HD2 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-				res_num, atom_HG1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HG1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_HG2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_HG2 = 1;
-		}					
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved);		
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CD, &prot->p_topol->numatom);
-		if (exists_atom_HG1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HG1, &prot->p_topol->numatom);
-		}	
-		if (exists_atom_HG2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HG2, &prot->p_topol->numatom);
-		}
-		if (exists_atom_HD1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD1, &prot->p_topol->numatom);
-		}	
-		if (exists_atom_HD2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_HD2, &prot->p_topol->numatom);
-		}
-		
-		free(atom_CB);
-		free(atom_CG);
-		free(atom_CD);		
-		free(atom_HG1);
-		free(atom_HG2);			
-		free(atom_HD1);
-		free(atom_HD2);	
-
-	}
-
-}
 
 /** Assigens the fixed and moved atoms for PHE
 */
@@ -5321,103 +5043,6 @@ void set_fixed_moved_atoms_side_chains_ARG(protein_t *prot,
 		free(atom_CD);
 		free(atom_NE);
 		free(atom_HE);
-		free(atom_CZ);
-		free(atom_NH1);
-		free(atom_NH2);
-		free(atom_1HH1);
-		free(atom_2HH1);
-		free(atom_1HH2);
-		free(atom_2HH2);		
-
-	}else if (*chi == 5){
-
-		atom_NE = Malloc(char, 3);
-		atom_CZ = Malloc(char, 3);
-		atom_NH1 = Malloc(char, 4);
-		atom_NH2 = Malloc(char, 4);
-		atom_1HH1 = Malloc(char, 5);
-		atom_2HH1 = Malloc(char, 5);
-		atom_1HH2 = Malloc(char, 5);
-		atom_2HH2 = Malloc(char, 5);
-		
-		strcpy(atom_NE, "NE");
-		strcpy(atom_CZ, "CZ");
-		strcpy(atom_NH1, "NH1");
-		strcpy(atom_NH2, "NH2");
-		strcpy(atom_1HH1, "1HH1");
-		strcpy(atom_2HH1, "2HH1");
-		strcpy(atom_1HH2, "1HH2");
-		strcpy(atom_2HH2, "2HH2");
-
-		//Building Fixed Atoms
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed = 2;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_fixed);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_NE, &prot->p_topol->numatom);
-		i_af++;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_CZ, &prot->p_topol->numatom);
-		//Building Moved Atoms
-		num_moved = 2;
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_1HH1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_1HH1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_2HH1, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_2HH1 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_1HH2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_1HH2 = 1;
-		}		
-		if (atom_name_exists_in_resnum(prot->p_atoms,
-			res_num, atom_2HH2, &prot->p_topol->numatom) == btrue){
-			num_moved = num_moved + 1;
-			exists_atom_2HH2 = 1;
-		}				
-		i_af = -1;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved);
-		i_af++;				
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_NH1, &prot->p_topol->numatom);
-		i_af++;				
-		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-				res_num, atom_NH2, &prot->p_topol->numatom);
-		if (exists_atom_1HH1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_1HH1, &prot->p_topol->numatom);
-
-		}
-		if (exists_atom_2HH1 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_2HH1, &prot->p_topol->numatom);
-
-		}
-		if (exists_atom_1HH2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_1HH2, &prot->p_topol->numatom);
-
-		}
-		if (exists_atom_2HH2 == 1){
-			i_af++;				
-			prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					res_num, atom_2HH2, &prot->p_topol->numatom);
-
-		}		
-
-		free(atom_NE);
 		free(atom_CZ);
 		free(atom_NH1);
 		free(atom_NH2);
