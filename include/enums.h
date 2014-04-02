@@ -47,7 +47,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmHH, atmHH11, atmHH12, atmHH2, atmHH21, atmHH22,
 	             atmHZ, atmHZ1, atmHZ2, atmHZ3,
 	             atmC_, atmCA_, atmCA_plus, atmN_plus, atmO_, atmN_,
-	             atmOT1, atmOT2, atmOXT,
+	             atmOT1, atmOT2, atmOXT, atmOC1, atmOC2,
 	             atmSG,atmSD,
 	             atmNR /*This line must be the last*/
                  };

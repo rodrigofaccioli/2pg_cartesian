@@ -265,6 +265,10 @@ type_atoms_t get_atomid_from_atom_name(const  char *__atmname){
 		return atmOT1;
 	}else if (is_equal(__atmname,"OT2")){
 		return atmOT2;
+	}else if (is_equal(__atmname,"OC1")){
+		return atmOC1;
+	}else if (is_equal(__atmname,"OC2")){
+		return atmOC2;
 	}else if (is_equal(__atmname,"OXT")){
 		return atmOXT;
 	}else if (is_equal(__atmname,"HD21") ||
