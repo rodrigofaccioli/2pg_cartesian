@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "defines.h"
+#include "enums.h"
 #include "topology.h"
 #include "topologylib.h"
 #include "consts.h"
@@ -186,10 +187,10 @@ static void build_topology_individual_phi(protein_t *prot){
 			//It is considered moved atom all atoms that are not fixed atoms
 			prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
 			prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
-			for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){			
+			for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
 				if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
 					prot->p_topol->phi[r-1].fixed_atoms, 
-					&prot->p_topol->phi[r-1].num_fixed) == bfalse){				
+					&prot->p_topol->phi[r-1].num_fixed) == bfalse){
 					i_af++;				
 					prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
 				}
@@ -428,4 +429,61 @@ int get_number_chi(const char *res_name){
 	}else{
 		return 0;
 	}
+}
+
+/** Rename oxygen atoms in C-Terminal
+* It is necessary because each force field adds two Oxygen atoms
+* with diferent names. In Charmm27, the atoms are OT1 and OT2. In 
+* Amber, the names are OC1 and OC2.
+
+* atoms is the atoms
+* res_num number of C-Terminal
+* num_atom is the number of atoms
+*/
+void rename_oxygen_c_terminal(pdb_atom_t *atoms,
+		const int *res_num, const int *num_atom){
+
+	char *atm_OT1, *atm_OT2, *atm_OC1, *atm_OC2, *atm_O;
+	type_atoms t_OT1, t_OT2, t_OC1, t_OC2, t_O;
+	int n_test;
+
+	atm_OT1 = Malloc(char, 4);	
+	atm_OT2 = Malloc(char, 4);
+	atm_OC1 = Malloc(char, 4);
+	atm_OC2 = Malloc(char, 4);
+	atm_O = Malloc(char, 2);
+
+	strcpy(atm_OT1, "OT1");
+	strcpy(atm_OT2, "OT2");
+	strcpy(atm_OC1, "OC1");
+	strcpy(atm_OC2, "OC2");
+	strcpy(atm_O, "O");
+
+	t_OT1  = atmOT1;
+	t_OT2  = atmOT2;
+	t_OC1  = atmOC1; 
+	t_OC2  = atmOC2; 
+	t_O    = atmO; 
+
+	// Is necessary look for two Oxygen atoms
+	n_test = 1;	
+	while (n_test <= 2){
+		if (atom_name_exists_in_resnum(atoms, res_num, atm_OT1, num_atom) == btrue){
+			rename_atom(atoms, atm_OT1, atm_O, res_num, &t_OT1, &t_O, num_atom);
+		}else if (atom_name_exists_in_resnum(atoms, res_num, atm_OT2, num_atom) == btrue){
+			rename_atom(atoms, atm_OT2, atm_O, res_num, &t_OT2, &t_O, num_atom);
+		}else if (atom_name_exists_in_resnum(atoms, res_num, atm_OC1, num_atom) == btrue){
+			rename_atom(atoms, atm_OC1, atm_O, res_num, &t_OC1, &t_O, num_atom);
+		}else if (atom_name_exists_in_resnum(atoms, res_num, atm_OC2, num_atom) == btrue){
+			rename_atom(atoms, atm_OC2, atm_O, res_num, &t_OC2, &t_O, num_atom);
+		}
+		n_test = n_test + 1;
+	}	
+
+	free(atm_OT1);
+	free(atm_OT2);
+	free(atm_OC1);
+	free(atm_OC2);
+	free(atm_O);
+
 }

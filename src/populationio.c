@@ -35,7 +35,10 @@ void load_initial_population_file(protein_t *pop, const int *pop_size, const cha
 		atm_aux = atoms[i];
 		for (int a = 0; a < num_atoms_PDB; a++){			
 			copy_pdb_atom(&pop[i].p_atoms[a], &atm_aux[a]);
-		}		
+		}
+		//Rename C-Terminal Oxygen atoms
+		rename_oxygen_c_terminal(pop[i].p_atoms, &primary_sequence->num_res, 
+			&num_atoms_PDB);
 	}
 
 	free(path_pdb_file_name);

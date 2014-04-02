@@ -17,5 +17,7 @@ boolean_t is_fixed_atom(const int *atmnumber, const int *fixed_atoms, const int 
 int get_number_atoms_backbone(const protein_t *prot, const int *numres);
 boolean_t is_backbone_atom(const char *atomname);
 int get_number_chi(const char *res_name);
+void rename_oxygen_c_terminal(pdb_atom_t *atoms,
+		const int *res_num, const int *num_atom);
 
 #endif
