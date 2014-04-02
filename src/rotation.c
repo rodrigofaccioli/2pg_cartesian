@@ -62,7 +62,7 @@ static void rotate_all_atoms(protein_t *prot, const int *atomB, const int *atomC
 
 	if (forward_residue <= prot->p_topol->numres){
 		// From first atom of next_residue until last atom of protein, rotate all of them.
-		for (int i = prot->p_topol->range_atoms[forward_residue-1].first_atom; i < prot->p_topol->numatom; i++){
+		for (int i = prot->p_topol->range_atoms[forward_residue-1].first_atom; i <= prot->p_topol->numatom; i++){
 			rotation_by_angle_dih(prot->p_atoms, atomB, atomC, &i, angle);
 		}
 	}
@@ -100,9 +100,8 @@ void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle)
 * angle is the value of rotated angle
 */
 void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle){
-	
 	//The first residue does not make rotation 
-	if (*num_res_first > 1){
+	if (*num_res_first > 1){		
 		//rotates all moved atoms of first residue
 		for (int i = 0; i < prot->p_topol->phi[*num_res_first-1].num_moved; i++){
 			rotation_by_angle_dih(prot->p_atoms, 
