@@ -10,6 +10,6 @@ void desallocate_primary_seq(primary_seq_t* seq);
 type_aminos_t _get_amino_id_3(char *c);
 type_aminos_t _get_amino_id_1(char c);
 void set_amino_id_3(char *amino_name, const type_aminos_t *amino_id);
-
+type_terminal_charge_t str2terminal_charge(const char *s_term_charge);
 
 #endif

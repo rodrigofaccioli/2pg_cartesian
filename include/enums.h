@@ -107,6 +107,12 @@ enum type_objective_analysis {objective_analysis_none,
 
 typedef enum type_objective_analysis type_objective_analysis_t;
 
+/*Identificy c-terminal or n-terminal that neutralize protein */
+enum type_terminal_charge {term_charge_ACE, term_charge_NMA, term_charge_none, 
+	term_charge_NR};
+
+typedef enum type_terminal_charge type_terminal_charge_t;
+
 #endif
 
 

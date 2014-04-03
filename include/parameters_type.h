@@ -46,6 +46,10 @@ typedef struct sinput_parameters{
     char *mdp_file;
     /* Number of steps to Monte Carlo Algorithm */
     int MonteCarloSteps;
+    /*set who can be neutralize N-Terminal*/
+    type_terminal_charge_t n_terminal_charge;
+    /*set who can be neutralize C-Terminal*/    
+    type_terminal_charge_t c_terminal_charge;    
  }input_parameters_t;
 
 #endif

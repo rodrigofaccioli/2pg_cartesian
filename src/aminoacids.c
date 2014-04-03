@@ -39,6 +39,41 @@ void desallocate_primary_seq(primary_seq_t* seq){
 	free(seq);
 }
 
+/** Converts string to type_terminal_charge type
+* s_term_charge means the string that will be converted to type_terminal_charge
+* returns type_terminal_charge
+*/
+type_terminal_charge_t str2terminal_charge(const char *s_term_charge){
+	char *s_none, *s_ace, *s_nma;
+
+	s_none = Malloc(char, 5); 
+	s_ace  = Malloc(char, 4); 
+	s_nma = Malloc(char, 4); 
+
+	strcpy(s_none, "none");
+	strcpy(s_ace, "ACE");
+	strcpy(s_nma, "NMA");
+
+	type_terminal_charge_t ret;
+	if ( strcmp(s_term_charge, s_none) == 0){
+		ret = term_charge_none;
+	}else if ( strcmp(s_term_charge,s_ace)  == 0) {
+		ret = term_charge_ACE;
+	}else if ( strcmp(s_term_charge, s_nma) == 0){
+		ret =  term_charge_NMA;
+	}else{
+ 		char msg[300];
+ 	    sprintf(msg,"%s it is not found at  str2terminal_charge function \n", s_term_charge);
+  		fatal_error(msg);		
+	}
+
+	free(s_none);
+	free(s_ace);
+	free(s_nma);
+
+	return ret;
+}
+
 type_aminos_t _get_amino_id_3(char *c){
 /*Receives an amino (char) and returns your id*/
 		type_aminos_t amino_id;

@@ -8,7 +8,7 @@
 #include "messages.h"
 #include "string_owner.h"
 #include "objective.h"
-
+#include "aminoacids.h"
 
 static void initialize_parameters(input_parameters_t *param){
 	param->seq_protein_file_name = Malloc(char, MAX_PATH_FILE_NAME );
@@ -43,7 +43,8 @@ static void initialize_parameters(input_parameters_t *param){
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
     param->mdp_file = Malloc(char, MAX_FILE_NAME);
     param->MonteCarloSteps = 100;
-    
+    param->n_terminal_charge = term_charge_NR;
+    param->c_terminal_charge = term_charge_NR;
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -121,6 +122,11 @@ void set_crossovers(input_parameters_t *param){
 	*/
 }
 
+void set_terminal_charge(input_parameters_t *param, char *param_c_terminal, 
+	char *param_n_terminal){
+	param->n_terminal_charge = str2terminal_charge(param_n_terminal);
+	param->c_terminal_charge = str2terminal_charge(param_c_terminal);
+}
 
 void deAllocateload_parameters(input_parameters_t *param){
     free(param->seq_protein_file_name );
@@ -197,5 +203,8 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->force_field,conf.getParameterChar("force_field"));
 
 	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
+
+	set_terminal_charge(param, conf.getParameterChar("c_terminal_charge"),
+		conf.getParameterChar("n_terminal_charge"));
 
 }
