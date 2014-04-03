@@ -154,27 +154,38 @@ static void build_topology_individual_psi(protein_t *prot){
 }
 
 static void build_topology_individual_phi(protein_t *prot){
-	char *atom_N, *atom_C, *atom_CA, *atom_O;
-	//int num_hydrogen_backbone;
+	char *atom_N, *atom_C, *atom_CA, *atom_O, *atom_H;
+	int exists_atom_H;
 	int i_af;
+	int num_moved;
 
 	atom_N = Malloc(char, 2);
 	atom_CA = Malloc(char, 3);
 	atom_C = Malloc(char, 2);	
 	atom_O = Malloc(char, 2);
+	atom_H = Malloc(char, 2);
 
 	strcpy(atom_N, "N");
 	strcpy(atom_CA, "CA");
 	strcpy(atom_C, "C");
 	strcpy(atom_O, "O");
+	strcpy(atom_H, "H");
 
 	//The first residue does not make rotation
 	for (int r = 1; r <= prot->p_topol->numres; r++){
 		if (r > 1){
+			
+			exists_atom_H = 0;
 			//Build Fixed Atoms
+			num_moved = 2;
 			i_af = -1;
 			//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
-			prot->p_topol->phi[r-1].num_fixed = 2;//2 + num_hydrogen_backbone;
+			if (atom_name_exists_in_resnum(prot->p_atoms, &r, 
+				atom_H, &prot->p_topol->numatom) == btrue){				
+				num_moved = num_moved + 1;
+				exists_atom_H = 1;
+			}
+			prot->p_topol->phi[r-1].num_fixed = num_moved;
 			prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
 			i_af++;
 			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
@@ -182,6 +193,12 @@ static void build_topology_individual_phi(protein_t *prot){
 			i_af++;
 			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 					&r, atom_CA, &prot->p_topol->numatom);
+			if (exists_atom_H == 1){
+				i_af++;
+				prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+						&r, atom_H, &prot->p_topol->numatom);
+			}
+
 			//Build Moved Atom		
 			i_af = -1;
 			//It is considered moved atom all atoms that are not fixed atoms
@@ -207,6 +224,7 @@ static void build_topology_individual_phi(protein_t *prot){
 	free(atom_CA);
 	free(atom_C);
 	free(atom_O);
+	free(atom_H);
 }
 
 /** Assigns the fixed and moved atoms at side chain based on residue name
