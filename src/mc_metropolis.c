@@ -96,17 +96,14 @@ static int compare_solution(const void *x, const void *y){
 */
 void mc_build_solution(protein_t *ind_new, const input_parameters_t *in_para){
     float angle_radians, angle_degree, rate;
-    int num_residue_choose;
     int what_rotation;
-    int max_kind_of_rotation = 4;    
+    int max_kind_of_rotation = 4;
+    int num_residue_choose;
     
     //Choose a residue. It must be started 1 untill number of residue
-    num_residue_choose = 0;    
-    while (num_residue_choose == 0){
-        num_residue_choose = _get_int_random_number(&ind_new->p_topol->numres);
-    }
+    num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);
     //Obtaing kind of rotation
-    what_rotation = _get_int_random_number(&max_kind_of_rotation);        
+    what_rotation = _get_int_random_number(&max_kind_of_rotation);            
     //Appling the rotation 
     if (what_rotation == 0){
         //Obtaing a random degree angule 
@@ -131,19 +128,21 @@ void mc_build_solution(protein_t *ind_new, const input_parameters_t *in_para){
         rotation_omega(ind_new, &num_residue_choose, &angle_radians);            
     }else if (what_rotation == 3){
         int chi = 0;
-        int max_chi = -1;
+        int max_chi;
+        int num_chi_choose;
         char *res_name;
         res_name = Malloc(char, 4);
         get_res_name_from_res_num(res_name, &num_residue_choose, 
             ind_new->p_atoms, &ind_new->p_topol->numatom);
-        max_chi = get_number_chi(res_name);                        
+        max_chi = get_number_chi(res_name);
         if (max_chi > 0){
             //Choose a chi of residue. It must be started 1 untill number of residue
             if (max_chi == 1){
                 chi = 1;
             }else{
                 while (chi == 0){                
-                    chi = _get_int_random_number(&max_chi);
+                    num_chi_choose = max_chi + 1;
+                    chi = _get_int_random_number(&num_chi_choose);
                 }                    
             }                
             //Obtaing a random degree angule 
@@ -151,6 +150,7 @@ void mc_build_solution(protein_t *ind_new, const input_parameters_t *in_para){
             &in_para->max_angle_mutation_side_chain);
             //Cast to radians
             angle_radians = degree2radians(&angle_degree);
+            //printf("what_rotation %i num_residue_choose %i chi %i \n", 3, num_residue_choose, chi);
             rotation_chi(ind_new, &num_residue_choose, &chi, &angle_radians);
         }
         free(res_name);

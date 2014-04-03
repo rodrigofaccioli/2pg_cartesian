@@ -87,10 +87,9 @@ static void crossover_1_part(protein_t *p_new, const protein_t *p1,
     int res_aux, res_ini;
     res_aux = 0;
     res_ini = 1;
+
     //getting a random residue
-    while (res_aux == 0){
-        res_aux = _get_int_random_number(&p1->p_topol->numres);
-    }
+    res_aux = get_choose_residue(&p1->p_topol->numres);
     //coping from solution s1
     copy_protein_atoms_by_residues(p_new, &res_ini, &res_aux, p1);
     //coping from solution s2
@@ -180,10 +179,8 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
     rate = _get_float();
     num_residue_choose = 0;
     if (rate < in_para->individual_mutation_rate){
-        //Choose a residue. It must be started 1 untill number of residue
-        while (num_residue_choose == 0){
-            num_residue_choose = _get_int_random_number(&ind_new->p_topol->numres);
-        }
+        //Choose a residue
+        num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);
         //Obtaing kind of rotation
         what_rotation = _get_int_random_number(&max_kind_of_rotation);        
         //Appling the rotation 
@@ -304,6 +301,7 @@ int ea_mono(const input_parameters_t *in_para){
     save_topology_population(population_p, &in_para->size_population, 
     in_para->path_local_execute, prefix);    
     free(prefix);
+
 
 /**************** STARTING Mono-Objetive Evolutionary Algorithm *************************/
     display_msg("Starting Mono-Objetive Evolutionary Algorithm \n");

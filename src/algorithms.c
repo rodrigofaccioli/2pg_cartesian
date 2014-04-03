@@ -9,7 +9,7 @@
 #include "populationio.h"
 #include "solutionio.h"
 #include "objective.h"
-
+#include "randomlib.h"
 
 //#include "randomlib.h"
 
@@ -71,4 +71,19 @@ void update_execution_algorithms(const solution_t *solutions, const int *tag){
     //Saving fitness values    
     build_fitness_files(solutions, tag, &in_para->size_population);
 }
+
+/**
+*/
+int get_choose_residue(const int *num_res_prot){
+    int max_residue_choose;
+    int num_residue_choose;
+
+    num_residue_choose = 0;    
+    max_residue_choose = *num_res_prot + 1;
+    while (num_residue_choose == 0){
+        num_residue_choose = _get_int_random_number(&max_residue_choose);
+    }
+    return num_residue_choose;    
+}
+
 
