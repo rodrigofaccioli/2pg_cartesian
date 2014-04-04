@@ -8,7 +8,7 @@ enum boolean {bfalse, btrue};
 typedef enum boolean boolean_t;
 
 enum type_aminos {aGLY, aALA, aARG, aVAL, aLEU, aILE, aSER, aTHR, aCYS, aPRO, aPHE, aTYR, aHIS, aASP, aASN, aGLU, aMET, aLYS,
-	               aGLN, aTRP, aHSE, aHSD,
+	               aGLN, aTRP, aHSE, aHSD, aX, aACE, aNME,
 	               aNR /*This line must be the last*/
                  };
 typedef enum type_aminos type_aminos_t;
@@ -29,6 +29,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmCD, atmCD1, atmCD2,
 	             atmCE, atmCE1, atmCE2, atmCE3,
 	             atmCH2,
+	             atmCH3,
 	             atmCZ, atmCZ2, atmCZ3,
 	             atmN, atmND1, atmND2, atmNH1, atmNH2,
 	             atmNE, atmNE1, atmNE2,
@@ -40,6 +41,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmHG, atmHG1, atmHG2, atmHG3,atmHG11, atmHG12, atmHG13,
 	             atmHG21, atmHG22, atmHG23,
 	             atmHN,
+	             atmHH31, atmHH32, atmHH33, 
 	             atmH1, atmH2, atmH3,
 	             atmHB, atmHB1,atmHB2,atmHB3,
 	             atmHD1, atmHD2, atmHD3, atmHD11, atmHD12, atmHD13, atmHD21,
@@ -48,7 +50,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmHZ, atmHZ1, atmHZ2, atmHZ3,
 	             atmC_, atmCA_, atmCA_plus, atmN_plus, atmO_, atmN_,
 	             atmOT1, atmOT2, atmOXT, atmOC1, atmOC2,
-	             atmSG,atmSD,
+	             atmSG,atmSD,  
 	             atmNR /*This line must be the last*/
                  };
 typedef enum type_atoms type_atoms_t;
@@ -108,7 +110,7 @@ enum type_objective_analysis {objective_analysis_none,
 typedef enum type_objective_analysis type_objective_analysis_t;
 
 /*Identificy c-terminal or n-terminal that neutralize protein */
-enum type_terminal_charge {term_charge_ACE, term_charge_NMA, term_charge_none, 
+enum type_terminal_charge {term_charge_ACE, term_charge_NME, term_charge_none, 
 	term_charge_NR};
 
 typedef enum type_terminal_charge type_terminal_charge_t;
