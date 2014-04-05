@@ -84,6 +84,7 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	n_residues = strlen(seq_line);
 	seq_prim = allocate_primary_seq(&n_residues);
 
+	check_terminal_charge(seq_line, &n_residues);
 	for (int i = 0; i < n_residues; i++){
 		aux_line = seq_line[i];
 		strcpy(seq_prim->seq_res[i].id_1, &aux_line);

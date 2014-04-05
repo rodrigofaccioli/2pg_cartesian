@@ -315,12 +315,22 @@ type_atoms_t get_atomid_from_atom_name(const  char *__atmname){
 	}else if (is_equal(__atmname,"HG23")||
 			  is_equal(__atmname,"3HG2")){
 		return atmHG23;
-	}
-	else{
+	}else if (is_equal(__atmname,"HH31")||
+			  is_equal(__atmname,"1HH3")){
+		return atmHH31;
+	}else if (is_equal(__atmname,"HH32")||
+			  is_equal(__atmname,"2HH3")){
+		return atmHH32;
+	}else if (is_equal(__atmname,"HH33")||
+			  is_equal(__atmname,"3HH3")){
+		return atmHH33;
+	}else if (is_equal(__atmname,"CH3")){
+		return atmCH3;
+	}else{
 		sprintf(msg,"Not found out atom %s, check get_atomid_from_atom_name function.\n",__atmname);
 		fatal_error(msg);
 	}
-
+		
 }
 
 static pdb_atom_t * search_pdb_atom_from_resnum_atomid_alow_change(pdb_atom_t *atoms,

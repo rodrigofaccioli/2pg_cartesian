@@ -44,23 +44,23 @@ void desallocate_primary_seq(primary_seq_t* seq){
 * returns type_terminal_charge
 */
 type_terminal_charge_t str2terminal_charge(const char *s_term_charge){
-	char *s_none, *s_ace, *s_nma;
+	char *s_none, *s_ace, *s_nme;
 
 	s_none = Malloc(char, 5); 
 	s_ace  = Malloc(char, 4); 
-	s_nma = Malloc(char, 4); 
+	s_nme = Malloc(char, 4); 
 
 	strcpy(s_none, "none");
 	strcpy(s_ace, "ACE");
-	strcpy(s_nma, "NMA");
+	strcpy(s_nme, "NME");
 
 	type_terminal_charge_t ret;
 	if ( strcmp(s_term_charge, s_none) == 0){
 		ret = term_charge_none;
 	}else if ( strcmp(s_term_charge,s_ace)  == 0) {
 		ret = term_charge_ACE;
-	}else if ( strcmp(s_term_charge, s_nma) == 0){
-		ret =  term_charge_NMA;
+	}else if ( strcmp(s_term_charge, s_nme) == 0){
+		ret =  term_charge_NME;
 	}else{
  		char msg[300];
  	    sprintf(msg,"%s it is not found at  str2terminal_charge function \n", s_term_charge);
@@ -69,7 +69,7 @@ type_terminal_charge_t str2terminal_charge(const char *s_term_charge){
 
 	free(s_none);
 	free(s_ace);
-	free(s_nma);
+	free(s_nme);
 
 	return ret;
 }
@@ -118,7 +118,7 @@ type_aminos_t _get_amino_id_3(char *c){
 			amino_id =  aHIS;
 		}else if ( (strcmp(c,"LYS") == 0) ){
 			amino_id =  aLYS;
-		}else{
+		}else{			
 			if (strcmp(c,"") == 0){
 				sprintf(msg,"Amino not found, because amino variable is empty. Check it. \n");
 			}else{
@@ -194,6 +194,15 @@ type_aminos_t _get_amino_id_1(char c){
 			case 'G': //glicina
 				amino_id =  aGLY;
 				break;
+			case 'X': //Any element
+				amino_id =  aX;
+				break;				
+			case '0': //ACE
+				amino_id =  aACE;
+				break;				
+			case '1': //NME
+				amino_id =  aNME;
+				break;				
 			default:
 				amino_id = aNR;
 				char mens [] = "Amino value is not known. Please, check your file.";
@@ -246,7 +255,13 @@ void set_amino_id_3(char *amino_name, const type_aminos_t *amino_id){
 		}else if ( *amino_id ==  aHIS ){
 			strcpy(amino_name,"HIS");
 		}else if ( *amino_id ==  aLYS){
-			;strcpy(amino_name,"LYS");
+			strcpy(amino_name,"LYS");
+		}else if ( *amino_id ==  aX){
+			strcpy(amino_name,"X");
+		}else if ( *amino_id ==  aACE){
+			strcpy(amino_name,"ACE");
+		}else if ( *amino_id ==  aNME){
+			strcpy(amino_name,"NME");
 		}else{
 			char msg [500];
 			sprintf(msg,"In set_*amino_id_3 function *amino_id not found. Check it. \n");
@@ -254,3 +269,19 @@ void set_amino_id_3(char *amino_name, const type_aminos_t *amino_id){
 		}
 }
 
+/** Check N-Terminal and C-Terminal of primary sequence. When there is X, it will be
+* set ACE or NME.
+*
+* primary_seq is the primary sequence of protein
+* num_res is the number of residue of protein
+*/
+void check_terminal_charge(char *primary_seq, const int *num_res){
+	//Checking N-Terminal
+	if (primary_seq[0] == 'X'){		
+		primary_seq[0] = '0'; // It Means ACE
+	}
+	//Checking C-Terminal
+	if (primary_seq[*num_res-1] == 'X'){		
+		primary_seq[*num_res-1] = '1'; // It Means NME
+	}
+}

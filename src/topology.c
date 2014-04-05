@@ -86,8 +86,7 @@ static void build_topology_individual_omega(protein_t *prot){
 		next_res = r + 1; //obtaing the next residue		
 		if (next_res <= prot->p_topol->numres){
 			//Build Fixed Atoms
-			i_af = -1;
-			//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
+			i_af = -1;			
 			prot->p_topol->omega[r-1].num_fixed = 2;
 			prot->p_topol->omega[r-1].fixed_atoms = Malloc(int, prot->p_topol->omega[r-1].num_fixed);
 			i_af++;
@@ -121,7 +120,8 @@ static void build_topology_individual_omega(protein_t *prot){
 
 static void build_topology_individual_psi(protein_t *prot){
 	char *atom_C, *atom_CA, *atom_O;
-	
+	int do_residue;
+
 	atom_CA = Malloc(char, 3);
 	atom_C = Malloc(char, 2);	
 	atom_O = Malloc(char, 2);
@@ -133,18 +133,35 @@ static void build_topology_individual_psi(protein_t *prot){
 	
 	//The last residue does not make rotation
 	for (int r = 1; r < prot->p_topol->numres; r++){
-		//Build Fixed Atoms		
-		prot->p_topol->psi[r-1].num_fixed = 2;
-		prot->p_topol->psi[r-1].fixed_atoms = Malloc(int, prot->p_topol->psi[r-1].num_fixed);
-		prot->p_topol->psi[r-1].fixed_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-			&r, atom_CA, &prot->p_topol->numatom);
-		prot->p_topol->psi[r-1].fixed_atoms[1] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-			&r, atom_C, &prot->p_topol->numatom);
-		//Build Moved Atom
-		prot->p_topol->psi[r-1].num_moved = 1;
-		prot->p_topol->psi[r-1].moved_atoms = Malloc(int, prot->p_topol->psi[r-1].num_moved);
-		prot->p_topol->psi[r-1].moved_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-			&r, atom_O, &prot->p_topol->numatom);
+		do_residue = 1;
+		if (r == 1){
+			/* When residue is N-Termninal have is necessary check 
+			* residue is ACE or NME. These residues are special.  
+			*/
+			if ( (strcmp(prot->p_atoms[0].resname, "ACE") == 0) ||
+				 (strcmp(prot->p_atoms[0].resname, "NME") == 0) ){
+				//Build Fixed and moved Atoms for ACE and NME
+				prot->p_topol->psi[r-1].num_fixed = 0;
+				prot->p_topol->psi[r-1].fixed_atoms = NULL;
+				prot->p_topol->psi[r-1].num_moved = 0;
+				prot->p_topol->psi[r-1].moved_atoms = NULL;
+				do_residue = 0;
+			}
+		}
+		if (do_residue == 1){
+			//Build Fixed Atoms		
+			prot->p_topol->psi[r-1].num_fixed = 2;
+			prot->p_topol->psi[r-1].fixed_atoms = Malloc(int, prot->p_topol->psi[r-1].num_fixed);
+			prot->p_topol->psi[r-1].fixed_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+				&r, atom_CA, &prot->p_topol->numatom);
+			prot->p_topol->psi[r-1].fixed_atoms[1] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+				&r, atom_C, &prot->p_topol->numatom);
+			//Build Moved Atom
+			prot->p_topol->psi[r-1].num_moved = 1;
+			prot->p_topol->psi[r-1].moved_atoms = Malloc(int, prot->p_topol->psi[r-1].num_moved);
+			prot->p_topol->psi[r-1].moved_atoms[0] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+				&r, atom_O, &prot->p_topol->numatom);
+		}
 	}
 	
 	free(atom_CA);
@@ -158,6 +175,7 @@ static void build_topology_individual_phi(protein_t *prot){
 	int exists_atom_H;
 	int i_af;
 	int num_moved;
+	int do_residue;
 
 	atom_N = Malloc(char, 2);
 	atom_CA = Malloc(char, 3);
@@ -172,44 +190,60 @@ static void build_topology_individual_phi(protein_t *prot){
 	strcpy(atom_H, "H");
 
 	//The first residue does not make rotation
-	for (int r = 1; r <= prot->p_topol->numres; r++){
+	for (int r = 1; r <= prot->p_topol->numres; r++){		
 		if (r > 1){
-			
-			exists_atom_H = 0;
-			//Build Fixed Atoms
-			num_moved = 2;
-			i_af = -1;
-			//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
-			if (atom_name_exists_in_resnum(prot->p_atoms, &r, 
-				atom_H, &prot->p_topol->numatom) == btrue){				
-				num_moved = num_moved + 1;
-				exists_atom_H = 1;
+			do_residue = 1;
+			if (r == prot->p_topol->numres){
+				/* When residue is C-Termninal have is necessary check 
+				* residue is ACE or NME. These residues are special.  
+				*/
+				if ( (strcmp(prot->p_atoms[0].resname, "ACE") == 0) ||
+					 (strcmp(prot->p_atoms[0].resname, "NME") == 0) ){
+					//Build Fixed and moved Atoms for ACE and NME
+					prot->p_topol->phi[r-1].num_fixed = 0;
+					prot->p_topol->phi[r-1].fixed_atoms = NULL;
+					prot->p_topol->phi[r-1].num_moved = 0;
+					prot->p_topol->phi[r-1].moved_atoms = NULL;
+					do_residue = 0;
+				}
 			}
-			prot->p_topol->phi[r-1].num_fixed = num_moved;
-			prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
-			i_af++;
-			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					&r, atom_N, &prot->p_topol->numatom);
-			i_af++;
-			prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-					&r, atom_CA, &prot->p_topol->numatom);
-			if (exists_atom_H == 1){
+			if (do_residue == 1){
+				exists_atom_H = 0;
+				//Build Fixed Atoms
+				num_moved = 2;
+				i_af = -1;
+				//num_hydrogen_backbone = get_number_hydrogen_backbone(prot, &r);
+				if (atom_name_exists_in_resnum(prot->p_atoms, &r, 
+					atom_H, &prot->p_topol->numatom) == btrue){				
+					num_moved = num_moved + 1;
+					exists_atom_H = 1;
+				}
+				prot->p_topol->phi[r-1].num_fixed = num_moved;
+				prot->p_topol->phi[r-1].fixed_atoms = Malloc(int, prot->p_topol->phi[r-1].num_fixed);
 				i_af++;
 				prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
-						&r, atom_H, &prot->p_topol->numatom);
-			}
+						&r, atom_N, &prot->p_topol->numatom);
+				i_af++;
+				prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+						&r, atom_CA, &prot->p_topol->numatom);
+				if (exists_atom_H == 1){
+					i_af++;
+					prot->p_topol->phi[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+							&r, atom_H, &prot->p_topol->numatom);
+				}
 
-			//Build Moved Atom		
-			i_af = -1;
-			//It is considered moved atom all atoms that are not fixed atoms
-			prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
-			prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
-			for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
-				if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
-					prot->p_topol->phi[r-1].fixed_atoms, 
-					&prot->p_topol->phi[r-1].num_fixed) == bfalse){
-					i_af++;				
-					prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
+				//Build Moved Atom		
+				i_af = -1;
+				//It is considered moved atom all atoms that are not fixed atoms
+				prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
+				prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
+				for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
+					if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 
+						prot->p_topol->phi[r-1].fixed_atoms, 
+						&prot->p_topol->phi[r-1].num_fixed) == bfalse){
+						i_af++;				
+						prot->p_topol->phi[r-1].moved_atoms[i_af] = prot->p_atoms[i_a-1].atmnumber;
+					}
 				}
 			}
 		}else{
