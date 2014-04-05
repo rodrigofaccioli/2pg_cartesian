@@ -177,7 +177,7 @@ int mc_metropolis(const input_parameters_t *in_para){
     rr = 0;
 	R = 8.3144621E-3; // kJ/Kmol
 	T = 309;	// K
-	max_random = 1.000;
+	max_random = 1;
 	prob = 1.000;
 
     //Loading Fasta file
