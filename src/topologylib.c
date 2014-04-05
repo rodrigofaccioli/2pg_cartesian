@@ -23,7 +23,9 @@ int get_atom_index_by_resnum_atom_name(const pdb_atom_t *atoms,
 
 	aux = search_pdb_atom_from_resnum_atom_name(atoms, res_num, atomname, num_atom);
 	if (aux == NULL){
-		fatal_error("Atom not found at get_atom_index_by_resnum_atom_name\n");
+ 		char msg[300];
+ 	    sprintf(msg,"Atom %s not found at get_atom_index_by_resnum_atom_name \n", atomname);
+  		fatal_error(msg);		
 	}
 	return aux->atmnumber;
 }
