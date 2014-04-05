@@ -50,6 +50,8 @@ typedef struct sinput_parameters{
     type_terminal_charge_t n_terminal_charge;
     /*set who can be neutralize C-Terminal*/    
     type_terminal_charge_t c_terminal_charge;    
+    /*Indicates the number of Steps. For example, number of rotations*/
+    int StepNumber;
  }input_parameters_t;
 
 #endif

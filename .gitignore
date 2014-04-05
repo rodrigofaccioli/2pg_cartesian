@@ -16,5 +16,6 @@
 *.exe
 *.out
 *.app
-protpred-Gromacs-Mono_PSP
+protpred-Gromacs-Random_Algorithm_PSP
 protpred-Gromacs-MC_Metropolis_PSP
+protpred-Gromacs-Mono_PSP

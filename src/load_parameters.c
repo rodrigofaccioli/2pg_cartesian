@@ -45,6 +45,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->MonteCarloSteps = 100;
     param->n_terminal_charge = term_charge_NR;
     param->c_terminal_charge = term_charge_NR;
+    param->StepNumber = 1000;
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -207,4 +208,5 @@ void load_parameters_from_file(input_parameters_t *param,
 	set_terminal_charge(param, conf.getParameterChar("c_terminal_charge"),
 		conf.getParameterChar("n_terminal_charge"));
 
+	param->StepNumber = atoi(conf.getParameterChar("StepNumber"));
 }
