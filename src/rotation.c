@@ -77,19 +77,23 @@ static void rotate_all_atoms(protein_t *prot, const int *atomB, const int *atomC
 * angle is the value of rotated angle
 */
 void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle){
-	//last residue does not make rotation
-	if (*num_res_first < prot->p_topol->numres){
-		//rotates first residue
-		rotation_by_angle_dih(prot->p_atoms, 
-			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
-			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1],
-		    &prot->p_topol->psi[*num_res_first-1].moved_atoms[0], angle);
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
+	if (prot->p_topol->psi[*num_res_first-1].num_moved > 0){
+		//last residue does not make rotation
+		if (*num_res_first < prot->p_topol->numres){
+			//rotates first residue
+			rotation_by_angle_dih(prot->p_atoms, 
+				&prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
+				&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1],
+			    &prot->p_topol->psi[*num_res_first-1].moved_atoms[0], angle);
 
-		// rotates all atoms from the forward residue
-		rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
-			&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
-			num_res_first, angle);
+			// rotates all atoms from the forward residue
+			rotate_all_atoms(prot, &prot->p_topol->psi[*num_res_first-1].fixed_atoms[0], 
+				&prot->p_topol->psi[*num_res_first-1].fixed_atoms[1], 
+				num_res_first, angle);
+		}		
 	}
+
 }
 
 
@@ -100,20 +104,24 @@ void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle)
 * angle is the value of rotated angle
 */
 void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle){
-	//The first residue does not make rotation 
-	if (*num_res_first > 1){		
-		//rotates all moved atoms of first residue
-		for (int i = 0; i < prot->p_topol->phi[*num_res_first-1].num_moved; i++){
-			rotation_by_angle_dih(prot->p_atoms, 
-				&prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
-				&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1],
-		    	&prot->p_topol->phi[*num_res_first-1].moved_atoms[i], angle);
-		}
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
+	if (prot->p_topol->phi[*num_res_first-1].num_moved > 0){
+		//The first residue does not make rotation 
+		if (*num_res_first > 1){		
+			//rotates all moved atoms of first residue
+			for (int i = 0; i < prot->p_topol->phi[*num_res_first-1].num_moved; i++){
+				rotation_by_angle_dih(prot->p_atoms, 
+					&prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
+					&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1],
+			    	&prot->p_topol->phi[*num_res_first-1].moved_atoms[i], angle);
+			}
 
-		// rotates all atoms from the forward residue
-		rotate_all_atoms(prot, &prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
-			&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1], num_res_first, angle);
+			// rotates all atoms from the forward residue
+			rotate_all_atoms(prot, &prot->p_topol->phi[*num_res_first-1].fixed_atoms[0], 
+				&prot->p_topol->phi[*num_res_first-1].fixed_atoms[1], num_res_first, angle);
+		}		
 	}
+
 }
 
 /** Rotates protein in a OMEGA dihedral movement
@@ -128,6 +136,7 @@ void rotation_omega(protein_t *prot, const int *num_res_first, const float *angl
 	* if num_res_first is greater than number of residue of protein 
 	* no makes rotation in protein.
 	*/
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move	
 	if (*num_res_first < prot->p_topol->numres){
 		/*rotates all moved atoms of first residue
 		for (int i = 0; i < prot->p_topol->omega[num_res_next-1].num_moved; i++){
