@@ -54,15 +54,17 @@ boolean_t atom_name_exists_in_resnum(const pdb_atom_t *atoms,
 void set_fixed_moved_atoms_side_chains_SER(protein_t *prot, 
 	const int *res_num, const int *chi){
 
-	char *atom_CA, *atom_CB, *atom_OG, *atom_HG1, *atom_HB1, *atom_HB2;
+	char *atom_CA, *atom_CB, *atom_OG, *atom_HG1, *atom_HB1, 
+	*atom_HB2, *atom_HG;
 	int i_af;
 	int num_moved;
-	int exists_HG1, exists_HB1, exists_HB2;
+	int exists_HG1, exists_HB1, exists_HB2, exists_HG;
 
 	atom_CA = Malloc(char, 3);
 	atom_CB = Malloc(char, 3);
 	atom_OG = Malloc(char, 3);
 	atom_HG1 = Malloc(char, 4);
+	atom_HG = Malloc(char, 3);
 	atom_HB1 = Malloc(char, 4);
 	atom_HB2 = Malloc(char, 4);
 
@@ -70,12 +72,14 @@ void set_fixed_moved_atoms_side_chains_SER(protein_t *prot,
 	strcpy(atom_CB, "CB");
 	strcpy(atom_OG, "OG");
 	strcpy(atom_HG1, "HG1");	
+	strcpy(atom_HG, "HG");
 	strcpy(atom_HB1, "HB1");
 	strcpy(atom_HB2, "HB2");
 
 	exists_HG1 = 0;
 	exists_HB1 = 0;
 	exists_HB2 = 0;
+	exists_HG = 0;
 
 	//Building Fixed Atoms
 	i_af = -1;
@@ -105,6 +109,11 @@ void set_fixed_moved_atoms_side_chains_SER(protein_t *prot,
 		num_moved = num_moved + 1;
 		exists_HG1 = 1;
 	}	
+	if (atom_name_exists_in_resnum(prot->p_atoms,
+			res_num, atom_HG, &prot->p_topol->numatom) == btrue){
+		num_moved = num_moved + 1;
+		exists_HG = 1;
+	}
 	i_af = -1;
 	prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].num_moved = num_moved;
 	prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms = Malloc(int, 
@@ -127,12 +136,18 @@ void set_fixed_moved_atoms_side_chains_SER(protein_t *prot,
 		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 				res_num, atom_HG1, &prot->p_topol->numatom);
 	}
+	if (exists_HG == 1){
+		i_af++;				
+		prot->p_topol->side_chains[*res_num-1].atoms_chi[*chi-1].moved_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
+				res_num, atom_HG, &prot->p_topol->numatom);
+	}	
 	free(atom_CA);
 	free(atom_CB);
 	free(atom_OG);
 	free(atom_HG1);
 	free(atom_HB1);
 	free(atom_HB2);	
+	free(atom_HG);
 }
 
 /** Assigens the fixed and moved atoms for CYS
