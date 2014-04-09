@@ -51,46 +51,6 @@ void save_solution(const solution_t *solution_curr,
 	fclose(pdbfile);
 }
 
-/** Accepts updating the current solution with new solution
-* solution_curr is the current solution
-* solution_new is the new solution
-*/ 
-void accept(solution_t *solution_curr, const solution_t *solution_new){
-	protein_t *p_curr;
-	const protein_t *p_new;
-	p_curr = (protein_t*) solution_curr[0].representation;
-	p_new = (protein_t*) solution_new[0].representation;
-	copy_protein(p_curr, p_new);
-	solution_curr->obj_values[0] = solution_new->obj_values[0];
-}
-
-/** Updates new solution with current solution
-* solution_new is the new solution
-* solution_curr is the current solution
-*/ 
-void reject(solution_t *solution_new, const solution_t *solution_curr){
-	const protein_t *p_curr;
-	protein_t *p_new;
-	p_curr = (protein_t*) solution_curr[0].representation;
-	p_new = (protein_t*) solution_new[0].representation;
-	copy_protein(p_new, p_curr);
-	solution_new->obj_values[0] = solution_curr->obj_values[0];
-}
-
-
-static int compare_solution(const void *x, const void *y){
-    double fx, fy;
-    fx = ((solution_t *)x)->obj_values[0];
-    fy = ((solution_t *)y)->obj_values[0];
-    if (fx > fy){
-        return 1;
-    }else if ( (fx -fy) == 0.0001){
-        return 0;
-    }else{
-        return -1;
-    }
-}
-
 /** Builds a new solution
 * ind_new is an protein structure
 * in_para is the input parameter
@@ -99,10 +59,10 @@ void build_solution(protein_t *ind_new, const input_parameters_t *in_para){
     float angle_radians, angle_degree, rate;
     int what_rotation;
     int max_kind_of_rotation = 4;
-    int num_residue_choose;
+    int num_residue_choose;    
     
     //Choose a residue. It must be started 1 untill number of residue
-    num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);
+    num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);   
     //Obtaing kind of rotation
     what_rotation = _get_int_random_number(&max_kind_of_rotation);            
     //Appling the rotation 
@@ -198,8 +158,7 @@ int random_algorithm(const input_parameters_t *in_para){
     for (int s = 1; s <= in_para->StepNumber; s++){
     	save_solution(&solution_curr[0], in_para, &s);
     	build_solution(&prot_curr[0], in_para);
-    	get_gromacs_objectives(&solution_curr[0], in_para);
-		// Checking the new solution acceptance
+    	get_gromacs_objectives(&solution_curr[0], in_para);		
 		printf("%f \n", solution_curr[0].obj_values[0]);
     }    
     finish_gromacs_execution();
