@@ -28,26 +28,51 @@
 #include "objective.h"
 #include "solutionio.h"
 
+void save_energies(const solution_t *solution_curr, 
+    const solution_t *solution_new, const input_parameters_t *in_para, 
+    const int *num_sol){    
+    const protein_t* p_curr;
+    FILE * energy_file; 
+    char *file_name;
+    file_name = Malloc(char, MAX_FILE_NAME);
+    strcpy(file_name, "monte_carlo_energies.fit");
+    char *fname = path_join_file(in_para->path_local_execute,
+        file_name);    
+    p_curr = (protein_t*) solution_curr->representation;
+    if (*num_sol == 1){
+        energy_file = open_file(fname, fWRITE);
+        fprintf (energy_file,";Index New_Solution \t Current_Solution \n");
+    }else{
+        energy_file = open_file(fname, fAPPEND);
+    }    
+    fprintf (energy_file,"%i \t %f \t %f \n", *num_sol, solution_new[0].obj_values[0], solution_curr[0].obj_values[0]);
+    fclose(energy_file);    
+    free(fname);
+    free(file_name);    
+}
 
-void save_final_solution(const solution_t *solution_curr, 
-	const input_parameters_t *in_para){
-	const protein_t* p_curr;
-	FILE * pdbfile;
-	int m = 0;
-	char *file_name;
-	file_name = Malloc(char, MAX_FILE_NAME);
-	strcpy(file_name, "final_solution_mc.pdb");
-	char *fname = path_join_file(in_para->path_local_execute,
-		file_name);
-	pdbfile = open_file(fname, fWRITE);
-	p_curr = (protein_t*) solution_curr->representation;
-	writeHeader(pdbfile, 0.00, &p_curr->p_topol->numatom);
-	writeModel(pdbfile, &m);
-	writeATOM(pdbfile, p_curr->p_atoms, &p_curr->p_topol->numatom);
-	writeEndModel(pdbfile);
-	free(fname);
-	free(file_name);
-	fclose(pdbfile);
+void save_solution(const solution_t *solution_curr, 
+    const input_parameters_t *in_para, const int *num_sol){
+    const protein_t* p_curr;
+    FILE * pdbfile; 
+    char *file_name;
+    file_name = Malloc(char, MAX_FILE_NAME);
+    strcpy(file_name, "monte_carlo_solutions.pdb");
+    char *fname = path_join_file(in_para->path_local_execute,
+        file_name);    
+    p_curr = (protein_t*) solution_curr->representation;
+    if (*num_sol == 1){
+        pdbfile = open_file(fname, fWRITE);
+        writeHeader(pdbfile, 0.00, &p_curr->p_topol->numatom);
+    }else{
+        pdbfile = open_file(fname, fAPPEND);
+    }
+    writeModel(pdbfile, num_sol);
+    writeATOM(pdbfile, p_curr->p_atoms, &p_curr->p_topol->numatom);
+    writeEndModel(pdbfile);
+    free(fname);
+    free(file_name);
+    fclose(pdbfile);
 }
 
 /** Accepts updating the current solution with new solution
@@ -214,11 +239,16 @@ int mc_metropolis(const input_parameters_t *in_para){
     set_proteins2solutions(solution_new, prot_new, &num_solution);
 	//Computing solutions with GROMACS
     get_gromacs_objectives(solution_curr, in_para);
-    for (int s = 0; s < in_para->MonteCarloSteps; s++){
+    for (int s = 1; s <= in_para->MonteCarloSteps; s++){
+        //Saving PDB of current solution
+        save_solution(&solution_curr[0], in_para, &s);
+        //Building new Solution
     	mc_build_solution(&prot_new[0], in_para);
+        //Calculates energy of new Solution
     	get_gromacs_objectives(&solution_new[0], in_para);
-		// Checking the new solution acceptance
-		printf("%f %f\n", solution_new[0].obj_values[0], solution_curr[0].obj_values[0]);
+        //Saving energies of New and Current solution
+        save_energies(solution_curr, solution_new, in_para, &s);
+		// Checking the new solution acceptance		
 		if( solution_new[0].obj_values[0] > solution_curr[0].obj_values[0] ){// If the energy of the new structure is higher than of the previous...
 			prob=exp( (-1)*((solution_new[0].obj_values[0] - solution_curr[0].obj_values[0])/(R*T) ) );// Metropolis criterion
 			rr= _get_float_max(&max_random);	// correction for not allowing 0.00000000 to be chosen			
@@ -232,7 +262,7 @@ int mc_metropolis(const input_parameters_t *in_para){
 			accept(&solution_curr[0], &solution_new[0]);
 		}
     }    
-    save_final_solution(&solution_curr[0], in_para);
+    //save_final_solution(&solution_curr[0], in_para);
     finish_gromacs_execution();
 
 /**************** FINISHED Mono-objetive Evolutionary Algorithm *************************/     
