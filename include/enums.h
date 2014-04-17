@@ -99,8 +99,7 @@ enum type_rotamer_library{rotamer_library_none, rotamer_library_cad_tuffery,
 typedef enum type_rotamer_library type_rotamer_library_t;
 
 /*Represents kind of crossover */
-enum type_crossoers{crossoer_point_1, crossoer_point_2, crossoer_blx_alpha,
-	crossoer_NR};
+enum type_crossoers{crossoer_none, crossoer_point_1, crossoer_NR};
 typedef enum type_crossoers type_crossoers_t;
 
 /*Represents kind of objective_analysis */

@@ -21,11 +21,14 @@ static void initialize_parameters(input_parameters_t *param){
 	param->computed_areas_g_sas_file = Malloc(char, MAX_FILE_NAME );
 	param->computed_radius_g_gyrate_file = Malloc(char, MAX_FILE_NAME );
 	param->computed_g_hbond_file = Malloc(char, MAX_FILE_NAME );
-	param->individual_mutation_rate = 0.10;
+	param->apply_crossover = Malloc(char, 4);
+	
+
 	param->objective_analysis = objective_analysis_none;
 	param->path_dimo_sources = NULL;
 	param->path_call_GreedyTreeGenerator2PG = NULL;	
 
+	param->point_1_cros_rate = 0.0;
 	param->crossovers = NULL;
 	
     param->min_angle_mutation_phi = -180.0;
@@ -100,27 +103,40 @@ void set_parameter_number_crossover(input_parameters_t *param){
 	param->number_crossover = how_many;
 }
 
-void set_crossovers(input_parameters_t *param){
-	/* It stores the crossovers that the user chose.
-	 */
-	/*
-	if (param->crossover_rate > 0){// It means that the crossover will be used.
+void set_apply_crossover(input_parameters_t *param, char *apply_cros){
+
+	if (strcmp(apply_cros, "no") == 0 ){
+		strcpy(param->apply_crossover, "no");
+	}else if (strcmp(apply_cros, "yes") == 0 ){
+		strcpy(param->apply_crossover, "yes");
+	}else{
+		fatal_error("In apply_crossover parameter must be yes or no. Check it!! \n");
+	}
+
+	
+}
+
+/** Sets what kind of crossover will be used
+*/
+void set_crossovers(input_parameters_t *param){	
+	if ( strcmp(param->apply_crossover, "yes") == 0){// It means that the crossover will be used.
 		param->crossovers = Malloc(type_crossoers_t, param->number_crossover);
 
 		int index = -1;
 		if (param->point_1_cros_rate > 0){
 			index = index + 1;
 			param->crossovers[index] = crossoer_point_1;
+		}else{
+			fatal_error("One rate of crossover must be informed. Check it!! \n");
 		}
-		if (param->point_2_cros_rate > 0){
-			index = index + 1;
-			param->crossovers[index] = crossoer_point_2;
-		}
+
 		if (index > param->number_crossover){
 			fatal_error("In set_crossovers function there is an error of index. Check it!! \n");
 		}
+	}else{ // It means that the crossover will NOT be used.
+		param->crossovers = Malloc(type_crossoers_t, 1);
+		param->crossovers[0] = crossoer_none;
 	}
-	*/
 }
 
 void set_terminal_charge(input_parameters_t *param, char *param_c_terminal, 
@@ -141,6 +157,7 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->fitness_energies);
 	free(param->force_field);
 	free(param->mdp_file);
+	free(param->apply_crossover);
 	if (param->crossovers != NULL){
 		free(param->crossovers);
 	}
@@ -175,9 +192,10 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->computed_g_hbond_file,conf.getParameterChar("Computed_g_hbond_File"));
 	set_parameter_fitness_energies(param,conf.getParameterChar("Fitness_Energy"));
 	param->individual_mutation_rate = atof(conf.getParameter("Individual_Mutation_Rate").c_str());
-	param->point_1_cros_rate = atof(conf.getParameter("1_point_cros_Rate").c_str());
-	param->point_2_cros_rate = atof(conf.getParameter("2_point_cros_Rate").c_str());
 
+	param->point_1_cros_rate = atof(conf.getParameter("1_point_cros_Rate").c_str());
+	set_apply_crossover(param,
+			conf.getParameterChar("apply_crossover"));
 	set_parameter_number_crossover(param);
 	set_crossovers(param);
 

@@ -155,14 +155,18 @@ void crossover_parents(protein_t *p_new, const protein_t *p1,
 * prot_2 is second indiviual
 */
 void apply_crossover(protein_t *ind_new, const protein_t *prot_1, 
-    const protein_t * prot_2){
-    int choose;
-    int aux = 2;
-    choose = _get_int_random_number(&aux);
-    if (choose == 0){
-        crossover_parents(ind_new, prot_1, prot_2);
+    const protein_t * prot_2, type_crossoers_t *crossovers){
+    if (crossovers[0] != crossoer_none){
+        int choose;
+        int aux = 2;
+        choose = _get_int_random_number(&aux);
+        if (choose == 0){
+            crossover_parents(ind_new, prot_1, prot_2);
+        }else{
+            crossover_1_part(ind_new, prot_1, prot_2);
+        }
     }else{
-        crossover_1_part(ind_new, prot_1, prot_2);
+        crossover_parents(ind_new, prot_1, prot_2);
     }
 }
 
@@ -261,7 +265,7 @@ void reproduce_protein(protein_t *pop_new, const solution_t *solutions,
         prot_aux_1 = (protein_t*) solutions[ind_1].representation;
         prot_aux_2 = (protein_t*) solutions[ind_2].representation;        
         //Appling crossover operator between prot_aux_1 and prot_aux_2. Resulting pop_new[i]
-        apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2);        
+        apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2, in_para->crossovers);        
         //Appling mutation operator in pop_new[i]        
         apply_mutation(&pop_new[i], in_para);
     }

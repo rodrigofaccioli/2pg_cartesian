@@ -13,12 +13,12 @@ typedef struct sinput_parameters{
     int number_fitness;
     type_fitness_energies_t *fitness_energies;
     int number_generation;
-    float point_1_cros_rate;
-    float point_2_cros_rate;
+    char *apply_crossover;
+    float point_1_cros_rate;    
     int number_crossover; //it shows how many crossovers the user chose. This parameter is obtained by set_parameter_number_crossover function
     /*It stores the crossovers the user chose. It is considered a crossover chose when its rate is greater than 0.
      * Otherwise, the crossover is not chosen. For example, point_1_cros_rate > 0, in crossovers contains at least crossoer_point_1.
-     */
+     */    
     type_crossoers_t *crossovers;
     type_energy_minimization_t gromacs_energy_min; //Set which energy minimization: none, implicit or explicit. none is default.
     type_energy_minimization_t gromacs_energy_min_gen_oper; ////Set which energy minimization for genetic operators: none, implicit or explicit. none is default.
