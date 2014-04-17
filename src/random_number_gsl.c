@@ -30,10 +30,7 @@ static void init_random(){
 		  gsl_rng_default_seed = get_pid()+random();
 		  T = gsl_rng_default;
 		  r = gsl_rng_alloc (T);
-		//gsl_rng_env_setup();
-		//r = gsl_rng_alloc(gsl_rng_ranlxs0); //gsl_rng_mt19937
-	}
-	//set_seed();
+	}	
 }
 
 void finish_random()
