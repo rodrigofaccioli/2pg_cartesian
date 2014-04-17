@@ -193,16 +193,15 @@ int mc_metropolis(const input_parameters_t *in_para){
 
     solution_t *solution_new; // new solution
     solution_t *solution_curr; // current solution
-    int rr;
-    float R, prob, max_random;
+    float R;
+    float prob, rr;
     int T;
 
     //Starting values
     num_solution = 1;
     rr = 0;
 	R = 8.3144621E-3; // kJ/Kmol
-	T = 309;	// K
-	max_random = 1;
+	T = 309;	// K	
 	prob = 1.000;
 
     //Loading Fasta file
@@ -251,7 +250,8 @@ int mc_metropolis(const input_parameters_t *in_para){
 		// Checking the new solution acceptance		
 		if( solution_new[0].obj_values[0] > solution_curr[0].obj_values[0] ){// If the energy of the new structure is higher than of the previous...
 			prob=exp( (-1)*((solution_new[0].obj_values[0] - solution_curr[0].obj_values[0])/(R*T) ) );// Metropolis criterion
-			rr= _get_float_max(&max_random);	// correction for not allowing 0.00000000 to be chosen			
+			rr = _get_double_random_number();
+            printf("prob %f rr %f \n", prob, rr);
 			if( rr <= prob ){
 				accept(&solution_curr[0],&solution_new[0]);
 			}else{
