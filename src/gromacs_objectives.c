@@ -23,7 +23,7 @@
 
 
 #define TAM_LINE_ENER 50
-#define MAX_ENERGY 9999999999999999999999999.9999
+#define MAX_ENERGY 9999999999999999999999999.9999				   
 #define MIN_ENERGY -9999999999999999999999999.9999
 #define MAX_VALUE 40
 #define MAX_VALUE_G_SAS 3
@@ -494,7 +494,7 @@ static void clean_gromacs_simulation(const char *path_local_execute){
 double get_objective_value(const char *value){
 	double aux = MAX_ENERGY;
 	aux = str2double(value);
-	if ( (aux ==  -1.000000) || (isnan(aux) == btrue)){
+	if ( (aux ==  -1.000000) || (isnan(aux) == btrue) ){
 		aux = MAX_ENERGY;
 	}
 	return aux;
@@ -765,27 +765,32 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 		const char *path_gromacs_programs, const char *opt_energy ){
 	char *last_line, *line_splited;
 	char *value;
-	//Call g_energy
-	call_g_energy(local_execute, path_gromacs_programs, opt_energy);
-	if (check_exists_file(energy_xvg) == btrue){
-		value = Malloc(char,MAX_VALUE);
-		//get the last line of xvg file
-		last_line = get_last_line(energy_xvg);
-		// Split last line by space and obtaing the first value
- 		line_splited = strtok (last_line," ");
- 		// Obtaining the second value. It will be set in solution
- 		line_splited = strtok(NULL, " ");
- 		strcpy(value, line_splited);
- 		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
-    		line_splited = strtok(NULL, " ");
-  		}
-		//Set the value of energy option in solution
-	    set_objective_from_gromacs_in_solution(sol,value, obj);	
-	    free(line_splited);
-	    free(last_line);
-	    free(value);
-	    delete_file(local_execute, energy_xvg);
+	
+	if (check_exists_file(file_energy_computed_ener_edr) == btrue){
+		//Call g_energy
+		call_g_energy(local_execute, path_gromacs_programs, opt_energy);	
+		if (check_exists_file(energy_xvg) == btrue){
+			value = Malloc(char,MAX_VALUE);
+			//get the last line of xvg file
+			last_line = get_last_line(energy_xvg);
+			// Split last line by space and obtaing the first value
+	 		line_splited = strtok (last_line," ");
+	 		// Obtaining the second value. It will be set in solution
+	 		line_splited = strtok(NULL, " ");
+	 		strcpy(value, line_splited);
+	 		//Looking the end of line_splited
+		  	while (line_splited != NULL){	    	
+	    		line_splited = strtok(NULL, " ");
+	  		}
+			//Set the value of energy option in solution
+		    set_objective_from_gromacs_in_solution(sol,value, obj);	
+		    free(line_splited);
+		    free(last_line);
+		    free(value);
+		    delete_file(local_execute, energy_xvg);
+		}else{
+			sol->obj_values[*obj] = MAX_ENERGY; //MAX energy value
+		}
 	}else{
 		sol->obj_values[*obj] = MAX_ENERGY; //MAX energy value
 	}
