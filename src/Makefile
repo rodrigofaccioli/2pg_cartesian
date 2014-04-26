@@ -10,7 +10,7 @@ CXX=g++
 OPT=  -c -g
 OPT_GSL = -static -Wall -lgsl -lgslcblas -lm -pedantic 
 
-all:protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-Mono_PSP
+all:protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-Mono_PSP protpred-Gromacs-Dominance
 
 protpred-Gromacs-Random_Algorithm_PSP:protpred-Gromacs-Random_Algorithm.o random_algorithm.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
 	$(CXX) -o protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-Random_Algorithm.o random_algorithm.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
@@ -18,6 +18,8 @@ protpred-Gromacs-MC_Metropolis_PSP:protpred-Gromacs-MC_Metropolis.o mc_metropoli
 	$(CXX) -o protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-MC_Metropolis.o mc_metropolis.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
 protpred-Gromacs-Mono_PSP:protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
 	$(CXX) -o protpred-Gromacs-Mono_PSP protpred-Gromacs-Mono.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o random_number_gsl.o load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
+protpred-Gromacs-Dominance:protpred-Gromacs-Dominance.o LoadConfig.o futil.o messages.o string_owner.o osutil.o load_parameters.o solution.o aminoacids.o objective.o randomlib.o random_number_gsl.o dominance.o
+	$(CXX) -o protpred-Gromacs-Dominance protpred-Gromacs-Dominance.o LoadConfig.o futil.o messages.o string_owner.o osutil.o load_parameters.o solution.o aminoacids.o objective.o randomlib.o random_number_gsl.o dominance.o $(OPT_GSL) 
 
 protpred-Gromacs-Random_Algorithm.o:protpred-Gromacs-Random_Algorithm.c
 	$(CXX) $(OPT) protpred-Gromacs-Random_Algorithm.c -I../include
@@ -27,6 +29,9 @@ protpred-Gromacs-MC_Metropolis.o:	protpred-Gromacs-MC_Metropolis.c
 
 protpred-Gromacs-Mono.o:	protpred-Gromacs-Mono.c
 	$(CXX) $(OPT) protpred-Gromacs-Mono.c -I../include
+
+protpred-Gromacs-Dominance.o: protpred-Gromacs-Dominance.c
+	$(CXX) $(OPT) protpred-Gromacs-Dominance.c -I../include
 
 populationio.o:	populationio.c
 	$(CXX) $(OPT) populationio.c -I../include
@@ -120,3 +125,6 @@ mc_metropolis.o:	mc_metropolis.c
 
 random_algorithm.o:	random_algorithm.c	
 	$(CXX) $(OPT) random_algorithm.c -I../include
+
+dominance.o:	dominance.c	
+	$(CXX) $(OPT) dominance.c -I../include
