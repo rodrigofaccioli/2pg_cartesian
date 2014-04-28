@@ -15,7 +15,7 @@ static void write_objectives_values(FILE *fit_file, const int *fit,
 	const solution_t *solutions, const int *pop_size){
 	int i;
 	for (i=0; i < *pop_size; i++){
-		fprintf (fit_file,"%d %f \n", i, get_specific_objective(&solutions[i],fit));
+		fprintf (fit_file,"%d %f \n", i+1, get_specific_objective(&solutions[i],fit));
 	}
 }
 
@@ -23,7 +23,7 @@ static void write_oposite_objective_values(FILE *fit_file, const int *fit,
 	const solution_t *solutions, const int *pop_size){
 	int i;
 	for (i=0; i < *pop_size; i++){
-		fprintf (fit_file,"%d %f \n", i, get_oposite_specific_objective(&solutions[i],fit));
+		fprintf (fit_file,"%d %f \n", i+1, get_oposite_specific_objective(&solutions[i],fit));
 	}
 }
 
