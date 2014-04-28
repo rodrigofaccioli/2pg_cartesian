@@ -501,10 +501,12 @@ static void build_objective_files_non_dominated(const solution_t *solutions,
 
 
 void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt, 
-    const int *size_RT, const int *ger, const input_parameters_t *in_para){
-    solution_t *solutions, *solutions_non_dominated;
-    protein_t *pop_protein, *pop_protein_non_dominated;
-    char *pop_RT_file_name, *pop_non_dominated;
+    const int *size_RT, const int *ger, const ea_nsga2_t *solutions_p,
+    const input_parameters_t *in_para){
+
+    solution_t *solutions, *solutions_non_dominated, *solutions_p_aux;
+    protein_t *pop_protein, *pop_protein_non_dominated, *pop_protein_p;
+    char *pop_RT_file_name, *pop_non_dominated, *pop_p_file_name;
     int num_obj, number_of_non_dominated, front_non_dominated;    
 
     num_obj = solutions_rt[0].sol->num_obj;
@@ -546,8 +548,28 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
         &number_of_non_dominated, &num_obj, in_para);
 /**** FINISHED creating file to NON-DOMINATED **/
 
+/**** Setting solutions to save information from solutions_p ***/
+    //Setting objectivies
+    solutions_p_aux = allocate_solution(&in_para->size_population, &num_obj);    
+    set_nsga2_solution_in_solution(solutions_p_aux, solutions_p, &in_para->size_population);
+    //Setting proteins
+    pop_protein_p = allocateProtein(&in_para->size_population);
+    copy_nsga2_solutions2protein(pop_protein_p, solutions_p, &in_para->size_population);
+    set_proteins2solutions(solutions_p_aux, pop_protein_p, &in_para->size_population);    
+
+    //Saving data of solutions_rt
+    pop_p_file_name = Malloc(char, MAX_FILE_NAME);
+    sprintf(pop_p_file_name,"pop_%d.pdb",*ger);
+    save_population_file(pop_protein_p, in_para->path_local_execute, pop_p_file_name, 
+        &in_para->size_population);    
+/**** FINISHED creating file to solutions_p **/
+
+    free(pop_p_file_name);
     free(pop_non_dominated);
     free(pop_RT_file_name);
+
+    desallocateProtein(pop_protein_p, &in_para->size_population);
+    desallocate_solution(solutions_p_aux, &in_para->size_population);
     desallocateProtein(pop_protein_non_dominated, &number_of_non_dominated);
     desallocate_solution(solutions_non_dominated, &number_of_non_dominated);    
     desallocateProtein(pop_protein, size_RT);
@@ -650,13 +672,14 @@ int ea_nsga2(const input_parameters_t *in_para){
         set_dominance_and_crowding_distance_in_soluton_rt(nsga2_solutions_rt, 
             &size_RT, in_para);
 
-        //Creating files for generation analysis
-        saving_file_to_generation_analysis(nsga2_solutions_rt, &size_RT,
-            &generation, in_para);
-
         //Coping to next generation
         copy_survivors_to_next_generation(nsga2_solutions_p, 
             nsga2_solutions_rt, &in_para->size_population);
+
+        //Creating files for generation analysis
+        saving_file_to_generation_analysis(nsga2_solutions_rt, &size_RT,
+            &generation, nsga2_solutions_p, in_para);
+
     }
 	finish_gromacs_execution();
 /**************** FINISHED NSGA-II Algorithm *************************/
