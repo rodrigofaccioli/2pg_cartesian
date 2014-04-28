@@ -471,18 +471,47 @@ void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt
 
 }
 
+static void set_objective_file_name_non_dominated(char *objective_file_name_non_dominated,
+    const int *fit, const int *generation, const input_parameters_t *in_para){
+    char fitness_name[MAX_RANDOM_STRING];
+    char sger[MAX_RANDOM_STRING];
+    type_fitness_energies2str(fitness_name, &in_para->fitness_energies[*fit]);
+    sprintf(sger, "%d", *generation);
+    strcat(fitness_name,"_");
+    strcat(fitness_name,"NON_DOMINATED_");
+    strcat(fitness_name,sger);
+    sprintf(objective_file_name_non_dominated,"%s.fit",fitness_name );
+}
+
+static void build_objective_files_non_dominated(const solution_t *solutions, 
+    const int *generation, const int *pop_size, const int *num_obj, 
+    const input_parameters_t *in_para){
+    int f;
+    char *objective_file_name_non_dominated;
+    for (f =0; f < *num_obj; f++){
+        objective_file_name_non_dominated = Malloc(char, MAX_RANDOM_STRING);
+        set_objective_file_name_non_dominated(objective_file_name_non_dominated, 
+            &f,generation, in_para);
+        save_solution_file(in_para->path_local_execute, 
+            objective_file_name_non_dominated, &f, 
+            solutions, pop_size, generation, in_para);
+        free(objective_file_name_non_dominated);
+    }
+}
+
+
 void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt, 
     const int *size_RT, const int *ger, const input_parameters_t *in_para){
-    solution_t *solutions;
-    protein_t *pop_protein;
-    char *pop_RT_file_name;
-    int num_obj;    
+    solution_t *solutions, *solutions_non_dominated;
+    protein_t *pop_protein, *pop_protein_non_dominated;
+    char *pop_RT_file_name, *pop_non_dominated;
+    int num_obj, number_of_non_dominated, front_non_dominated;    
 
     num_obj = solutions_rt[0].sol->num_obj;
-    solutions = allocate_solution(size_RT, &num_obj);    
 
 /**** Setting solutions to save information from solutions_rt ***/
     //Setting objectivies
+    solutions = allocate_solution(size_RT, &num_obj);    
     set_nsga2_solution_in_solution(solutions, solutions_rt, size_RT);
     //Setting proteins
     pop_protein = allocateProtein(size_RT);
@@ -497,7 +526,30 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     build_fitness_files(solutions, ger, size_RT);
 /**** FINISHED creating file to solutions_rt **/
 
+/**** Setting solutions to save information from NON-DOMINATED ***/
+    front_non_dominated = 0;
+    number_of_non_dominated = compute_how_many_front(solutions_rt, size_RT, &front_non_dominated);
+    //Setting objectivies    
+    solutions_non_dominated = allocate_solution(&number_of_non_dominated, &num_obj);    
+    set_nsga2_solution_in_solution(solutions_non_dominated, solutions_rt, &number_of_non_dominated);
+    //Setting proteins
+    pop_protein_non_dominated = allocateProtein(&number_of_non_dominated);
+    copy_nsga2_solutions2protein(pop_protein_non_dominated, solutions_rt, &number_of_non_dominated);
+    set_proteins2solutions(solutions, pop_protein, size_RT);    
+
+    //Saving data of non-dominated
+    pop_non_dominated = Malloc(char, MAX_FILE_NAME);
+    sprintf(pop_non_dominated,"pop_NON_DOMINATED_%d.pdb",*ger);
+    save_population_file(pop_protein, in_para->path_local_execute, pop_non_dominated, 
+        &number_of_non_dominated);
+    build_objective_files_non_dominated(solutions_non_dominated, ger, 
+        &number_of_non_dominated, &num_obj, in_para);
+/**** FINISHED creating file to NON-DOMINATED **/
+
+    free(pop_non_dominated);
     free(pop_RT_file_name);
+    desallocateProtein(pop_protein_non_dominated, &number_of_non_dominated);
+    desallocate_solution(solutions_non_dominated, &number_of_non_dominated);    
     desallocateProtein(pop_protein, size_RT);
     desallocate_solution(solutions, size_RT);
 }
