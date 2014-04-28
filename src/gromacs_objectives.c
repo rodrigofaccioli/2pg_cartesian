@@ -73,11 +73,11 @@ static char *opt_num = NULL;
 static double *g_sas_values = NULL;
 
 
-//It is based on GROMACS version 4.5.3
+//It is based on GROMACS version 4.6.5
 static option_fitness_gromacs_t option_g_energy_program [] = {
-      		                                                  {gmx_potential_ener, "12","Potential"},
-      		                                                  {gmx_edw_ener,"8","LJ-14"},
-      		                                                  {gmx_elel_ener,"9","Coulomb-14"},
+      		                                                  {gmx_potential_ener, "11","Potential"},
+      		                                                  {gmx_edw_ener,"7","LJ-14"},
+      		                                                  {gmx_elel_ener,"8","Coulomb-14"},
       		                                                  {gmx_hydrophobic,"-1","Hydrophobic"},
       		                                                  {gmx_hydrophilic,"-1","Hydrophilic"},
       		                                                  {gmx_total_area,"-1","Total_Area"},
@@ -85,8 +85,8 @@ static option_fitness_gromacs_t option_g_energy_program [] = {
       		                                                  {gmx_hbond,"-1","H_Bond"},
       		                                                  {gmx_hbond_main,"-1","H_Bond_Main"},
       		                                                  {gmx_GBSA_Solvatation,"-1","GBSA_Sol"},
-      		                                                  {gmx_GB_Polarization,"6","GB-Polarization"},
-      		                                                  {gmx_Nonpolar_Sol,"7","Nonpolar-Sol."},
+      		                                                  {gmx_GB_Polarization,"5","GB-Polarization"},
+      		                                                  {gmx_Nonpolar_Sol,"6","Nonpolar-Sol."},
       		                                                  {gmx_stride_total,"-1","Stride_total"},
       		                                                  {gmx_stride_helix,"-1","Stride_helix"},
       		                                                  {gmx_stride_beta,"-1","Stride_beta"}
@@ -1171,5 +1171,90 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
    	    clean_gromacs_simulation(in_para->path_local_execute);
 	}
 
+	free(opt_objective);
+}
+
+
+/** Calculates the objectives of one solution by GROMACS
+*/
+void get_gromacs_objectives_of_solution(solution_t *solution, 
+	const input_parameters_t *in_para, const int *ind){
+	const protein_t *population_aux;
+	char pdbfile_aux[30];
+	char aux [20];
+	char aux_ind[5];
+	char msg [50];	
+	option_g_energy *opt_objective;
+	int has_energy_objective;
+	int has_sas_objective;
+
+	has_energy_objective = 0;
+	has_sas_objective = 0;
+	//getting the gromacs objectives from input parameters
+	opt_objective = Malloc(option_g_energy,in_para->number_fitness);
+	for (int ob = 0; ob < in_para->number_fitness; ob++){
+		opt_objective[ob] = get_option_g_energy_t_from_type_fitness_energy(&in_para->fitness_energies[ob]);
+		if ( is_energy_objective(&opt_objective[ob]) == btrue){
+			has_energy_objective = has_energy_objective + 1;
+		}else  if ( is_sas_objective(&opt_objective[ob]) == btrue){
+			has_sas_objective = has_sas_objective + 1;
+		}
+	}
+	//getting the protein from solution
+	population_aux = (protein_t*) solution->representation;
+	// saving pdb file of protein
+	int2str(aux_ind,ind);
+	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
+	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
+	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
+	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+        	in_para->force_field, in_para->mdp_file);
+	/*Check if call mdrun to calculate the energies. 
+	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+	*/
+	if (has_energy_objective > 0){
+		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+    		in_para->path_gromacs_programs);
+	}
+	if (has_sas_objective > 0){
+		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+			in_para->computed_areas_g_sas_file);
+	}
+    // obtaing the values of objectivies
+    for (int ob = 0; ob < in_para->number_fitness; ob++){
+	    if (opt_objective[ob] == gmx_gyrate) {
+	    	compute_gyrate(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+    				in_para->computed_radius_g_gyrate_file);
+    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
+    	 			(opt_objective[ob] == gmx_elel_ener) ||
+    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+    		compute_energy(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs,
+    				option_g_energy_program[opt_objective[ob]].value_opt );
+    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+    		compute_energy_GBSA(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs,
+    				option_g_energy_program[opt_objective[ob]].value_opt );
+    	}else if ( opt_objective[ob] == gmx_hydrophobic){
+    		solution->obj_values[ob] = g_sas_values[0];
+    	}else if ( opt_objective[ob] == gmx_hydrophilic){
+    		solution->obj_values[ob] = g_sas_values[1];
+    	}else if ( opt_objective[ob] == gmx_total_area){
+    		solution->obj_values[ob] = g_sas_values[2];
+    	}else if ( opt_objective[ob] == gmx_hbond){
+	    	compute_hbond(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+    				in_para->computed_g_hbond_file);   	    		
+    	}else if ( opt_objective[ob] == gmx_hbond_main){
+	    	compute_hbond_main(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+    				in_para->computed_g_hbond_file);   	    		
+    	}
+    }
+    initialize_values_for_next_solution();
+    clean_gromacs_simulation(in_para->path_local_execute);
+	
 	free(opt_objective);
 }

@@ -21,7 +21,8 @@ typedef struct soption_fitness_gromacs{
 	char option_name[30];
 }option_fitness_gromacs_t;
 
-
+void get_gromacs_objectives_of_solution(solution_t *solution, 
+	const input_parameters_t *in_para, const int *ind);
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para);
 void init_gromacs_execution();
 void finish_gromacs_execution();
