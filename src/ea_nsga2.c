@@ -37,6 +37,11 @@
 */
 static int index_obj_compare_objective = -1;
 
+/* It is used in compare_objective_solution function which is used in qsort
+* It is used for sorting solution by first objective
+*/
+static int index_obj_compare_objective_solution = -1;
+
 ea_nsga2_t * allocate_nsga2(const input_parameters_t *in_para){
 	ea_nsga2_t * aux;
 	aux = Malloc(ea_nsga2_t,in_para->size_population);
@@ -351,6 +356,19 @@ int compute_how_many_front(const ea_nsga2_t * solutions,
 }
 
 
+static int compare_objective_solution( const void *x, const void *y){
+    solution_t * fx = (solution_t*) x;
+    solution_t * fy = (solution_t*) y;
+
+    if (fx->obj_values[index_obj_compare_objective_solution] < fy->obj_values[index_obj_compare_objective_solution]){
+        return -1;
+    }else if (fx->obj_values[index_obj_compare_objective_solution] == fy->obj_values[index_obj_compare_objective_solution]){
+        return 0;
+    }else if (fx->obj_values[index_obj_compare_objective_solution] > fy->obj_values[index_obj_compare_objective_solution]){
+        return 1;    
+    }
+}
+
 static int compare_objective( const void *x, const void *y){
     ea_nsga2_t * fx = (ea_nsga2_t*) x;
     ea_nsga2_t * fy = (ea_nsga2_t*) y;
@@ -499,6 +517,50 @@ static void build_objective_files_non_dominated(const solution_t *solutions,
     }
 }
 
+void build_plot_xvg_file(const solution_t *solutions_sorted, 
+    const int *size, const int *num_obj, const char *local_execute, 
+    const solution_t *solutions_full, const int *size_full, 
+    const int *front, const int *ger, 
+    const type_fitness_energies_t *fitness_energies, 
+    const int *obj_get_index){
+
+    char *file_name;
+    char *xvg_line, *aux_str;
+    double v_aux;
+    int ind_id_before_sorted;
+
+    file_name = Malloc(char, MAX_FILE_NAME);
+    xvg_line = Malloc(char, MAX_LINE_FILE);
+    aux_str = Malloc(char, 20);
+    sprintf(file_name,"plot_nfront_%d_%d.xvg",*front, *ger);
+    char *fname = path_join_file(local_execute,file_name);
+    FILE *xvg_file = open_file(fname,fWRITE);
+    fprintf (xvg_file,"#Obj1\tObj2\tValue_Ind_BEFORE_SORTED\n");
+    for (int i=0; i < *size; i++){
+        for (int obj = 0; obj < *num_obj; obj++){
+            v_aux = get_displayed_value_of_objective(solutions_sorted, &i, &obj, 
+                fitness_energies);            
+            sprintf(aux_str,"%f",v_aux);
+            if (obj == 0){
+                strcpy(xvg_line, aux_str);
+            }else{
+                strcat(xvg_line, aux_str);
+            }
+            strcat(xvg_line, "\t");
+        }
+        //Obtaing individual when it was NOT sorted
+        ind_id_before_sorted = get_solution_index_by_objective_value(solutions_full, size_full,
+            obj_get_index, &solutions_sorted[i].obj_values[*obj_get_index]) +1;
+        sprintf(aux_str,"%d",ind_id_before_sorted);
+        strcat(xvg_line, aux_str);
+        fprintf (xvg_file,"%s\n", xvg_line);
+    }
+    free(aux_str);
+    free(xvg_line);
+    free(file_name);
+    free(fname);
+}
+
 
 void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt, 
     const int *size_RT, const int *ger, const ea_nsga2_t *solutions_p,
@@ -528,7 +590,7 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     build_fitness_files(solutions, ger, size_RT);
 /**** FINISHED creating file to solutions_rt **/
 
-/**** Setting solutions to save information from NON-DOMINATED ***/
+/**** Setting solutions to save information to NON-DOMINATED ***/
     front_non_dominated = 0;
     number_of_non_dominated = compute_how_many_front(solutions_rt, size_RT, &front_non_dominated);
     //Setting objectivies    
@@ -537,15 +599,23 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     //Setting proteins
     pop_protein_non_dominated = allocateProtein(&number_of_non_dominated);
     copy_nsga2_solutions2protein(pop_protein_non_dominated, solutions_rt, &number_of_non_dominated);
-    set_proteins2solutions(solutions, pop_protein, size_RT);    
+    set_proteins2solutions(solutions_non_dominated, pop_protein_non_dominated, &number_of_non_dominated); 
+
+    //Sorting solutions by first objective
+    index_obj_compare_objective_solution = 0;
+    qsort (solutions_non_dominated, number_of_non_dominated , sizeof (solution_t),
+                      compare_objective_solution);
 
     //Saving data of non-dominated
     pop_non_dominated = Malloc(char, MAX_FILE_NAME);
     sprintf(pop_non_dominated,"pop_NON_DOMINATED_%d.pdb",*ger);
-    save_population_file(pop_protein, in_para->path_local_execute, pop_non_dominated, 
+    save_population_file(pop_protein_non_dominated, in_para->path_local_execute, pop_non_dominated, 
         &number_of_non_dominated);
     build_objective_files_non_dominated(solutions_non_dominated, ger, 
         &number_of_non_dominated, &num_obj, in_para);
+    build_plot_xvg_file(solutions_non_dominated, &number_of_non_dominated, &num_obj,
+        in_para->path_local_execute, solutions, size_RT, &front_non_dominated, ger,
+        in_para->fitness_energies, &index_obj_compare_objective_solution);
 /**** FINISHED creating file to NON-DOMINATED **/
 
 /**** Setting solutions to save information from solutions_p ***/
