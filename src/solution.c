@@ -60,3 +60,35 @@ double get_oposite_specific_objective(const solution_t *sol, const int *obj){
 	 */	
 	return sol->obj_values[*obj] * (-1);
 }
+
+/** Returns the displyed value of an specific objective */
+double get_displayed_value_of_objective(const solution_t *sol, 
+	const int *index, const int *obj, 
+	const type_fitness_energies_t *fitness_energies){
+	if ( (fitness_energies[*obj] == fit_hbond) ||
+		(fitness_energies[*obj] == fit_hydrophilic)||
+		(fitness_energies[*obj] == fit_hbond_main)	||
+		(fitness_energies[*obj] == fit_stride_total) ||
+		(fitness_energies[*obj] == fit_stride_helix)	||
+		(fitness_energies[*obj] == fit_stride_beta) ) {
+		return get_oposite_specific_objective(&sol[*index],obj);
+	}else{
+		return get_specific_objective(&sol[*index],obj);
+	}
+}
+
+/** Returns index of solution based on value of objective
+* sol contains all solutions
+* size of sol
+* obj_get_index index of objective that want to find out index of solution
+* value is the value that want to find out index of solution
+*/
+int get_solution_index_by_objective_value(const solution_t *sol, const int *size,
+            const int *obj_get_index, const double *value){
+	for (int s = 0; s < *size; s++){
+		if (sol[s].obj_values[*obj_get_index] == *value){
+			return s;
+		}
+	}
+	return -1;
+}
