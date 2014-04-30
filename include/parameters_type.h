@@ -10,6 +10,7 @@ typedef struct sinput_parameters{
     int size_population;
     char *seq_protein_file_name;    
     char *initial_pop_file_name;
+    int started_generation;
     int number_fitness;
     type_fitness_energies_t *fitness_energies;
     int number_generation;

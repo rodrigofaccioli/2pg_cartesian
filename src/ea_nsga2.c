@@ -718,10 +718,15 @@ int ea_nsga2(const input_parameters_t *in_para){
     //Setting fronts to nsga2_solutions_p
     set_front_solution_p(nsga2_solutions_p, &in_para->size_population);
 
-    // Main Looop of NSGA-II Algorithm
-    for (int g = 0; g < in_para->number_generation; g++){
-        generation = g +1; //used to messages. It is started to 1.    
-
+    // Main Looop of NSGA-II Algorithm 
+    int started_generation = get_started_generation(&in_para->started_generation);
+    for (int g = started_generation; g < (in_para->number_generation+started_generation); g++){
+        if (started_generation == 0){
+            generation = g +1; //used to messages. It is started to 1.        
+        }else{
+            generation = g; //since g is greater than zero
+        }        
+        
         //Reproduce population_p to generate pop_new
         reproduce_protein(pop_new, nsga2_solutions_p, in_para);
 

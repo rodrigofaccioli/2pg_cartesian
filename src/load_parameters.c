@@ -49,6 +49,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->n_terminal_charge = term_charge_NR;
     param->c_terminal_charge = term_charge_NR;
     param->StepNumber = 1000;
+    param->started_generation = -1;
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -227,4 +228,6 @@ void load_parameters_from_file(input_parameters_t *param,
 		conf.getParameterChar("n_terminal_charge"));
 
 	param->StepNumber = atoi(conf.getParameterChar("StepNumber"));
+
+	param->started_generation = atoi(conf.getParameterChar("Started_Generation"));;
 }

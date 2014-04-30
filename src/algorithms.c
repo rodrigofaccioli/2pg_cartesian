@@ -219,3 +219,9 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
     }
 
 }
+
+/** Returns what generation want to start
+*/
+int get_started_generation(const int *start){
+    return *start+1;
+}
