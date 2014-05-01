@@ -555,6 +555,7 @@ void build_plot_xvg_file(const solution_t *solutions_sorted,
         strcat(xvg_line, aux_str);
         fprintf (xvg_file,"%s\n", xvg_line);
     }
+    fclose(xvg_file);
     free(aux_str);
     free(xvg_line);
     free(file_name);
