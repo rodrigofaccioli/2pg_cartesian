@@ -50,6 +50,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->c_terminal_charge = term_charge_NR;
     param->StepNumber = 1000;
     param->started_generation = -1;
+    param->how_many_rotations = 1;
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -146,6 +147,15 @@ void set_terminal_charge(input_parameters_t *param, char *param_c_terminal,
 	param->c_terminal_charge = str2terminal_charge(param_c_terminal);
 }
 
+void set_apply_how_many_rotations(input_parameters_t *param, char *param_how_many_rotations){
+	int aux;
+	aux = atoi(param_how_many_rotations);
+	if (aux < 1){
+		fatal_error("How_Many_Rotation parameter have to be equal or greater than 1 \n");
+	}
+	param->how_many_rotations = aux;
+}
+
 void deAllocateload_parameters(input_parameters_t *param){
     free(param->seq_protein_file_name );
 	free(param->initial_pop_file_name );
@@ -229,5 +239,7 @@ void load_parameters_from_file(input_parameters_t *param,
 
 	param->StepNumber = atoi(conf.getParameterChar("StepNumber"));
 
-	param->started_generation = atoi(conf.getParameterChar("Started_Generation"));;
+	param->started_generation = atoi(conf.getParameterChar("Started_Generation"));
+
+    set_apply_how_many_rotations(param,conf.getParameterChar("How_Many_Rotation"));
 }

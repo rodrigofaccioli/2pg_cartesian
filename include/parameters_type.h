@@ -53,6 +53,8 @@ typedef struct sinput_parameters{
     type_terminal_charge_t c_terminal_charge;    
     /*Indicates the number of Steps. For example, number of rotations*/
     int StepNumber;
+    /*Represents number of rotations in residues. Default is 1*/
+    int how_many_rotations;
  }input_parameters_t;
 
 #endif
