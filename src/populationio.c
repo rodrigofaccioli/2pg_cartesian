@@ -41,11 +41,12 @@ void load_initial_population_file(protein_t *pop, const int *pop_size, const cha
 			&num_atoms_PDB);
 	}
 
+	//Building Topology of population
+	build_topology_population(pop, pop_size);
+
 	free(path_pdb_file_name);
 	desAllocate_Population_pdb(atoms, pop_size);
 
-	//Building Topology of population
-	build_topology_population(pop, pop_size);
 }
 
 /** Save a set of models in PDB format
