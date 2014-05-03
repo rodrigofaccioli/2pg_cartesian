@@ -6,8 +6,8 @@
 #include "futil.h"
 
 static void write_header_generation(FILE *fit_file, const int *ger){
-	fprintf (fit_file,";Generation %d \n", *ger);
-	fprintf (fit_file,";Solution Objective \n");
+	fprintf (fit_file,"#Generation %d \n", *ger);
+	fprintf (fit_file,"#Solution Objective \n");
 
 }
 
