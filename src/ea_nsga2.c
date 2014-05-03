@@ -271,31 +271,28 @@ void reproduce_protein(protein_t *pop_new, const ea_nsga2_t *solutions,
 
     max_random = in_para->size_population -1;
     for (int i = 0; i < in_para->size_population; i++){
-        for (int number_rotations = 1; number_rotations < 
-            in_para->how_many_rotations; number_rotations++){
-            //Getting first individual
+        //Getting first individual
+        index_ind_1 = _get_int_random_number(&max_random);
+        index_ind_2 = _get_int_random_number(&max_random);
+        nsga2_sol_1 = tournament_front(&solutions[index_ind_1], 
+            &solutions[index_ind_2]);
+        prot_aux_1 = (protein_t*) nsga2_sol_1->sol->representation;
+        //Checking if apply crossover
+        if (in_para->crossovers[0] != crossoer_none){
+            //Getting second individual
             index_ind_1 = _get_int_random_number(&max_random);
             index_ind_2 = _get_int_random_number(&max_random);
-            nsga2_sol_1 = tournament_front(&solutions[index_ind_1], 
+            nsga2_sol_2 = tournament_front(&solutions[index_ind_1], 
                 &solutions[index_ind_2]);
-            prot_aux_1 = (protein_t*) nsga2_sol_1->sol->representation;
-            //Checking if apply crossover
-            if (in_para->crossovers[0] != crossoer_none){
-                //Getting second individual
-                index_ind_1 = _get_int_random_number(&max_random);
-                index_ind_2 = _get_int_random_number(&max_random);
-                nsga2_sol_2 = tournament_front(&solutions[index_ind_1], 
-                    &solutions[index_ind_2]);
-                prot_aux_2 = (protein_t*) nsga2_sol_2->sol->representation;        
-                // Appling crossover operator between prot_aux_1 and prot_aux_2.             
-                apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2, in_para->crossovers);
-            }else{
-                //Coping prot_aux_1 to pop_new[i] when is not used crossover. 
-                copy_protein_atoms(&pop_new[i], prot_aux_1);
-            }        
-            //Appling mutation operator in pop_new[i]
-            apply_mutation(&pop_new[i], in_para);    
-        }
+            prot_aux_2 = (protein_t*) nsga2_sol_2->sol->representation;        
+            // Appling crossover operator between prot_aux_1 and prot_aux_2.             
+            apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2, in_para->crossovers);
+        }else{
+            //Coping prot_aux_1 to pop_new[i] when is not used crossover. 
+            copy_protein_atoms(&pop_new[i], prot_aux_1);
+        }        
+        //Appling mutation operator in pop_new[i]
+        apply_mutation(&pop_new[i], in_para);        
     }
 }
 
