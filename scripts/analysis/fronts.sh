@@ -49,12 +49,6 @@ if [ -e "plot_gdt-ts_avg-sd.xvg" ]; then rm "plot_gdt-ts_avg-sd.xvg" ; fi
 if [ -e "gdt-ts_max.pdb" ]; then rm "gdt-ts_max.pdb" ; fi
 
 
-echo -ne "\tPadronizando estrutura nativa..."
-"$gmx"./pdb2gmx -f "$nativa" -o "nativa.gro" -ignh -ff "charmm27" -water "none" -renum >/dev/null 2>/dev/null
-"$gmx"./pdb2gmx -f "$nativa" -o "nativa.pdb" -ignh -ff "charmm27" -water "none" -renum >/dev/null 2>/dev/null
-echo "OK"
-
-
 ger=1
 while [ $ger -le $total_ger ]; do	# Para cada geração...
 
@@ -176,7 +170,7 @@ while [ $ger -le $total_ger ]; do	# Para cada geração...
 	i=1
 	while [ $i -le $total_front ]; do	# Para cada ind não-dominado...
 
-		"$gmx"./pdb2gmx -f "front_""$ger""_0_""$i""_"* -o "temporario.gro" -ignh -ff "charmm27" -water "none" -renum >/dev/null 2>/dev/null
+#		"$gmx"./pdb2gmx -f "front_""$ger""_0_""$i""_"* -o "temporario.gro" -ignh -ff "charmm27" -water "none" -renum >/dev/null 2>/dev/null
 		echo "C-alpha C-alpha" | "$gmx"./g_rms -f "temporario.gro" -s "nativa.gro" -o "rmsd.xvg" >/dev/null 2>/dev/null	# Calcula RMSD em relação à nativa
 
 		valor=$(tail -n 1 "rmsd.xvg" | awk '{print $2}')	# Extrai valor do RMSD
