@@ -4,7 +4,7 @@
 #include "enums.h"
 #include "pdb_types.h"
 
-pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom);
+pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by_model);
 void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize);
 pdb_atom_t * allocate_pdbatom(const int *numatom);
 void desAllocate_pdbatom(pdb_atom_t *pdbatoms);

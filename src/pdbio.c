@@ -280,6 +280,11 @@ void load_pdb_file_without_num_atom(pdb_atom_t *atoms, pdb_seqres_t *seqres,
 	fclose(pdbfile);
 }
 
+/** Returns o number of atoms at PDB file
+* path_PDB_file_name is name of PDB file
+* Important: when PDB file contains models, please, use 
+* get_num_atoms_by_model function
+*/
 int get_num_atom(const char *path_PDB_file_name){
 	/*This function reads a PDB file and return the number of atoms*/
 	int num_atom = 0;
@@ -297,8 +302,33 @@ int get_num_atom(const char *path_PDB_file_name){
 	return num_atom;
 }
 
+
+/** Informs number of atoms by models of PDB file
+* num_atoms_by_model is an array of int which stores the number of 
+* atoms by model
+* path_PDB_file_name is the name of PDB file that wants to know the number 
+* of atoms
+*/
+void get_num_atoms_by_model(int *num_atoms_by_model, const char *path_PDB_file_name){
+	int num_atom = 0;
+	int index_to_model = -1;
+	char pdb_line [MAX_LINE_PDB];
+	FILE *pdbfile=NULL;
+	pdbfile = open_file(path_PDB_file_name, fREAD);
+	while ( fgets(pdb_line,MAX_LINE_PDB,pdbfile) != NULL){
+		if (strncmp(pdb_line,"ATOM",4) == 0){
+			num_atom = num_atom + 1;
+		}else if (strncmp(pdb_line,"ENDMDL",6) == 0){ 
+			index_to_model = index_to_model + 1;
+			num_atoms_by_model[index_to_model] = num_atom;
+			num_atom = 0;
+		}
+	}
+	fclose(pdbfile);
+}
+
 void load_pdb_model_file(pdb_atom_t **atoms, pdb_seqres_t *seqres,
-		const char *path, const char *file_name, const int *numatom){
+		const char *path, const char *file_name, const int *num_atoms_by_model){
 	FILE *pdbfile=NULL;
 	char pdb_line [MAX_LINE_PDB];
 	char *aux = NULL;
@@ -308,16 +338,15 @@ void load_pdb_model_file(pdb_atom_t **atoms, pdb_seqres_t *seqres,
 	pdbfile = open_file(fname, fREAD);
 	while ( fgets(pdb_line,MAX_LINE_PDB,pdbfile) != NULL){
 		if (strncmp(pdb_line,"ATOM",4) == 0){
-			line_atm = line_atm + 1;
-			//load_pdb_atoms(pdb_line,atoms[ind_model], &line_atm);
+			line_atm = line_atm + 1;			
 			load_pdb_atoms_split(pdb_line,atoms[ind_model], &line_atm);
 		}else if (strncmp(pdb_line,"ENDMDL",6) == 0){ 			
 			ind_model = ind_model + 1;
 			line_atm = -1;
 		}
 	}
-	free(fname);
 	fclose(pdbfile);
+	free(fname);	
 }
 
 

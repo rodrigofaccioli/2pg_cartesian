@@ -7,20 +7,20 @@
 #include "string_owner.h"
 #include "messages.h"
 
-pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom){
+pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by_model){
 	/* Allocate a population of pdb_atom_t
 	*/
 	 pdb_atom_t **population;
      population = Malloc(pdb_atom_t*,*inPopSize);
      for(int i=0;i<*inPopSize;i++){
-    	population[i] = allocate_pdbatom(numatom);
+    	population[i] = allocate_pdbatom(&numatom_by_model[i]);
  	}
     return population;
 }
 
 void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize){
 	for (int i = 0; i < *inPopSize; i++){
-		free(pdbatoms[i]);
+		desAllocate_pdbatom(pdbatoms[i]);
 	}	
 }
 
