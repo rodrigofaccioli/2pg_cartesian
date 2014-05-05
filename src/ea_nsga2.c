@@ -289,7 +289,7 @@ void reproduce_protein(protein_t *pop_new, const ea_nsga2_t *solutions,
             apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2, in_para->crossovers);
         }else{
             //Coping prot_aux_1 to pop_new[i] when is not used crossover. 
-            copy_protein_atoms(&pop_new[i], prot_aux_1);
+            copy_protein_at_reproduce(&pop_new[i], prot_aux_1);
         }        
         //Appling mutation operator in pop_new[i]
         apply_mutation(&pop_new[i], in_para);        
@@ -694,6 +694,12 @@ int ea_nsga2(const input_parameters_t *in_para){
     copy_protein_population(pop_new, population_p, &in_para->size_population);
     initialize_protein_population_atoms(pop_new, &in_para->size_population);
 
+    //Saving topology of population 
+    char *prefix = Malloc(char,10);
+    strcpy(prefix, "prot");
+    save_topology_population(population_p, &in_para->size_population, 
+    in_para->path_local_execute, prefix);    
+    free(prefix);
 
 /**************** STARTING NSGA-II Algorithm *************************/
     display_msg("Starting NSGA-II Algorithm \n");
