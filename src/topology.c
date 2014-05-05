@@ -95,6 +95,9 @@ static void build_topology_individual_omega(protein_t *prot){
 			i_af++;
 			prot->p_topol->omega[r-1].fixed_atoms[i_af] = get_atom_index_by_resnum_atom_name(prot->p_atoms,
 					&next_res, atom_N, &prot->p_topol->numatom);
+			
+			prot->p_topol->omega[r-1].num_moved = 0;
+			prot->p_topol->omega[r-1].moved_atoms = NULL;
 
 			/*
 			//Build Moved Atom		
