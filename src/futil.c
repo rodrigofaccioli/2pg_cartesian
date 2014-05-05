@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "messages.h"
 #include "defines.h"
@@ -70,14 +71,14 @@ void set_random_file_name(char *file_name,__const char *prefix,
 }
 
 
-boolean_t check_exists_file(const char *path_file_name){
-	/* Returns true if exists a file. Otherwise, returns false.*/
-	FILE *f;
-	f = open_file(path_file_name,fREAD);
-	if (f != NULL){
-		fclose(f);
-		return btrue;
-	}
+/** Returns true if exists a file. Otherwise, returns false.
+*/
+boolean_t check_exists_file(const char *path_file_name){	
+    struct stat buffer;
+    int exist = stat(path_file_name,&buffer);
+    if(exist == 0){
+    	return btrue;
+    }        
 	return bfalse;
 }
 
