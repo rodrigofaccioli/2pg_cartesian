@@ -53,12 +53,30 @@ void copy_protein(protein_t *p_dest, const protein_t *p_source){
 	for (int a = 0; a < p_source->p_topol->numatom; a++){
 		copy_pdb_atom(&p_dest->p_atoms[a], &p_source->p_atoms[a]);
 	}
-	//Building Topology of p_dest
 	if (p_dest->p_topol == NULL){
 		p_dest->p_topol = allocateTop_Global(&p_source->p_topol->numres, 
 			&p_source->p_topol->numatom);
-	}		
+	}
 	build_topology_individual(p_dest);
+}
+
+/** Copies p_source to p_dest at reproduce*/
+void copy_protein_at_reproduce(protein_t *p_dest, const protein_t *p_source){
+	/* Checking if is necessary desalocate atoms and topology because topology, 
+	* and consequently number of atoms, can be different between p_dest and p_souce.
+	* Important: The difference betwwen dest and source occur in reprodution since
+	* conformations od protein can be getted by different methods and it can change number
+	* of atoms. Example, a method should add protonation state while others not.
+	*/
+	if (p_dest->p_atoms != NULL){
+		desAllocate_pdbatom(p_dest->p_atoms);
+		p_dest->p_atoms = NULL;
+	}
+	if (p_dest->p_topol != NULL){
+		desAllocateTop_Global(p_dest->p_topol);
+		p_dest->p_topol = NULL;
+	}
+	copy_protein(p_dest, p_source);
 }
 
 /** Copies each individual of pop_source to pop_dest */

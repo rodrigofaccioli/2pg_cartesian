@@ -8,6 +8,7 @@ protein_t * allocateProtein(const int *size);
 void desallocateProtein(protein_t *pop, const int *inPopSize);
 void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size);
 void copy_protein(protein_t *p_dest, const protein_t *p_source);
+void copy_protein_at_reproduce(protein_t *p_dest, const protein_t *p_source);
 void copy_protein_population(protein_t *pop_dest, const protein_t *pop_source, 
 	const int *popsize);
 void copy_protein_atoms(protein_t *p_dest, const protein_t *p_source);
