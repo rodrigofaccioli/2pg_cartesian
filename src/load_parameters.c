@@ -29,6 +29,7 @@ static void initialize_parameters(input_parameters_t *param){
 	param->path_call_GreedyTreeGenerator2PG = NULL;	
 
 	param->point_1_cros_rate = 0.0;
+	param->individual_mutation_rate = 1.0;
 	param->crossovers = NULL;
 	
     param->min_angle_mutation_phi = -180.0;
