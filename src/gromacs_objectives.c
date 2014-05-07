@@ -1205,7 +1205,7 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 	// saving pdb file of protein
 	int2str(aux_ind,ind);
 	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
-	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+	save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
 	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
 	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
 	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
