@@ -77,7 +77,9 @@ while [ $pred_atual -le $total_predicoes ]; do
 	started_gen=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $18}') 
 	How_Many_Rotation=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $19}') 
 	Individual_Mutation_Rate=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $20}') 
-	par=21	# contem o número do próximo parâmetro a ser lido do arquivo
+	MonteCarloSteps=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $21}') 	
+	FrequencyMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $22}') 	
+	par=23	# contem o número do próximo parâmetro a ser lido do arquivo
 	i=1	# número do objetivo atual
 	while [ $i -le $objetivos ]; do	# para cada objetivo
 		obj[$i]=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $'"$par"'}')	# cada objetivo é armazenado em um elemento do vetor obj[]
@@ -110,6 +112,8 @@ while [ $pred_atual -le $total_predicoes ]; do
 			echo "NumberObjective = ""$objetivos" >> $arq_config
 			echo "NumberGeration = ""$geracoes" >> $arq_config
 			echo "SizePopulation = ""$individuos" >> $arq_config
+			echo "MonteCarloSteps = ""$MonteCarloSteps" >> $arq_config			
+			echo "FrequencyMC = ""$FrequencyMC" >> $arq_config			
 
 			# Monta a string que contém os objetivos para ser colocada no arquivo de parâmetros
 			i=1
@@ -202,12 +206,13 @@ while [ $pred_atual -le $total_predicoes ]; do
 			fi
 
 
-			if [ "$algoritmo" == "NSGA-II" ]; then
-				if [ $algoritmo = "NSGA-II" ]; then
-					"$path_protpred""src/"./protpred-Gromacs-NSGA2_PSP $arq_config
-				fi
+			if [ "$algoritmo" == "NSGA-II" ]; then				
+					"$path_protpred""src/"./protpred-Gromacs-NSGA2_PSP $arq_config				
 			fi
 
+			if [ "$algoritmo" == "MonteCarlo" ]; then				
+					"$path_protpred""src/"./protpred-Gromacs-MC_Metropolis_PSP $arq_config				
+			fi
 		fi
 
 
