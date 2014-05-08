@@ -197,12 +197,12 @@ while [ $pred_atual -le $total_predicoes ]; do
 	# algoritmo evolutivo
 		if [ $EA -eq 1 ]; then
 
-			if [ $objetivos -eq 1 ]; then
+			if [ "$algoritmo" == "MONO" ]; then
 				"$path_protpred""src/"./protpred-Gromacs-Mono_PSP $arq_config
 			fi
 
 
-			if [ $objetivos -ge 2 ]; then
+			if [ "$algoritmo" == "NSGA-II" ]; then
 				if [ $algoritmo = "NSGA-II" ]; then
 					"$path_protpred""src/"./protpred-Gromacs-NSGA2_PSP $arq_config
 				fi
