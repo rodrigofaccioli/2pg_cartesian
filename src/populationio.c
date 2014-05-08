@@ -63,14 +63,19 @@ void save_population_file(const protein_t *pop, const char *path, const char *fi
 	FILE *pdbfile=NULL;
 	int m = 0;
 	char *fname = path_join_file(path,file_name);
-	pdbfile = open_file(fname, fWRITE);
-	writeHeader(pdbfile, 10.5, &pop[0].p_topol->numatom);
-	for (int i  =0; i < *num_model; i++){
+	
+	for (int i  = 0; i < *num_model; i++){
 		m = m + 1;
+        if (m == 1){
+            pdbfile = open_file(fname, fWRITE);
+            writeHeader(pdbfile, 0.00, &pop[i].p_topol->numatom);
+        }else{
+            pdbfile = open_file(fname, fAPPEND);
+        }		
 		writeModel(pdbfile, &m);
 		writeATOM(pdbfile, pop[i].p_atoms, &pop[i].p_topol->numatom);
 		writeEndModel(pdbfile);
+		fclose(pdbfile);
 	}	
-	free(fname);
-	fclose(pdbfile);
+	free(fname);	
 }
