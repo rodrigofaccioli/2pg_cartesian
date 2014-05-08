@@ -41,7 +41,7 @@ void save_energies(const solution_t *solution_curr,
     p_curr = (protein_t*) solution_curr->representation;
     if (*num_sol == 1){
         energy_file = open_file(fname, fWRITE);
-        fprintf (energy_file,";Index New_Solution \t Current_Solution \n");
+        fprintf (energy_file,"#Index New_Solution \t Current_Solution \n");
     }else{
         energy_file = open_file(fname, fAPPEND);
     }    
@@ -52,7 +52,7 @@ void save_energies(const solution_t *solution_curr,
 }
 
 void save_solution(const solution_t *solution_curr, 
-    const input_parameters_t *in_para, const int *num_sol){
+    const input_parameters_t *in_para, const int *model){
     const protein_t* p_curr;
     FILE * pdbfile; 
     char *file_name;
@@ -61,18 +61,19 @@ void save_solution(const solution_t *solution_curr,
     char *fname = path_join_file(in_para->path_local_execute,
         file_name);    
     p_curr = (protein_t*) solution_curr->representation;
-    if (*num_sol == 1){
+    if (*model == 1){
         pdbfile = open_file(fname, fWRITE);
         writeHeader(pdbfile, 0.00, &p_curr->p_topol->numatom);
     }else{
         pdbfile = open_file(fname, fAPPEND);
     }
-    writeModel(pdbfile, num_sol);
+    writeModel(pdbfile, model);
     writeATOM(pdbfile, p_curr->p_atoms, &p_curr->p_topol->numatom);
     writeEndModel(pdbfile);
-    free(fname);
-    free(file_name);
     fclose(pdbfile);
+
+    free(fname);
+    free(file_name);    
 }
 
 /** Accepts updating the current solution with new solution
@@ -196,6 +197,7 @@ int mc_metropolis(const input_parameters_t *in_para){
     float R;
     float prob, rr;
     int T;
+    int model;
 
     //Starting values
     num_solution = 1;
@@ -203,6 +205,7 @@ int mc_metropolis(const input_parameters_t *in_para){
 	R = 8.3144621E-3; // kJ/Kmol
 	T = 309;	// K	
 	prob = 1.000;
+    model = 0;
 
     //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
@@ -240,7 +243,10 @@ int mc_metropolis(const input_parameters_t *in_para){
     get_gromacs_objectives(solution_curr, in_para);
     for (int s = 1; s <= in_para->MonteCarloSteps; s++){
         //Saving PDB of current solution
-        save_solution(&solution_curr[0], in_para, &s);
+        if (s % in_para->freq_mc == 0){
+            model  = model + 1;
+            save_solution(&solution_curr[0], in_para, &model);
+        }
         //Building new Solution
     	mc_build_solution(&prot_new[0], in_para);
         //Calculates energy of new Solution

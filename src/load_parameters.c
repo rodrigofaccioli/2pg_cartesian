@@ -47,6 +47,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
     param->mdp_file = Malloc(char, MAX_FILE_NAME);
     param->MonteCarloSteps = 100;
+    param->freq_mc = 10;
     param->n_terminal_charge = term_charge_NR;
     param->c_terminal_charge = term_charge_NR;
     param->StepNumber = 1000;
@@ -234,6 +235,7 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->force_field,conf.getParameterChar("force_field"));
 
 	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
+	param->freq_mc = atoi(conf.getParameter("FrequencyMC").c_str());
 
 	set_terminal_charge(param, conf.getParameterChar("c_terminal_charge"),
 		conf.getParameterChar("n_terminal_charge"));

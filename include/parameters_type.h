@@ -47,6 +47,8 @@ typedef struct sinput_parameters{
     char *mdp_file;
     /* Number of steps to Monte Carlo Algorithm */
     int MonteCarloSteps;
+    /* Represents frequency in which protein models will be stored at Monte Carlo*/
+    int freq_mc;
     /*set who can be neutralize N-Terminal*/
     type_terminal_charge_t n_terminal_charge;
     /*set who can be neutralize C-Terminal*/    
@@ -54,7 +56,7 @@ typedef struct sinput_parameters{
     /*Indicates the number of Steps. For example, number of rotations*/
     int StepNumber;
     /*Represents number of rotations in residues. Default is 1*/
-    int how_many_rotations;
+    int how_many_rotations;    
  }input_parameters_t;
 
 #endif
