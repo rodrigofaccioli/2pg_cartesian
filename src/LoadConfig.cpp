@@ -43,8 +43,8 @@ std::string LoadConfig::getParameter(const std::string &Parameter){
 }
 
 std::string LoadConfig::trim(std::string s){
-    char l[MAXLINE];
-    char l2[MAXLINE];
+    char l[MAXLINE] = "";
+    char l2[MAXLINE]= "";
     strcpy(l,s.c_str());    
     int i = 0;
     int j = 0;
