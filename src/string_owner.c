@@ -44,7 +44,7 @@ void substring(char *dest, const char __source[], int begin, int end){
 
 void remove_character(char *str, const char ch){
 	/*This function removes ch character from str*/
-	  char *tr;
+	  char *tr = '\0';
 	  int c;
 	  int nul;
 
@@ -69,9 +69,23 @@ void remove_character(char *str, const char ch){
 	  free (tr);
 }
 
+void remove_character_enter(char *str){
+	/*This function removes ch character from str*/
+	  char garbage = '\n';
+
+    char *src, *dst;
+    for (src = dst = str; *src != '\0'; src++) {
+        *dst = *src;
+        if (*dst != garbage) dst++;
+    }
+    *dst = '\0';
+
+}
+
+
 void ltrim (char *str){
 /*This function was based on Gromacs 4.5.3*/
-  char *tr;
+  char *tr = '\0';
   int c;
 
   if (!str)
