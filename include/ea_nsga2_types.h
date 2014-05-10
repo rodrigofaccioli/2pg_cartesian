@@ -3,7 +3,7 @@
 
 #include "solution_types.h"
 
-typedef struct sea_nsga2{
+typedef struct sea_nsga2{	
 	int front; //Represents front of solution (sol)
 	float crowding_distance; //Represents crowding distance of solution (sol)
 	solution_t *sol; //Represents a solution.
