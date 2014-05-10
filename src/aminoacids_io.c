@@ -46,9 +46,9 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	int n_residues;
 	int fscanfError;	
     int seq_index;    
-    char line[MAX_LINE_FASTA+1]; //represents Fasta lines
-    char seq_line[MAX_LEN_PROTEIN];//represents the primary sequence of protein    
-    char aux_line;
+    char line[MAX_LINE_FASTA+1] = "\0"; //represents Fasta lines
+    char seq_line[MAX_LEN_PROTEIN] = "\0";//represents the primary sequence of protein    
+    char aux_line;    
     int i;
     boolean_t first_line = btrue;
     boolean_t read_fasta_file = btrue;
@@ -67,11 +67,11 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	 * is checked if line starts with >*/
 	fgets(line,MAX_LINE_FASTA,arq); //Here line contains residues of protein. Maybe it is first part like 1E8A
 	trim(line);
-	remove_character(line, '\n');
+	remove_character_enter(line);
 	strcpy(seq_line,line);
 	while ( (fgets(line,MAX_LINE_FASTA,arq) != NULL) &&
 			(read_fasta_file == btrue) ){
-		remove_character(line,'\n');
+		remove_character_enter(line);
 		trim(line);
 		if (strncmp(line,">",1) == 0){ //Force to work with one sequence only
 			read_fasta_file = bfalse;
@@ -80,7 +80,7 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 		}
 	}
 	fclose(arq);
-	remove_character(seq_line, '\n');
+	remove_character_enter(seq_line);
 	n_residues = strlen(seq_line);
 	seq_prim = allocate_primary_seq(&n_residues);
 

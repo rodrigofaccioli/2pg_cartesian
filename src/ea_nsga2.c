@@ -496,7 +496,7 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
         //Compute the number of individuals that will use
         total_ind = index_begin_back_to_rt + how_many_ind_front;
         //Copy Individuals of front to temp_pop
-        temp_pop = allocate_nsga2_RT(&total_ind, in_para);
+        temp_pop = allocate_nsga2_RT(&how_many_ind_front, in_para);
         j = 0;
         //Obtain the individuals by front
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){

@@ -238,7 +238,7 @@ static void build_topology_individual_phi(protein_t *prot){
 				//Build Moved Atom		
 				i_af = -1;
 				//It is considered moved atom all atoms that are not fixed atoms
-				prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);
+				prot->p_topol->phi[r-1].num_moved = 1 + ((prot->p_topol->range_atoms[r-1].last_atom - prot->p_topol->range_atoms[r-1].first_atom) - prot->p_topol->phi[r-1].num_fixed);				
 				prot->p_topol->phi[r-1].moved_atoms = Malloc(int, prot->p_topol->phi[r-1].num_moved);
 				for (int i_a = prot->p_topol->range_atoms[r-1].first_atom; i_a <= prot->p_topol->range_atoms[r-1].last_atom; i_a++){
 					if (is_fixed_atom(&prot->p_atoms[i_a-1].atmnumber, 

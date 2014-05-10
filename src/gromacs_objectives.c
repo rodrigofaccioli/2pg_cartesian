@@ -160,7 +160,7 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 		close(fd[0]);
 		write(fd[1], pipe_msg, strlen(pipe_msg) + 1);
 		close(fd[1]);
-		waitpid(pid, &status, 0);
+		waitpid(pid, &status, 0);		
 	}
 
 	return 1;

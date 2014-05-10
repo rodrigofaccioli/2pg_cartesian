@@ -21,7 +21,7 @@ primary_seq_t* allocate_primary_seq(const int *num_res){
 
 	aux = Malloc(primary_seq_t, 1);
 	aux->num_res = *num_res;
-	aux->seq_res = Malloc(amino_t, aux->num_res);
+	aux->seq_res = Malloc(amino_t, *num_res);
 
 	initialize_primary_seq(aux);
 
