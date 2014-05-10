@@ -10,6 +10,7 @@
 * nbj represents the number of objectivies
 */
 void initialize_solution(solution_t * solution_aux, const int *nbj){
+		solution_aux->ID = -1;
 		solution_aux->num_obj = *nbj;
 		solution_aux->obj_values = Malloc(double, solution_aux->num_obj);
 		solution_aux->representation = NULL;

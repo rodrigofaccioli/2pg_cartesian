@@ -8,6 +8,7 @@
  * representation is a pointer to something struct such as protein_t
 */
 typedef struct ssolution {
+   int ID;
    int num_obj;
    double *obj_values;
    void *representation;
