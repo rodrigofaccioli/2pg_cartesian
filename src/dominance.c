@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "dominance.h"
 #include "defines.h"
 #include "messages.h"
+#include "futil.h"
+
 
 dominance_t * allocate_dominance(const int *size){
 	dominance_t *dominance;
@@ -21,7 +24,7 @@ void desallocate_dominance(dominance_t *dominance, const int *size){
 
 void show_dominance(const dominance_t *dominance, const int *size){
 	for (int d = 0; d < *size; d++){
-		printf("Index dominance %i\n", d);
+		printf("Index dominance %i\n", d+1);
 		printf("How many solutions dominate me %i\n", 
 			dominance[d].how_many_solutions_dominate_it);
 		printf("How many solutions are dominated by me %i\n", 
@@ -34,6 +37,32 @@ void show_dominance(const dominance_t *dominance, const int *size){
 		printf("-------------------- \n\n");
 	}
 }
+
+void save_dominance(const dominance_t *dominance, const int *size){
+	FILE *d_file=NULL;
+	char *file_name;
+	file_name = Malloc(char, MAX_FILE_NAME);
+	strcpy(file_name, "dominance_output.txt");	
+    
+	d_file = open_file(file_name, fWRITE);
+
+	for (int d = 0; d < *size; d++){
+		fprintf(d_file, "Index dominance %i\n", d+1);
+		fprintf(d_file, "How many solutions dominate me %i\n", 
+			dominance[d].how_many_solutions_dominate_it);
+		fprintf(d_file, "How many solutions are dominated by me %i\n", 
+			dominance[d].max_dominated);
+		fprintf(d_file, "Values of objective\n");
+		for (int ob = 0; ob < dominance[d].sol->num_obj; ob++){
+			fprintf(d_file, "objective %i value is %f\n", ob, 
+				dominance[d].sol->obj_values[ob]);
+		}
+		fprintf(d_file,"-------------------- \n\n");
+	}
+	fclose(d_file);
+	free(file_name);	
+}
+
 
 /** Applies the dominance concept in solutions
 * dominance is a pointer that stores the application of dominance concept in solution
