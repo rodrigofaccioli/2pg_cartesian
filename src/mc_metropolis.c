@@ -203,7 +203,7 @@ int mc_metropolis(const input_parameters_t *in_para){
     num_solution = 1;
     rr = 0;
 	R = 8.3144621E-3; // kJ/Kmol
-	T = 309;	// K	
+	T = in_para->temp_mc;	// K	
 	prob = 1.000;
     model = 0;
 

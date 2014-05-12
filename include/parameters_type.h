@@ -49,6 +49,8 @@ typedef struct sinput_parameters{
     int MonteCarloSteps;
     /* Represents frequency in which protein models will be stored at Monte Carlo*/
     int freq_mc;
+    /* Defines the temperature for Metropolis Criteria in Monte Carlo*/
+    int temp_mc;
     /*set who can be neutralize N-Terminal*/
     type_terminal_charge_t n_terminal_charge;
     /*set who can be neutralize C-Terminal*/    

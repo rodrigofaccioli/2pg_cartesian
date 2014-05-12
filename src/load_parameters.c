@@ -48,6 +48,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->mdp_file = Malloc(char, MAX_FILE_NAME);
     param->MonteCarloSteps = 100;
     param->freq_mc = 10;
+    param->temp_mc = 309;
     param->n_terminal_charge = term_charge_NR;
     param->c_terminal_charge = term_charge_NR;
     param->StepNumber = 1000;
@@ -236,6 +237,7 @@ void load_parameters_from_file(input_parameters_t *param,
 
 	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
 	param->freq_mc = atoi(conf.getParameter("FrequencyMC").c_str());
+	param->temp_mc = atoi(conf.getParameter("TemperatureMC").c_str());
 
 	set_terminal_charge(param, conf.getParameterChar("c_terminal_charge"),
 		conf.getParameterChar("n_terminal_charge"));
