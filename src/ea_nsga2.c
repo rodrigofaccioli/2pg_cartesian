@@ -606,6 +606,47 @@ int get_nsga2_solution_index_by_objective_value(const ea_nsga2_t *sol, const int
     return -1;
 }
 
+void build_plot_xvg_file_initial_population(const solution_t *solutions_sorted, 
+    const int *size, const int *num_obj, const char *local_execute, 
+    const int *front, const int *ger, 
+    const type_fitness_energies_t *fitness_energies, 
+    const int *obj_get_index){
+
+    char *file_name;
+    char *xvg_line, *aux_str;
+    double v_aux;
+    int ind_id_before_sorted;
+
+    file_name = Malloc(char, MAX_FILE_NAME);
+    xvg_line = Malloc(char, MAX_LINE_FILE);
+    aux_str = Malloc(char, 60);
+    sprintf(file_name,"plot_nfront_%d_%d.xvg",*front, *ger);
+    char *fname = path_join_file(local_execute,file_name);
+    FILE *xvg_file = open_file(fname,fWRITE);
+    fprintf (xvg_file,"#Obj1\tObj2\t\n");
+    for (int i=0; i < *size; i++){
+        for (int obj = 0; obj < *num_obj; obj++){
+            v_aux = get_displayed_value_of_objective(solutions_sorted, &i, &obj, 
+                fitness_energies);            
+            sprintf(aux_str,"%f",v_aux);
+            if (obj == 0){
+                strcpy(xvg_line, aux_str);
+            }else{
+                strcat(xvg_line, aux_str);
+            }
+            strcat(xvg_line, "\t");
+        }
+        fprintf (xvg_file,"%s\n", xvg_line);
+    }
+    fclose(xvg_file);
+
+    free(aux_str);
+    free(xvg_line);
+    free(file_name);
+    free(fname);
+}
+
+
 void build_plot_xvg_file(const solution_t *solutions_sorted, 
     const int *size, const int *num_obj, const char *local_execute, 
     const ea_nsga2_t *solutions_full, const int *size_full, 
@@ -652,6 +693,57 @@ void build_plot_xvg_file(const solution_t *solutions_sorted,
 }
 
 
+/** Saving files of initial population to analysis
+*/
+void saving_file_of_initial_population(const ea_nsga2_t *solutions_p, 
+    const int *size, const input_parameters_t *in_para){
+
+    solution_t *solutions_non_dominated; //*solutions,
+    char *pop_non_dominated;
+    int num_obj, number_of_non_dominated, front_non_dominated;    
+    int ger;
+
+    num_obj = solutions_p[0].sol->num_obj;
+
+/**** Setting solutions to save information to NON-DOMINATED ***/
+    ger = 0;
+    front_non_dominated = 0;
+    number_of_non_dominated = compute_how_many_front(solutions_p, size, &front_non_dominated);
+    //Setting objectivies    
+    solutions_non_dominated = allocate_solution(&number_of_non_dominated, &num_obj);
+    set_nsga2_solution_in_solution(solutions_non_dominated, solutions_p, &number_of_non_dominated);
+    //Setting proteins    
+    copy_nsga2_solutions2solution(solutions_non_dominated, solutions_p, &number_of_non_dominated);    
+
+    //Sorting solutions by first objective
+    index_obj_compare_objective_solution = 0;
+    qsort (solutions_non_dominated, number_of_non_dominated , sizeof (solution_t),
+                      compare_objective_solution);
+
+    //Saving data of non-dominated
+    pop_non_dominated = Malloc(char, MAX_FILE_NAME);
+    sprintf(pop_non_dominated,"pop_NON_DOMINATED_%d.pdb",ger);
+    save_solution_population_file(solutions_non_dominated, in_para->path_local_execute, pop_non_dominated, 
+        &number_of_non_dominated);
+    build_objective_files_non_dominated(solutions_non_dominated, &ger, 
+        &number_of_non_dominated, &num_obj, in_para);
+    build_plot_xvg_file_initial_population(solutions_non_dominated, &number_of_non_dominated, &num_obj,
+        in_para->path_local_execute, &front_non_dominated, &ger,
+        in_para->fitness_energies, &index_obj_compare_objective_solution);
+    //Desalocate protein in solution
+    for (int s = 0; s < number_of_non_dominated; s++){
+        protein_t* prot_aux_dest = (protein_t*) solutions_non_dominated[s].representation;
+        if (prot_aux_dest != NULL){
+            desallocateProtein(prot_aux_dest, &number_of_non_dominated);
+            solutions_non_dominated[s].representation = NULL;            
+        }        
+    }
+    free(pop_non_dominated);
+    desallocate_solution(solutions_non_dominated, &number_of_non_dominated);
+/**** FINISHED creating file to NON-DOMINATED **/
+
+}
+
 void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt, 
     const int *size_RT, const int *ger, const ea_nsga2_t *solutions_p,
     const input_parameters_t *in_para){
@@ -694,6 +786,7 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
             solutions_non_dominated[s].representation = NULL;            
         }        
     }
+    free(pop_non_dominated);
     desallocate_solution(solutions_non_dominated, &number_of_non_dominated);
 /**** FINISHED creating file to NON-DOMINATED **/
 
@@ -810,6 +903,9 @@ int ea_nsga2(const input_parameters_t *in_para){
 
     //Setting fronts to nsga2_solutions_p
     set_front_solution_p(nsga2_solutions_p, &in_para->size_population);
+
+    //Saving information of initiak population to analysis
+    saving_file_of_initial_population(nsga2_solutions_p, &in_para->size_population, in_para);
 
     // Main Looop of NSGA-II Algorithm 
     int started_generation = get_started_generation(&in_para->started_generation);
