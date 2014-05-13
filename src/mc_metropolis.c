@@ -28,24 +28,25 @@
 #include "objective.h"
 #include "solutionio.h"
 
-void save_energies(const solution_t *solution_curr, 
-    const solution_t *solution_new, const input_parameters_t *in_para, 
-    const int *num_sol){    
-    const protein_t* p_curr;
+void save_values_to_analysis(const float *energy_after_mc_criteria,
+    const float *energy_new_solution, const float *ener_before_mc_crit, 
+    const float *prob, const float *rr, 
+    const input_parameters_t *in_para, const int *num_sol){    
+    
     FILE * energy_file; 
     char *file_name;
     file_name = Malloc(char, MAX_FILE_NAME);
     strcpy(file_name, "monte_carlo_energies.fit");
     char *fname = path_join_file(in_para->path_local_execute,
-        file_name);    
-    p_curr = (protein_t*) solution_curr->representation;
+        file_name);        
     if (*num_sol == 1){
         energy_file = open_file(fname, fWRITE);
-        fprintf (energy_file,"#Index New_Solution \t Current_Solution \n");
+        fprintf (energy_file,"#Index\tEnergy_After_Criteria\tEnergy_Before_Criteria\tNew_Solution\tProb\trr\n");
     }else{
         energy_file = open_file(fname, fAPPEND);
     }    
-    fprintf (energy_file,"%i \t %f \t %f \n", *num_sol, solution_new[0].obj_values[0], solution_curr[0].obj_values[0]);
+    fprintf (energy_file,"%i\t%.10e\t%.10e\t%.10e\t%f\t%f\n", *num_sol, *energy_after_mc_criteria, 
+        *ener_before_mc_crit, *energy_new_solution, *prob, *rr);
     fclose(energy_file);    
     free(fname);
     free(file_name);    
@@ -94,11 +95,7 @@ void accept(solution_t *solution_curr, const solution_t *solution_new){
 * solution_curr is the current solution
 */ 
 void reject(solution_t *solution_new, const solution_t *solution_curr){
-	const protein_t *p_curr;
-	protein_t *p_new;
-	p_curr = (protein_t*) solution_curr[0].representation;
-	p_new = (protein_t*) solution_new[0].representation;
-	copy_protein(p_new, p_curr);
+	//const protein_t *p_curr;
 	solution_new->obj_values[0] = solution_curr->obj_values[0];
 }
 
@@ -117,14 +114,23 @@ static int compare_solution(const void *x, const void *y){
 }
 
 /** Builds a new solution and computes the objective
-* ind_new is an protein structure
+* solution_new is new solution
+* solution_curr is current solution
 * in_para is the input parameter
 */
-void mc_build_solution(protein_t *ind_new, const input_parameters_t *in_para){
+void mc_build_solution(solution_t *solution_new, const solution_t *solution_curr,
+    const input_parameters_t *in_para){
     float angle_radians, angle_degree, rate;
     int what_rotation;
     int max_kind_of_rotation = 4;
     int num_residue_choose;
+
+    //Copy current solution to new solution
+    protein_t *ind_new;
+    const protein_t *p_curr;    
+    p_curr = (protein_t*) solution_curr[0].representation;
+    ind_new = (protein_t*) solution_new[0].representation;
+    copy_protein(ind_new, p_curr);
     
     //Choose a residue. It must be started 1 untill number of residue
     num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);
@@ -198,6 +204,7 @@ int mc_metropolis(const input_parameters_t *in_para){
     float prob, rr;
     int T;
     int model;
+    float energy_before_mc_criteria, energy_new_solution, energy_after_mc_criteria;
 
     //Starting values
     num_solution = 1;
@@ -206,6 +213,9 @@ int mc_metropolis(const input_parameters_t *in_para){
 	T = in_para->temp_mc;	// K	
 	prob = 1.000;
     model = 0;
+    energy_before_mc_criteria = 0;
+    energy_new_solution = 0;
+    energy_after_mc_criteria = 0;
 
     //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
@@ -242,31 +252,39 @@ int mc_metropolis(const input_parameters_t *in_para){
 	//Computing solutions with GROMACS
     get_gromacs_objectives(solution_curr, in_para);
     for (int s = 1; s <= in_para->MonteCarloSteps; s++){
+        //Getting energy before metropolis criteria
+        energy_before_mc_criteria = solution_curr[0].obj_values[0];
+        //Building new Solution
+    	mc_build_solution(&solution_new[0], &solution_curr[0], in_para);
+        //Calculates energy of new Solution
+    	get_gromacs_objectives(&solution_new[0], in_para);        
+        //Getting energy of new solution
+        energy_new_solution = solution_new[0].obj_values[0];        
+		// Checking the new solution acceptance		
+		if( energy_new_solution > energy_before_mc_criteria ){// If the energy of the new structure is higher than of the previous...
+			prob=exp( (-1)*((energy_new_solution - energy_before_mc_criteria)/(R*T) ) );// Metropolis criterion
+			rr = _get_double_random_number();
+			if( rr <= prob ){
+				accept(&solution_curr[0],&solution_new[0]);                
+			}
+		}else{ 
+			// new is better than current
+			accept(&solution_curr[0], &solution_new[0]);
+            prob = 1.0;
+		}
+        //Getting energy After metropolis criteria
+        energy_after_mc_criteria = solution_curr[0].obj_values[0];
+
+        //Saving values to analysis
+        save_values_to_analysis(&energy_after_mc_criteria, &energy_new_solution, &energy_before_mc_criteria, &prob, &rr, in_para, &s);
+
         //Saving PDB of current solution
         if (s % in_para->freq_mc == 0){
             model  = model + 1;
             save_solution(&solution_curr[0], in_para, &model);
         }
-        //Building new Solution
-    	mc_build_solution(&prot_new[0], in_para);
-        //Calculates energy of new Solution
-    	get_gromacs_objectives(&solution_new[0], in_para);
-        //Saving energies of New and Current solution
-        save_energies(solution_curr, solution_new, in_para, &s);
-		// Checking the new solution acceptance		
-		if( solution_new[0].obj_values[0] > solution_curr[0].obj_values[0] ){// If the energy of the new structure is higher than of the previous...
-			prob=exp( (-1)*((solution_new[0].obj_values[0] - solution_curr[0].obj_values[0])/(R*T) ) );// Metropolis criterion
-			rr = _get_double_random_number();
-            printf("prob %f rr %f \n", prob, rr);
-			if( rr <= prob ){
-				accept(&solution_curr[0],&solution_new[0]);
-			}else{
-				reject(&solution_new[0],&solution_curr[0]);
-			}
-		}else{ 
-			// new is better than current
-			accept(&solution_curr[0], &solution_new[0]);
-		}
+
+
     }    
     //save_final_solution(&solution_curr[0], in_para);
     finish_gromacs_execution();
