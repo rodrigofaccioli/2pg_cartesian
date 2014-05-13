@@ -25,7 +25,7 @@ void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize){
 }
 
 pdb_atom_t * allocate_pdbatom(const int *numatom){
-	pdb_atom_t *pdbatom_aux;
+	pdb_atom_t *pdbatom_aux = NULL;
 	pdbatom_aux = Malloc(pdb_atom_t,*numatom);
 	return pdbatom_aux;
 }
