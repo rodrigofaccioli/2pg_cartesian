@@ -13,7 +13,6 @@
 #include "algorithms.h"
 #include "string_owner.h"
 #include "futil.h"
-#include "random_number_gsl.h"
 #include "aminoacids.h"
 #include "aminoacids_io.h"
 #include "populationio.h"
@@ -263,7 +262,7 @@ int mc_metropolis(const input_parameters_t *in_para){
 		// Checking the new solution acceptance		
 		if( energy_new_solution > energy_before_mc_criteria ){// If the energy of the new structure is higher than of the previous...
 			prob=exp( (-1)*((energy_new_solution - energy_before_mc_criteria)/(R*T) ) );// Metropolis criterion
-			rr = _get_double_random_number();
+			rr = _get_float();
 			if( rr <= prob ){
 				accept(&solution_curr[0],&solution_new[0]);                
 			}
@@ -296,7 +295,6 @@ int mc_metropolis(const input_parameters_t *in_para){
     desallocateProtein(prot_curr, &num_solution);
     desallocateProtein(prot_new, &num_solution);
     desallocate_primary_seq(primary_sequence);
-    _finish_random_gsl();
 
 	return 0;
 }

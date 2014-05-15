@@ -13,7 +13,6 @@
 #include "algorithms.h"
 #include "string_owner.h"
 #include "futil.h"
-#include "random_number_gsl.h"
 #include "aminoacids.h"
 #include "aminoacids_io.h"
 #include "populationio.h"
@@ -168,7 +167,6 @@ int random_algorithm(const input_parameters_t *in_para){
     desallocate_solution(solution_curr, &num_solution);    
     desallocateProtein(prot_curr, &num_solution);    
     desallocate_primary_seq(primary_sequence);
-    _finish_random_gsl();
 
 	return 0;
 }

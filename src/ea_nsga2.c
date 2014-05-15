@@ -14,7 +14,6 @@
 #include "algorithms.h"
 #include "string_owner.h"
 #include "futil.h"
-#include "random_number_gsl.h"
 #include "aminoacids.h"
 #include "aminoacids_io.h"
 #include "populationio.h"
@@ -1000,9 +999,7 @@ int ea_nsga2(const input_parameters_t *in_para){
     desallocateProtein(pop_new, &in_para->size_population);        
     desallocateProtein(population_p, &in_para->size_population);
     desallocate_primary_seq(primary_sequence);
-    _finish_random_gsl();
-
-
+ 
     return 0;    
 	
 }
