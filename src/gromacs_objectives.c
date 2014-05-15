@@ -28,6 +28,7 @@
 #define MAX_VALUE 40
 #define MAX_VALUE_G_SAS 3
 
+static char *command = NULL;
 static char *program = NULL; /* program (executable) file name */
 static char *filenm1 = NULL; /* data file names */
 static char *filenm2 = NULL;
@@ -93,31 +94,22 @@ static option_fitness_gromacs_t option_g_energy_program [] = {
                                                              };
 
 
-static inline int run_program(const char *file, char *const argv[])
-{
-	pid_t pid;
-	int status;
+static inline int run_program(const char *file, char *const argv[]){
 	int out, err; /* file descriptors for stdout and stderr */
+	int i = 0;
 
-	pid = fork();
+	strcpy(command, argv[i]);
+	strcat(command, " ");
+	i++;
+	do{	
+		strcat(command, argv[i]);
+		strcat(command, " ");
+		i++;	
+	}while (argv[i] != NULL);
+	//Avoid output messages
+	strcat(command, " > /dev/null 2> /dev/null ");
 
-	if (pid == -1) {
-		perror("Fork failed to create process");
-		return 0;
-	} else if (pid == 0) {
-		/* child process */
-		out = open("/dev/null", O_RDONLY);
-		err = open("/dev/null", O_RDONLY);
-		dup2(out, 1);
-		dup2(err, 2);
-
-		execv(file, argv);
-		perror("Execv failed to run program (run_program)");
-		_exit(EXIT_FAILURE);
-	} else {
-		/* parent process */
-		waitpid(pid, &status, 0);
-	}
+	system(command);
 
 	return 1;
 }
@@ -125,44 +117,25 @@ static inline int run_program(const char *file, char *const argv[])
 /* Start a program as in:
  * echo "pipe_msg" | program [args...] */
 static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
-							char *const argv[])
-{
-	pid_t pid;
-	int status;
-	int fd[2], out, err;
+							char *const argv[]){
+	int out, err; /* file descriptors for stdout and stderr */
+	int i;
 
-	if (pipe(fd) == -1) {
-		perror("Failed to create pipe");
-		return 0;
-	}
+	strcpy(command, "echo ");
+	strcat(command, pipe_msg);
+	strcat(command, " | ");
 
-	pid = fork();
+	i = 0;
+	do{	
+		strcat(command, argv[i]);
+		strcat(command, " ");
+		i++;	
+	}while (argv[i] != NULL);
+	//Avoid output messages
+	strcat(command, " > /dev/null 2> /dev/null ");
 
-	if (pid == -1) {
-		perror("Fork failed to create process");
-		return 0;
-	} else if (pid == 0) {
-		/* child process */
-		/* supress output */
-		out = open("/dev/null", O_WRONLY);
-		err = open("/dev/null", O_WRONLY);
-		dup2(out, 1);
-		dup2(err, 2);
-
-		/* read from the pipe */
-		close(fd[1]);
-		dup2(fd[0], 0);
-		execv(file, argv);
-		perror("Execv failed to run program");
-		_exit(EXIT_FAILURE);
-	} else {
-		/* parent process */
-		close(fd[0]);
-		write(fd[1], pipe_msg, strlen(pipe_msg) + 1);
-		close(fd[1]);
-		waitpid(pid, &status, 0);		
-	}
-
+	system(command);
+	
 	return 1;
 }
 
@@ -300,6 +273,7 @@ void initialize_g_sas_values(){
  */
 void init_gromacs_execution (){
 
+	command = Malloc(char, MAX_COMMAND);
 	program = Malloc(char, MAX_COMMAND);
 	filenm1 = Malloc(char, MAX_COMMAND);
 	filenm2 = Malloc(char, MAX_COMMAND);
@@ -381,6 +355,7 @@ void init_gromacs_execution (){
 */
 void finish_gromacs_execution(){
 
+	free(command);
 	free(program);
 	free(filenm1);
 	free(filenm2);
