@@ -5,7 +5,6 @@
 #
 # --------------------------------------------------
 
-
 CXX=g++
 OPT=  -c -g
 OPT_GSL = -static -Wall -lgsl -lgslcblas -lm -pedantic 

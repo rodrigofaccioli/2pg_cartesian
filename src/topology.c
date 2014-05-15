@@ -27,9 +27,11 @@ static const char *protein_backbone[] = {"N", "CA", "C", "O", "H1", "H2", "H3", 
 static void desAllocate_top_residue_atom_info(top_residue_atom_info_t *info){	
 	if (info->fixed_atoms != NULL){
 		free(info->fixed_atoms);
+		info->fixed_atoms = NULL;
 	}
 	if (info->moved_atoms != NULL){
 		free(info->moved_atoms);	
+		info->moved_atoms = NULL;
 	}
 }
 
@@ -66,6 +68,7 @@ void  desAllocateTop_Global(top_global_t *top_aux){
 	desAllocate_top_residue_side_chains(top_aux->side_chains, &top_aux->numres);
 	free(top_aux->range_atoms);	
 	free(top_aux);
+	top_aux = NULL;
 }
 
 
@@ -322,7 +325,7 @@ static void build_topology_individual_side_chains(protein_t *prot){
 		prot->p_topol->side_chains[r-1].num_chi = get_number_chi(res_name);
 		if (prot->p_topol->side_chains[r-1].num_chi > 0){
 			prot->p_topol->side_chains[r-1].atoms_chi = Malloc(top_residue_atom_info_t, 
-				prot->p_topol->side_chains[r-1].num_chi);
+				prot->p_topol->side_chains[r-1].num_chi);							
 			for (int chi = 1; chi <= prot->p_topol->side_chains[r-1].num_chi; chi++){
 				set_fixed_moved_atoms_side_chains_chi(prot, &r, res_name, &chi);				
 			}

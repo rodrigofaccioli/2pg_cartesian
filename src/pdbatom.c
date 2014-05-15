@@ -32,6 +32,7 @@ pdb_atom_t * allocate_pdbatom(const int *numatom){
 
 void desAllocate_pdbatom(pdb_atom_t *pdbatoms){
 	free(pdbatoms);
+	pdbatoms = NULL;
 }
 
 void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,

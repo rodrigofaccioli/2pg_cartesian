@@ -21,15 +21,6 @@ protein_t * allocateProtein(const int *size){
 }
 
 void desallocateProtein(protein_t *pop, const int *inPopSize){
-	/*
-	for (int i =0; i < *inPopSize; i++){
-		if (pop[i].p_atoms != NULL){
-			desAllocate_pdbatom(pop[i].p_atoms);
-		}
-		if (pop[i].p_topol != NULL){
-			desAllocateTop_Global(pop[i].p_topol);			
-		}
-	}*/
 	free(pop);
 }
 
@@ -46,6 +37,15 @@ void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size
 
 /** Copies p_source to p_dest */
 void copy_protein(protein_t *p_dest, const protein_t *p_source){
+	for (int a = 0; a < p_source->p_topol->numatom; a++){
+		copy_pdb_atom(&p_dest->p_atoms[a], &p_source->p_atoms[a]);
+	}
+	if (p_dest->p_topol == NULL){
+		p_dest->p_topol = allocateTop_Global(&p_source->p_topol->numres, 
+			&p_source->p_topol->numatom);
+		build_topology_individual(p_dest);		
+	}	
+/*
 	//Coping atoms
 	if (p_dest->p_atoms == NULL){
 		p_dest->p_atoms = allocate_pdbatom(&p_source->p_topol->numatom);
@@ -56,10 +56,10 @@ void copy_protein(protein_t *p_dest, const protein_t *p_source){
 	if (p_dest->p_topol == NULL){
 		p_dest->p_topol = allocateTop_Global(&p_source->p_topol->numres, 
 			&p_source->p_topol->numatom);
+		build_topology_individual(p_dest);		
 	}
-	build_topology_individual(p_dest);
+*/
 }
-
 
 /** Copies each individual of pop_source to pop_dest */
 void copy_protein_population(protein_t *pop_dest, const protein_t *pop_source, 

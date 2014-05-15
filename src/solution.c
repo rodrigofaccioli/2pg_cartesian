@@ -35,6 +35,7 @@ void desallocate_solution(solution_t *sol, const int *nsol){
 		free(sol[s].obj_values);
 	}
 	free(sol);
+	sol = NULL;
 }
 
 /** Copy all objectivies between two solutions

@@ -15,10 +15,10 @@
 void load_initial_population_file(protein_t *pop, const int *pop_size, const char *path, 
 	const char *file_name, const primary_seq_t *primary_sequence){
 
-	pdb_atom_t **atoms;
-	const pdb_atom_t *atm_aux;
-    int *num_atoms_by_model_PDB;
-    char *path_pdb_file_name;
+	pdb_atom_t **atoms = NULL;
+	const pdb_atom_t *atm_aux = NULL;
+    int *num_atoms_by_model_PDB = NULL;
+    char *path_pdb_file_name = NULL;
 
 
     //Loading PDB File of initial population
@@ -44,12 +44,11 @@ void load_initial_population_file(protein_t *pop, const int *pop_size, const cha
 			&num_atoms_by_model_PDB[i]);
 	}
 	//Building Topology of population
-	build_topology_population(pop, pop_size);
+	build_topology_population(pop, pop_size);	
 
 	free(num_atoms_by_model_PDB);
 	free(path_pdb_file_name);
 	desAllocate_Population_pdb(atoms, pop_size);
-
 }
 
 /** Save a set of models in PDB format
