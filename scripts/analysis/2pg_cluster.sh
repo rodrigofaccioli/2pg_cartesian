@@ -8,6 +8,7 @@
 #
 #                                                         Leandro Oliveira Bortot
 #                                                                       13 Sep 2013
+#					             Ultima Atualizacao: 15/05/2014
 #--------------------------------------------------------------------------------
 
 
@@ -55,7 +56,7 @@ while [ $node -le $total_nodes ]; do	# para cada nó...
 		let i=$i+1
 	done
 
-
+	ssh "$node_name" "mkdir -p "$local_node""
 	scp "$script_evolutivo" "$node_name":"$local_node" >/dev/null
 	scp -r "arquivos/" "$node_name":"$local_node" >/dev/null
 
