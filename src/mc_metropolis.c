@@ -36,8 +36,7 @@ void save_values_to_analysis(const float *energy_after_mc_criteria,
     char *file_name;
     file_name = Malloc(char, MAX_FILE_NAME);
     strcpy(file_name, "monte_carlo_energies.fit");
-    char *fname = path_join_file(in_para->path_local_execute,
-        file_name);        
+    char *fname = path_join_file(in_para->path_local_execute, file_name);        
     if (*num_sol == 1){
         energy_file = open_file(fname, fWRITE);
         fprintf (energy_file,"#Index\tEnergy_After_Criteria\tEnergy_Before_Criteria\tNew_Solution\tProb\trr\n");
@@ -229,7 +228,10 @@ int mc_metropolis(const input_parameters_t *in_para){
         primary_sequence);    
 
     //Setting protein previous that is the same of prot_curr
+    prot_new[0].p_atoms = allocate_pdbatom(&prot_curr[0].p_topol->numatom);    
+    prot_new[0].p_topol = allocateTop_Global(&prot_curr[0].p_topol->numres, &prot_curr[0].p_topol->numatom);
     copy_protein(&prot_new[0], &prot_curr[0]);
+    build_topology_individual(&prot_new[0]);
 
     //Saving topology of population 
     prefix = Malloc(char,10);
@@ -250,7 +252,7 @@ int mc_metropolis(const input_parameters_t *in_para){
     set_proteins2solutions(solution_new, prot_new, &num_solution);
 	//Computing solutions with GROMACS
     get_gromacs_objectives(solution_curr, in_para);
-    for (int s = 1; s <= in_para->MonteCarloSteps; s++){
+    for (int s = 1; s <= in_para->MonteCarloSteps; s++){        
         //Getting energy before metropolis criteria
         energy_before_mc_criteria = solution_curr[0].obj_values[0];
         //Building new Solution
@@ -282,8 +284,6 @@ int mc_metropolis(const input_parameters_t *in_para){
             model  = model + 1;
             save_solution(&solution_curr[0], in_para, &model);
         }
-
-
     }    
     //save_final_solution(&solution_curr[0], in_para);
     finish_gromacs_execution();

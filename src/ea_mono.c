@@ -62,6 +62,7 @@ static void build_final_results(solution_t *pop,const input_parameters_t *in_par
     //Saving population
     for (int p = 0; p < in_para->size_population; p++){
         prot = (protein_t*) pop[p].representation;
+        population_aux[p].p_atoms = allocate_pdbatom(&prot->p_topol->numatom);
         copy_protein(&population_aux[p], prot);
     }
     save_population_file(population_aux, in_para->path_local_execute, sorted_pop_file, 
@@ -70,6 +71,9 @@ static void build_final_results(solution_t *pop,const input_parameters_t *in_par
     save_solution_file(in_para->path_local_execute, sorted_fit_file, &obj, 
             pop, &in_para->size_population, &in_para->number_generation, in_para);
 
+    for (int i = 0; i < in_para->size_population; i++){
+        desAllocate_pdbatom(population_aux[i].p_atoms);
+    }   
     desallocateProtein(population_aux, &in_para->size_population);
     free(sorted_pop_file); 
     free(sorted_fit_file);
@@ -165,6 +169,9 @@ int ea_mono(const input_parameters_t *in_para){
         primary_sequence);    
 
     //Setting population_new
+    for (int i = 0;  i < in_para->size_population; i++){
+        population_new[i].p_atoms = allocate_pdbatom(&population_p[0].p_topol->numatom);            
+    }
     copy_protein_population(population_new, population_p, &in_para->size_population);
     initialize_protein_population_atoms(population_new, &in_para->size_population);
 
