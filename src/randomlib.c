@@ -12,7 +12,7 @@ int _get_int_random_number(__const int *max_number){
 	}else{
 		max_int = *max_number;		
 	}
-	return rand() % (max_int+1);
+	return rand() % max_int;
 }
 
 /** Generates a psuedo-random float between 0.0 and 0.999 */
