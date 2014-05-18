@@ -30,7 +30,7 @@ export GMX_MAXBACKUP=-1 # nao criar arquivos de backup do gromacs
 
 CRIA_ARQ_CONFIG=1 # criação do arquivo de configuração?
 
-POP_INI=1 # criação da população inicial?
+POP_INI=0 # criação da população inicial?
 
 EA=1 # algoritmo evolutivo?
 
@@ -79,7 +79,8 @@ while [ $pred_atual -le $total_predicoes ]; do
 	Individual_Mutation_Rate=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $20}') 
 	MonteCarloSteps=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $21}') 	
 	FrequencyMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $22}') 	
-	par=23	# contem o número do próximo parâmetro a ser lido do arquivo
+	TemperatureMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $23}') 	
+	par=24	# contem o número do próximo parâmetro a ser lido do arquivo
 	i=1	# número do objetivo atual
 	while [ $i -le $objetivos ]; do	# para cada objetivo
 		obj[$i]=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $'"$par"'}')	# cada objetivo é armazenado em um elemento do vetor obj[]
@@ -114,7 +115,7 @@ while [ $pred_atual -le $total_predicoes ]; do
 			echo "SizePopulation = ""$individuos" >> $arq_config
 			echo "MonteCarloSteps = ""$MonteCarloSteps" >> $arq_config			
 			echo "FrequencyMC = ""$FrequencyMC" >> $arq_config			
-
+			echo "TemperatureMC = ""$TemperatureMC" >> $arq_config			
 			# Monta a string que contém os objetivos para ser colocada no arquivo de parâmetros
 			i=1
 			fitness_energy=""	# string começa vazia
