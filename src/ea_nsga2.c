@@ -820,6 +820,34 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     free(pop_non_dominated);    
 /**** FINISHED creating file to NON-DOMINATED **/
 
+/**** Setting solutions to save information from solutions_p ***/   
+    //Saving data of solution_p
+    int one = 1;
+    solution_t *solutions_p_AUX = NULL;
+    char *pop_p_file_name = NULL;
+    pop_p_file_name = Malloc(char, MAX_FILE_NAME);
+    solutions_p_AUX = allocate_solution(&in_para->size_population, &num_obj);    
+    //Setting objectivies    
+    set_nsga2_solution_in_solution(solutions_p_AUX, solutions_p, &in_para->size_population);
+    //Setting proteins    
+    copy_nsga2_solutions2solution(solutions_p_AUX, solutions_p, &in_para->size_population);    
+    sprintf(pop_p_file_name,"pop_%d.pdb",*ger);
+    save_solution_population_file(solutions_p_AUX, in_para->path_local_execute, pop_p_file_name, 
+        &in_para->size_population);    
+    //Desalocate protein in solution
+    for (int s = 0; s < in_para->size_population; s++){
+        protein_t* prot_aux_dest = (protein_t*) solutions_p_AUX[s].representation;
+        if (prot_aux_dest != NULL){
+            desAllocate_pdbatom(prot_aux_dest->p_atoms);
+            prot_aux_dest->p_topol = NULL;
+            desallocateProtein(prot_aux_dest, &one);
+            solutions_p_AUX[s].representation = NULL;            
+        }        
+    }    
+    desallocate_solution(solutions_p_AUX, &in_para->size_population);
+    free(pop_p_file_name);
+/**** FINISHED creating file to solutions_p **/
+
 
 /**** Setting solutions to save information from solutions_rt ***/
 /*    
@@ -838,19 +866,6 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     desallocate_solution(solutions, size_RT);    
 */    
 /**** FINISHED creating file to solutions_rt **/
-
-
-/**** Setting solutions to save information from solutions_p ***/
-/*    
-    //Saving data of solution_p
-    pop_p_file_name = Malloc(char, MAX_FILE_NAME);
-    sprintf(pop_p_file_name,"pop_%d.pdb",*ger);
-    save_nsga2_population_file(solutions_p, in_para->path_local_execute, pop_p_file_name, 
-        &in_para->size_population);
-    free(pop_p_file_name);
-*/
-/**** FINISHED creating file to solutions_p **/
-
 }
 
 
