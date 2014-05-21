@@ -10,7 +10,7 @@ CXX=g++
 OPT=  -c -g
 OPT_GSL = -Wall -lm -pedantic 
 
-all:protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-Mono_PSP protpred-Gromacs-Dominance protpred-Gromacs-NSGA2_PSP protpred-Gromacs-Front
+all:protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-MC_Metropolis_PSP protpred-Gromacs-Mono_PSP protpred-Gromacs-Dominance protpred-Gromacs-NSGA2_PSP protpred-Gromacs-Front protpred-Gromacs-Sort_Method_Files_by_Front_Dominance
 
 protpred-Gromacs-Random_Algorithm_PSP:protpred-Gromacs-Random_Algorithm.o random_algorithm.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o
 	$(CXX) -o protpred-Gromacs-Random_Algorithm_PSP protpred-Gromacs-Random_Algorithm.o random_algorithm.o LoadConfig.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o $(OPT_GSL) 
@@ -24,6 +24,8 @@ protpred-Gromacs-NSGA2_PSP:protpred-Gromacs-NSGA2.o LoadConfig.o ea_mono.o topol
 	$(CXX) -o protpred-Gromacs-NSGA2_PSP protpred-Gromacs-NSGA2.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o ea_nsga2.o dominance.o $(OPT_GSL) 
 protpred-Gromacs-Front:protpred-Gromacs-Front.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o ea_nsga2.o dominance.o
 	$(CXX) -o protpred-Gromacs-Front protpred-Gromacs-Front.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o ea_nsga2.o dominance.o $(OPT_GSL) 
+protpred-Gromacs-Sort_Method_Files_by_Front_Dominance:protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o ea_nsga2.o dominance.o
+	$(CXX) -o protpred-Gromacs-Sort_Method_Files_by_Front_Dominance protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.o LoadConfig.o ea_mono.o topology.o pdbio.o protein.o futil.o pdbatom.o messages.o topologyio.o topologylib.o randomlib.o vector_math.o string_owner.o math_owner.o  osutil.o  load_parameters.o objective.o aminoacids.o aminoacids_io.o populationio.o rotation.o solution.o gromacs_objectives.o solutionio.o algorithms.o ea_nsga2.o dominance.o $(OPT_GSL) 
 
 protpred-Gromacs-Random_Algorithm.o:protpred-Gromacs-Random_Algorithm.c
 	$(CXX) $(OPT) protpred-Gromacs-Random_Algorithm.c -I../include
@@ -42,6 +44,9 @@ protpred-Gromacs-Dominance.o: protpred-Gromacs-Dominance.c
 
 protpred-Gromacs-Front.o: protpred-Gromacs-Front.c
 	$(CXX) $(OPT) protpred-Gromacs-Front.c -I../include
+
+protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.o: protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c
+	$(CXX) $(OPT) protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c -I../include
 
 populationio.o:	populationio.c
 	$(CXX) $(OPT) populationio.c -I../include
