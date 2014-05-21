@@ -411,12 +411,29 @@ const pdb_atom_t * get_pdb_atom_from_resnum_atom_name(const pdb_atom_t *atoms,
 	return aux_ret;
 }
 
-int get_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom){
-	/*Based on the number of atom, returns resnum from its last atom which
-	 * represents the number of residues
-	 */
+/** Based on the number of atom, returns resnum from its last atom which
+* represents the number of residues
+*/
+int get_last_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom){
 	return atoms[*num_atom - 1].resnum;
 }
+
+/** Based on the number of atom, returns number of residues 
+*/
+int get_number_residues_from_atom(const pdb_atom_t *atoms, const int *num_atom){
+	int num_res = 0;
+	int ref_res;
+	int r = 0;	
+	while (r < *num_atom){
+		ref_res = atoms[r].resnum;
+		num_res = num_res + 1;
+		while ( (ref_res == atoms[r].resnum) && (r < *num_atom) ){
+			r = r + 1;
+		}
+	}
+	return num_res;
+}
+
 
 /** Informs the residue name from residue number
 * res_name assined the name of residue
@@ -435,11 +452,11 @@ void get_res_name_from_res_num(char *res_name, const int *num_res,
 	}
 }
 
+/** This function changes the resnum when it is incorrect. resnum must be
+ * started with 1 for the first residue. See 1VII pdbid. This pdb the first
+ * residue is started with 41
+ */
 void renumerate_residue_number(pdb_atom_t *atoms, const int *num_atom){
-	/* This function changes the resnum when it is incorrect. resnum must be
-	 * started with 1 for the first residue. See 1VII pdbid. This pdb the first
-	 * residue is started with 41
-	 */
 	int res_ref, a, res_new_number;
 	if (is_residue_number_ok(atoms) == bfalse){
 		a = 0;
@@ -494,3 +511,4 @@ void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source){
 	dest->coord.y   = source->coord.y; 
 	dest->coord.z   = source->coord.z; 
 }
+

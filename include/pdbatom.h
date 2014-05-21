@@ -25,7 +25,8 @@ const pdb_atom_t * get_pdb_atom_from_resnum_atomid(const pdb_atom_t *atoms,
 		const int *res_num, const type_atoms_t *atomid,	const int *num_atom);
 const pdb_atom_t * get_pdb_atom_from_resnum_atom_name(const pdb_atom_t *atoms,
 		const int *res_num, const char *atomname,	const int *num_atom);
-int get_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom);
+int get_last_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom);
+int get_number_residues_from_atom(const pdb_atom_t *atoms, const int *num_atom);
 void get_res_name_from_res_num(char *res_name, const int *num_res,
 		const pdb_atom_t *atoms, const int *num_atom);
 void renumerate_residue_number(pdb_atom_t *atoms, const int *num_atom);
