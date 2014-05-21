@@ -28,4 +28,8 @@ void init_gromacs_execution();
 void finish_gromacs_execution();
 void build_tpr_file(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field, const char *mdp_file);
+void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs, const char *force_field);
+void clean_gromacs_simulation(const char *path_local_execute);
+
 #endif

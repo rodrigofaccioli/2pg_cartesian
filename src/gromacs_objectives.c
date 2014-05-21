@@ -440,7 +440,7 @@ option_g_energy_t get_option_g_energy_t_from_type_fitness_energy(const type_fitn
 /** Calls toremove files used in simulation.
 * Simulation means an execution to calculate the objectives by GROMACS.
 */
-static void clean_gromacs_simulation(const char *path_local_execute){
+void clean_gromacs_simulation(const char *path_local_execute){
 	delete_file(path_local_execute, f_step0);
 	delete_file(path_local_execute, prot_gro);
 	delete_file(path_local_execute, prot_top);
@@ -1232,4 +1232,63 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
     clean_gromacs_simulation(in_para->path_local_execute);
 	
 	free(opt_objective);
+}
+
+
+/** Run of pdb2gmx for pattern of atom names
+* Output is the same name of pdbfile. 
+* WARNING: pdbfile will be written
+*/
+void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs, const char *force_field){
+
+	const protein_t *protein_aux;	
+	
+	char *pdbfile_aux;
+	char *force_field_aux;
+
+	char *pdb2gmx_args[13];
+	char *grompp_args[11];
+
+	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
+	force_field_aux = Malloc(char, MAX_FORCE_FIELD_NAME);
+
+	/* pdb2gmx */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "pdb2gmx");
+	pdb2gmx_args[0] = program;
+	//pdb
+	strcpy(pdbfile_aux, pdbfile);
+	pdb2gmx_args[1] = opt_f;
+	strcpy(filenm1, local_execute);	
+	strcat(filenm1, pdbfile_aux);
+	pdb2gmx_args[2] = filenm1;
+	//gro
+	pdb2gmx_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, pdbfile_aux);
+	pdb2gmx_args[4] = filenm2;
+	//top
+	pdb2gmx_args[5] = opt_p;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "prot.top");
+	pdb2gmx_args[6] = filenm3;
+	//force field
+	pdb2gmx_args[7] = opt_ff;
+	strcpy(force_field_aux, force_field);
+	pdb2gmx_args[8] = force_field_aux;
+	//water
+	pdb2gmx_args[9] = opt_water;
+	pdb2gmx_args[10] = opt_none;
+	//Hydrogen
+	pdb2gmx_args[11] = opt_ignh;
+
+	pdb2gmx_args[12] = NULL;	
+
+	if (!run_program(program, pdb2gmx_args)){
+		fatal_error("Failed to run pdb2gmx at call_pdb2gmx_for_pattern_atom_names function \n");
+	}
+
+	free(pdbfile_aux);
+	free(force_field_aux);
 }
