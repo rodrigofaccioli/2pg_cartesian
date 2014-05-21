@@ -66,6 +66,21 @@ ea_nsga2_t * allocate_nsga2(const input_parameters_t *in_para){
 	return aux;
 }
 
+ea_nsga2_t * allocate_nsga2_without_allocation_of_representation(const input_parameters_t *in_para){
+    ea_nsga2_t * aux = NULL;
+    protein_t *prot_aux = NULL;
+    int prot = 1;
+    aux = Malloc(ea_nsga2_t,in_para->size_population);
+    for (int ind = 0; ind < in_para->size_population; ind++){
+        aux[ind].front = INIT_FRONT;
+        aux[ind].crowding_distance = MIN_DIST;      
+        aux[ind].sol = Malloc(solution_t,1);
+        initialize_solution(aux[ind].sol, &in_para->number_fitness);        
+    }
+    return aux;
+}
+
+
 ea_nsga2_t * allocate_nsga2_RT(const int *size, const input_parameters_t *in_para){    
     ea_nsga2_t * aux;
     protein_t *prot_aux = NULL;
