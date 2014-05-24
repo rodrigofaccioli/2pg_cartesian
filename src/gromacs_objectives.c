@@ -1292,3 +1292,46 @@ void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_
 	free(pdbfile_aux);
 	free(force_field_aux);
 }
+
+
+/** Calls mdrun program for miminization
+*/
+void call_mdrun2minimization(const char *pdbfile, const char *local_execute,
+		const char *path_gromacs_programs){
+	char *mdrun_args[13];
+	/* mdrun */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "mdrun");
+	mdrun_args[0] = program;
+	//tpŕ
+	mdrun_args[1] = opt_s;		
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, prot_tpr);
+	mdrun_args[2] = filenm1;
+	//trr
+	mdrun_args[3] = opt_o;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, prot_trr);
+	mdrun_args[4] = filenm3;
+	//energy file
+	mdrun_args[5] = opt_e;
+	strcpy(filenm4, local_execute);
+	strcat(filenm4, file_energy_computed_ener_edr);
+	mdrun_args[6] = filenm4;
+	//log file
+	mdrun_args[7] = opt_g;
+	strcpy(filenm5, local_execute);
+	strcat(filenm5, prot_log);
+	mdrun_args[8] = filenm5;
+	//PDB - Last Frame
+	mdrun_args[9] = opt_c;
+	strcpy(filenm5, local_execute);
+	strcat(filenm5, pdbfile);
+	mdrun_args[10] = filenm5;
+
+	mdrun_args[11] = NULL;
+	mdrun_args[12] = NULL;
+
+	if (!run_program(program, mdrun_args))
+		fatal_error("Failed to run mdrun at call_mdrun2minimization function \n");
+}
