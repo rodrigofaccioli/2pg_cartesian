@@ -45,6 +45,8 @@ typedef struct sinput_parameters{
     char *force_field;
     /*Informs the mdp file name*/
     char *mdp_file;
+    /*Informs the mdp file name for minimization*/
+    char *mdp_file_min;
     /* Number of steps to Monte Carlo Algorithm */
     int MonteCarloSteps;
     /* Represents frequency in which protein models will be stored at Monte Carlo*/
