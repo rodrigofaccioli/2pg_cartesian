@@ -45,8 +45,7 @@ static void initialize_parameters(input_parameters_t *param){
     param->max_angle_mutation_side_chain = 180.0;
 
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
-    param->mdp_file = Malloc(char, MAX_FILE_NAME);
-   	param->mdp_file_min = Malloc(char, MAX_FILE_NAME );
+    param->mdp_file = Malloc(char, MAX_FILE_NAME);   	
 
     param->MonteCarloSteps = 100;
     param->freq_mc = 10;
@@ -172,8 +171,7 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->computed_g_hbond_file);
 	free(param->fitness_energies);
 	free(param->force_field);
-	free(param->mdp_file);
-	free(param->mdp_file_min);
+	free(param->mdp_file);	
 	free(param->apply_crossover);
 	if (param->crossovers != NULL){
 		free(param->crossovers);
@@ -235,8 +233,7 @@ void load_parameters_from_file(input_parameters_t *param,
     param->max_angle_mutation_side_chain = atof(conf.getParameter("max_angle_mutation_side_chain").c_str());
 
 
-	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
-	strcpy(param->mdp_file_min, conf.getParameterChar("mdp_file_min"));
+	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));	
 	strcpy(param->force_field,conf.getParameterChar("force_field"));
 
 	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
