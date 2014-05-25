@@ -380,7 +380,7 @@ int main(int argc, char *argv[]){
 
 /**************** START GETTING THE OBJECTIVES *************************/	
 	init_gromacs_execution();
-
+/*
 	// RUN PDB2GMX IN ALL FILES FOR PATTERN OF ATOM NAMES 
 	display_msg("Run of pdb2gmx for pattern of atom names\n");
 	for (int ind = 0; ind < num_files; ind ++){
@@ -388,16 +388,6 @@ int main(int argc, char *argv[]){
 		clean_gromacs_simulation(in_param.path_local_execute);
 	}	
 	// FINISHED RUN PDB2GMX 
-/*
-	// RUN MINIMIZATION OF ALL SOLUTIONS	
-	display_msg("Run of minimization all solutions\n");	
-	for (int ind = 0; ind < num_files; ind ++){
-	   	build_tpr_file(file_names[ind].file_name, in_param.path_local_execute, in_param.path_gromacs_programs, 
-	        	in_param.force_field, in_param.mdp_file_min);
-		call_mdrun2minimization(file_names[ind].file_name, in_param.path_local_execute, in_param.path_gromacs_programs);
-		clean_gromacs_simulation(in_param.path_local_execute);
-	}
-	// FINISHED MINIMIZATION OF ALL SOLUTIONS
 */
 	population_p = allocateProtein(&num_files);
 	solutions_p = allocate_solution(&num_files, &in_param.number_fitness);        
