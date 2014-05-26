@@ -36,7 +36,9 @@ EA=1 # algoritmo evolutivo?
 
 MONO_ANALYSIS=0		# Análise de algoritos Mono-Objetivo
 
-FRONT_ANALYSIS=0	# Análise de algoritmo Multi-Objetivo
+OBJECTIVE_ANALYSIS=0	# Análise de valores de objetivo ao longo das gerações
+
+RMSD_ANALYSIS=0		# Calcula os RMSDs dos individuos não-dominados ao longo das gerações
 
 MOLECULAR_DYNAMICS=0	# Dinâmica Molecular nos indivíduos não-dominados da última geração
 
@@ -231,14 +233,23 @@ while [ $pred_atual -le $total_predicoes ]; do
 
 
 	# análise Multi-Objetivo
-		if [ $FRONT_ANALYSIS -eq 1 ]; then
+		if [ $OBJECTIVE_ANALYSIS -eq 1 ]; then
 			echo
-			echo "Iniciando analise Multi-Objetivo - ""$titulo""_""$rep"
-			"$path_protpred""scripts/analysis/"./fronts.sh "$path_protpred" "$path_gromacs" "$path_maxcluster" $individuos $geracoes $objetivos "$local""$titulo""_""$rep"/"$proteina"".pdb" "$arq_config" "obj_maxmin"
+			echo -n "Analise de valores de objetivo - ""$titulo""_""$rep"" ... "
+			"$path_protpred""scripts/analysis/"./objectives.sh $geracoes "$path_protpred" "$path_gromacs"
 			echo "OK"
 			echo
 		fi
 
+		if [ $RMSD_ANALYSIS -eq 1 ]; then
+			echo
+			echo -n "Iniciando analise de valores de RMSD - ""$titulo""_""$rep"" ... "
+			"$path_protpred""scripts/analysis/"./rmsd.sh $geracoes "$local""$titulo""_""$rep"/"$proteina"".pdb" "$path_protpred" "$path_gromacs"
+			echo "OK"
+			echo
+		fi
+		
+		
 	# DM dos individuos nao-dominados da ultima geracao
 		if [ $MOLECULAR_DYNAMICS -eq 1 ]; then
 			echo
