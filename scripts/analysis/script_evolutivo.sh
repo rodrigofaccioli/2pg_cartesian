@@ -21,6 +21,7 @@ local="$pasta""/"
 arq_config="configuracao.conf"
 arquivos="$local"arquivos/	 #pasta que contém os FASTA, .pdb e .mdp
 
+#IMPORTANTE: Os path SEMPRE terminam com /
 path_protpred_pop_ini="/home/faccioli/workspace/2pg_build_conformation/"
 path_protpred="/home/faccioli/workspace/2pg_cartesian/"
 path_gromacs="/home/faccioli/Programs/gmx-4.6.5/no_mpi/bin/"

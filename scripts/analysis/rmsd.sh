@@ -6,13 +6,15 @@
 #
 #							Leandro Oliveira Bortot
 #							26 Maio 2014
+#							Rodrigo Antonio Faccioli
+#							27 Maio 2014
 #
 #
 
 total_gen=$1
 native=$2
-path_gmx=$3
-path_2pg=$4
+path_2pg=$3
+path_gmx=$4
 
 
 # Apaga arquivos pre-existentes
@@ -28,13 +30,13 @@ while [ $gen -le $total_gen ]; do	# For each generation ...
 
 # RMSD
 	# Calculates the Ca-Ca RMSD of the non-dominated individuals
-	echo "C-alpha C-alpha" | "$path_gmx""/"./g_rms -f "pop_NON_DOMINATED_""$gen"".pdb" -s "$native" -o "temporary_rmsd.xvg"
+	echo "C-alpha C-alpha" | "$path_gmx"./g_rms -f "pop_NON_DOMINATED_""$gen"".pdb" -s "$native" -o "temporary_rmsd.xvg"
 	
 	# Take the rmsd values
 	grep -v "#" "temporary_rmsd.xvg" | grep -v "@" | awk '{print $2}' | sort -g > "temporary_rmsd_values"
 	
 	# Calculates the average and standard deviation
-	avgsd=$("$path_2pg""/scripts/analysis/"./avg-sd "temporary_rmsd_values" $total_ind_front)
+	avgsd=$("$path_2pg""scripts/analysis/"./avg-sd "temporary_rmsd_values" $total_ind_front)
 	
 	# Plot
 	echo "$gen"" ""$avgsd" >> "plot_non-dominated_rmsd_avg-sd.xvg"
@@ -51,7 +53,7 @@ while [ $gen -le $total_gen ]; do	# For each generation ...
 	
 	rm \#* 2>/dev/null
 
-	let obj=$obj+1
+	let gen=$gen+1
 	
 done
 

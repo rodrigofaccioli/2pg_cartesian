@@ -12,8 +12,8 @@
 #
 
 total_gen=$1
-path_gmx=$2
-path_2pg=$3
+path_2pg=$2
+path_gmx=$3
 
 # Apaga arquivos pre-existentes
 rm "plot_non-dominated_"*"_avg-sd.xvg" 2>/dev/null
@@ -50,7 +50,7 @@ while [ $gen -le $total_gen ]; do	# For each generation ...
 		total_ind_front=$(wc -l "temporary_obj_values" | awk '{print $1}')
 		
 		# Calculates the average and standard deviation of the values
-		avgsd=$("$path_2pg""/scripts/analysis/"./avg-sd "temporary_obj_values" $total_ind_front)
+		avgsd=$("$path_2pg""scripts/analysis/"./avg-sd "temporary_obj_values" $total_ind_front)
 		
 		# Plot
 		echo "$gen"" ""$avgsd" >> "plot_non-dominated_""$obj_name""_avg-sd.xvg"
