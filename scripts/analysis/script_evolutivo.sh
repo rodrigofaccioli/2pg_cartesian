@@ -43,6 +43,9 @@ RMSD_ANALYSIS=0		# Calcula os RMSDs dos individuos não-dominados ao longo das g
 
 MOLECULAR_DYNAMICS=0	# Dinâmica Molecular nos indivíduos não-dominados da última geração
 
+#prefix para nome dos arquivos tar.gz para analise
+prefix_ana="ana_"
+TAR_ANALYSIS_ONLY=0	# Criar .tar.gz SOMENTE dos arquivos de analises: fit e xvg 
 TAR=0	# Criar .tar.gz da pasta da predição no fim
 
 # total_predicoes é o número de linhas do arquivo de parametros -1 devido ao cabeçalho. As linhas devem ter ";" no final, incluindo o cabeçalho
@@ -264,9 +267,18 @@ while [ $pred_atual -le $total_predicoes ]; do
 
 
 
-	# sai da pasta da repeticao
-		cd ../
+	# sai da pasta da repeticao	
+		
+		if [ $TAR_ANALYSIS_ONLY -eq 1 ]; then
+			if [ -e ../"$prefix_ana""$titulo""_""$rep"".tar" ]; then rm ../"$prefix_ana""$titulo""_""$rep"".tar" ; fi						
 
+			echo
+			echo -n "Criando arquivo ""$prefix_ana""$titulo""_""$rep"".tar""... "			
+			find . -maxdepth 1 \( -name "*.fit" -o -name "*.xvg" \) -exec tar rvf ../"$prefix_ana""$titulo""_""$rep"".tar" {} \;			
+			echo "OK"
+		fi
+
+		cd ../
 		if [ $TAR -eq 1 ]; then
 			if [ -e "$titulo""_""$rep"".tar.gz" ]; then rm "$titulo""_""$rep"".tar.gz" ; fi
 		
