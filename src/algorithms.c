@@ -164,7 +164,7 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
     rate = _get_float();
     num_residue_choose = 0;
     if (rate < in_para->individual_mutation_rate){
-        for (int number_rotations = 1; number_rotations < 
+        for (int number_rotations = 1; number_rotations <= 
             in_para->how_many_rotations; number_rotations++){
             //Choose a residue
             num_residue_choose = get_choose_residue(&ind_new->p_topol->numres);
