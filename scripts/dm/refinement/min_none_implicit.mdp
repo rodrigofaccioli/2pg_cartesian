@@ -1,0 +1,20 @@
+constraints     = none
+integrator      = steep
+nsteps          = 9999
+nstlist         = 10
+rlist           = 2.0
+coulombtype     = cut-off
+rcoulomb        = 2.0
+vdw-type        = cut-off
+rvdw            = 2.0
+nstenergy       = 500
+emtol           = 10.0
+emstep          = 0.1
+
+nstype		= simple
+comm_mode       = angular
+pbc             = no
+implicit_solvent= GBSA
+gb_algorithm    = OBC
+rgbradii        = 2.0 ; = rlist = rcoulomb = rvdw
+gb_epsilon_solvent = 80
