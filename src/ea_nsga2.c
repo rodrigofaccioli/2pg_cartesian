@@ -596,7 +596,7 @@ void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt
     //Sorting by front
     qsort(solutions_rt, *size_RT,  sizeof (ea_nsga2_t), compare_front);
     //Computes Crowding Distance
-    //compute_crowding_distance(solutions_rt, size_RT, in_para);
+    compute_crowding_distance(solutions_rt, size_RT, in_para);
 
     desallocate_dominance(dominance, size_RT);
     desallocate_solution(solutions, size_RT);
@@ -785,6 +785,18 @@ void saving_file_of_initial_population(const ea_nsga2_t *solutions_p,
     free(pop_non_dominated);    
 /**** FINISHED creating file to NON-DOMINATED **/
 
+/**** Setting solutions to save information from solutions_p ***/   
+    //Saving data of solution_p
+    int one = 1;
+    solution_t *solutions_p_AUX = NULL;    
+    solutions_p_AUX = allocate_solution(&in_para->size_population, &num_obj);    
+    //Setting objectivies    
+    set_nsga2_solution_in_solution(solutions_p_AUX, solutions_p, &in_para->size_population);
+    //Saving fitness values    
+    build_fitness_files(solutions_p_AUX, &ger, &in_para->size_population);    
+    desallocate_solution(solutions_p_AUX, &in_para->size_population);
+/**** FINISHED creating file to solutions_p **/
+
 }
 
 void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt, 
@@ -846,6 +858,8 @@ void saving_file_to_generation_analysis(const ea_nsga2_t *solutions_rt,
     set_nsga2_solution_in_solution(solutions_p_AUX, solutions_p, &in_para->size_population);
     //Setting proteins    
     copy_nsga2_solutions2solution(solutions_p_AUX, solutions_p, &in_para->size_population);    
+    //Saving fitness values    
+    build_fitness_files(solutions_p_AUX, ger, &in_para->size_population);    
     sprintf(pop_p_file_name,"pop_%d.pdb",*ger);
     save_solution_population_file(solutions_p_AUX, in_para->path_local_execute, pop_p_file_name, 
         &in_para->size_population);    
