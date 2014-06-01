@@ -7,3 +7,6 @@ Molecular Dynamics can be used in several kind of scenarios. Each scenario is as
 
 * initial_individual
 	Molecular Dynamics are employed to generate initial population.
+
+* minimization
+	Steep algorithm to minimize all pdb files in directory.
