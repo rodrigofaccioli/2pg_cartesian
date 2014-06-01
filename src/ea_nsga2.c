@@ -288,6 +288,19 @@ static boolean_t continue_front_computation(const ea_nsga2_t *nsga2_solutions,
 }
 
 
+/**
+*/
+static int get_how_many_zero_front_init(const ea_nsga2_t *nsga2_solutions, const dominance_t * dominance, const int *size){
+    int ret;
+    for (int i = 0; i < *size; i++){
+        if ((dominance[i].how_many_solutions_dominate_it == 0) &&
+            (nsga2_solutions[i].front == INIT_FRONT) ){
+            ret = ret + 1;
+        }        
+    }
+    return ret;
+}
+
 /** Computes fronts to nsga2 solutions based on dominance criterion
 * nsga2_solutions who will receive computed front
 * dominance who has computed the dominance criterion 
@@ -298,11 +311,15 @@ void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
 
     int front, min_dominates;
     int index_dominated_solutions;
+    int index;
+    int how_many_is_zero;
+    int *temp_aux=NULL;
 
     //Initialize variables
     front = 0;
     min_dominates = 0;
-    index_dominated_solutions = -1;
+    index_dominated_solutions = -1;    
+    how_many_is_zero = -1;
 
     //Initialize fronts
     for (int i = 0; i < *size; i++){
@@ -310,24 +327,34 @@ void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
     }
 
     //Check computation of fronts. While front equal -1, computes fronts
-    while (continue_front_computation(nsga2_solutions, size) == btrue){     
-        for (int i=0; i < *size;i++){
-            if (nsga2_solutions[i].front == INIT_FRONT){
-                if (dominance[i].how_many_solutions_dominate_it == 0){
-                    nsga2_solutions[i].front = front;
-                    //Update how_many_solutions_dominate_it of solutions that are dominated by i
-                    for (int d = 0; d < dominance[i].max_dominated; d++){
-                        index_dominated_solutions = dominance[i].set_dominated[d]; //Set of Solutions that is dominated by i
-                        if  ( (index_dominated_solutions >= 0) &&
-                                (index_dominated_solutions < *size) ){
-                            dominance[index_dominated_solutions].how_many_solutions_dominate_it = dominance[index_dominated_solutions].how_many_solutions_dominate_it -1;
-                        }else{
-                            fatal_error("Index index_dominated_solutions is wrong \n");
-                        }
-                    }
-                }
+    while (continue_front_computation(nsga2_solutions, size) == btrue){
+        how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size) - 1;
+        temp_aux = Malloc(int, how_many_is_zero);
+        //Setting index for temp_aux based on nsga2_solutions
+        int j = 0;
+        for (int i = 0; i < *size; i++){ //Loop all popupation looking for index
+            if ((dominance[i].how_many_solutions_dominate_it == 0) &&
+                (nsga2_solutions[i].front == INIT_FRONT) ){
+                temp_aux[j] = i;
+                j = j + 1;
             }
         }
+        //Setting front based on temp_aux
+        for (int z = 0; z < how_many_is_zero; z++){
+            index = temp_aux[z]; //Assign index obtained in before loop
+            nsga2_solutions[index].front = front;
+            //Update how_many_solutions_dominate_it of solutions that are dominated by i
+            for (int d = 0; d < dominance[index].max_dominated; d++){
+                index_dominated_solutions = dominance[index].set_dominated[d]; //Set of Solutions that is dominated by i
+                if  ( (index_dominated_solutions >= 0) &&
+                        (index_dominated_solutions < *size) ){
+                    dominance[index_dominated_solutions].how_many_solutions_dominate_it = dominance[index_dominated_solutions].how_many_solutions_dominate_it -1;
+                }else{
+                    fatal_error("Index index_dominated_solutions is wrong \n");
+                }
+            }            
+        }
+        free(temp_aux);
         front = front +1;
     }
 }
