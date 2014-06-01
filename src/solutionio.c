@@ -128,7 +128,7 @@ solution_t * loading_file_solutions(int *num_solutions_r,
 		for (int ob = 0; ob < *numobj_r; ob++){
 			line_splited = strtok (NULL,"\t");
 			trim(line_splited);
-			solutions_aux[sol].obj_values[ob] = str2double(line_splited);
+			solutions_aux[sol].obj_values[ob] = str2float(line_splited);//str2double(line_splited);
 		}					
 	}	
 	fclose(solution_file);
