@@ -1,0 +1,4 @@
+for server in $(cat nodes.txt); do
+  echo -e "$server"
+  ssh "$server" "$1"
+done
