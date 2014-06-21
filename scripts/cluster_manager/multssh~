@@ -1,3 +1,0 @@
-for server in $(cat servidores.txt); do
-  ssh "$server" "$1"
-done
