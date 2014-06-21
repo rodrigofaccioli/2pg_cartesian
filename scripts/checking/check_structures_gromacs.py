@@ -55,7 +55,7 @@ def structue_not_accepted_by_pdb2gmx(pdbfile, stderr):
 def check_structue_by_pdb2gmx(pdbfile, gmx_path, forcefield='amber99sb-ildn'):
 	delete_check_files()
 	program = os.path.join(gmx_path, "pdb2gmx")
-	process = Popen([program, '-f', pdbfile, '-o', 'check.gro', '-p', 'check.top', '-water', 'none', '-ff', forcefield, '-ignh'], stdout=PIPE, stderr=PIPE)
+	process = Popen([program, '-f', pdbfile, '-o', 'check.gro', '-p', 'check.top', '-water', 'none', '-ff', forcefield], stdout=PIPE, stderr=PIPE) #, '-ignh'
 	stdout, stderr = process.communicate()	 	
 	#Checking output of pdb2gmx of pdbfile
 	if stderr.find('Fatal error') >= 0:		
