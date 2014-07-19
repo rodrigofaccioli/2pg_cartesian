@@ -3,6 +3,8 @@ file (GLOB BASE_SOURCES LoadConfig.cpp topology.c pdbio.c protein.c futil.c pdba
 set_source_files_properties (${BASE_SOURCES} PROPERTIES LANGUAGE CXX)
 
 add_library (protpred-Gromacs-Random_Algorithm_PSP
+	SHARED
 	protpred-Gromacs-Random_Algorithm.c
 	random_algorithm.c
 	${BASE_SOURCES})
+
