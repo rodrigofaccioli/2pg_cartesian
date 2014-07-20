@@ -9,6 +9,8 @@ if ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	add_definitions (-D__const=const)
 	add_definitions (-Dsnprintf=_snprintf)
+	add_definitions (-Dgetpid=_getpid)
+	add_definitions (-Dgetcwd=_getcwd)
 
 endif ()
 
