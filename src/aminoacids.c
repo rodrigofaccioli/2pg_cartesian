@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 
 #include "aminoacids.h"
@@ -63,7 +64,7 @@ type_terminal_charge_t str2terminal_charge(const char *s_term_charge){
 		ret =  term_charge_NME;
 	}else{
  		char msg[300];
- 	    sprintf(msg,"%s it is not found at  str2terminal_charge function \n", s_term_charge);
+		snprintf(msg, sizeof(msg), "%s it is not found at  str2terminal_charge function \n", s_term_charge);
   		fatal_error(msg);		
 	}
 
@@ -120,9 +121,9 @@ type_aminos_t _get_amino_id_3(char *c){
 			amino_id =  aLYS;
 		}else{			
 			if (strcmp(c,"") == 0){
-				sprintf(msg,"Amino not found, because amino variable is empty. Check it. \n");
+				snprintf(msg, sizeof(msg), "Amino not found, because amino variable is empty. Check it. \n");
 			}else{
-				sprintf(msg,"%s Amino not found. Check it. \n",c);
+				snprintf(msg, sizeof(msg), "%s Amino not found. Check it. \n",c);
 			}
 			fatal_error(msg);
 		}
@@ -264,7 +265,7 @@ void set_amino_id_3(char *amino_name, const type_aminos_t *amino_id){
 			strcpy(amino_name,"NME");
 		}else{
 			char msg [500];
-			sprintf(msg,"In set_*amino_id_3 function *amino_id not found. Check it. \n");
+			snprintf(msg, sizeof(msg), "In set_*amino_id_3 function *amino_id not found. Check it. \n");
 			fatal_error(msg);
 		}
 }
