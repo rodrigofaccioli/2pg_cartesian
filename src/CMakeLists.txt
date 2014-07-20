@@ -26,15 +26,8 @@ file (GLOB BASE_SOURCES
 
 set_source_files_properties (${BASE_SOURCES} PROPERTIES LANGUAGE CXX)
 
-#set_source_files_properties (
-#	protpred-Gromacs-Random_Algorithm.c
-#	random_algorithm.c
-#	PROPERTIES LANGUAGE CXX)
-
-add_library (protpred-Gromacs-Random_Algorithm_PSP
+add_library (2pg_cartesian
 	SHARED
-	protpred-Gromacs-Random_Algorithm.c
-	random_algorithm.c
 	${BASE_SOURCES})
 
 
@@ -42,14 +35,12 @@ add_library (protpred-Gromacs-Random_Algorithm_PSP
 include (GenerateExportHeader)
 
 GENERATE_EXPORT_HEADER (
-	protpred-Gromacs-Random_Algorithm_PSP
-	BASE_NAME protpred-Gromacs-Random_Algorithm_PSP
-	EXPORT_MACRO_NAME pGRAPSP_EXPORT
-	EXPORT_MACRO_NAME pGRAPSP_Export.h)
+	2pg_cartesian	
+	BASE_NAME 2pg_cartesian)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	add_definitions (-Dprotpred_Gromacs_Random_Algorithm_PSP_EXPORTS)
+	add_definitions (-D2pg_cartesian)
 endif ()
 
