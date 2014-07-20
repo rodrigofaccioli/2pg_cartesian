@@ -37,3 +37,19 @@ add_library (protpred-Gromacs-Random_Algorithm_PSP
 	random_algorithm.c
 	${BASE_SOURCES})
 
+
+# Declare macros to export DLL functions:
+include (GenerateExportHeader)
+
+GENERATE_EXPORT_HEADER (
+	protpred-Gromacs-Random_Algorithm_PSP
+	BASE_NAME protpred-Gromacs-Random_Algorithm_PSP
+	EXPORT_MACRO_NAME pGRAPSP_EXPORT
+	EXPORT_MACRO_NAME pGRAPSP_Export.h)
+
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+	add_definitions (-Dprotpred_Gromacs_Random_Algorithm_PSP_EXPORTS)
+endif ()
+
