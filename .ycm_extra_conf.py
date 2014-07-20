@@ -13,6 +13,7 @@ flags = [
 '-x', 'c++',
 '-I', './include',
 '-I', './src',
+'-I', './build/src',
 '-isystem', '/usr/include',         # Boost and OpenSSL are here
 '-isystem', '/usr/local/include',   # CppCMS is here
 
