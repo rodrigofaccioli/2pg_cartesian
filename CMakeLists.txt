@@ -7,6 +7,7 @@ if ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
 		"${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+	add_definitions (-D__const=const)
 
 endif ()
 
