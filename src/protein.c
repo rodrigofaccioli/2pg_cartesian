@@ -7,7 +7,10 @@
 #include "pdbatom.h"
 #include "topology.h"
 
+#include "2pg_cartesian_export.h"
 
+
+_2PG_CARTESIAN_EXPORT
 protein_t * allocateProtein(const int *size){
 	/** Allocates a population of protein_t as array.
 	 */
@@ -20,6 +23,7 @@ protein_t * allocateProtein(const int *size){
     return protein_aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desallocateProtein(protein_t *pop, const int *inPopSize){
 	free(pop);
 }
@@ -29,6 +33,7 @@ void desallocateProtein(protein_t *pop, const int *inPopSize){
 * pop is the population which has the protein conformations
 * pop_size size of population
 */
+_2PG_CARTESIAN_EXPORT
 void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size){
 	for (int i = 0; i < *pop_size; i++){
 		sol[i].representation = &pop[i];
@@ -36,6 +41,7 @@ void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size
 }
 
 /** Copies p_source to p_dest */
+_2PG_CARTESIAN_EXPORT
 void copy_protein(protein_t *p_dest, const protein_t *p_source){
 	for (int a = 0; a < p_source->p_topol->numatom; a++){
 		copy_pdb_atom(&p_dest->p_atoms[a], &p_source->p_atoms[a]);
@@ -62,6 +68,7 @@ void copy_protein(protein_t *p_dest, const protein_t *p_source){
 }
 
 /** Copies each individual of pop_source to pop_dest */
+_2PG_CARTESIAN_EXPORT
 void copy_protein_population(protein_t *pop_dest, const protein_t *pop_source, 
 	const int *popsize){
 	for (int i = 0; i < *popsize; i++){
@@ -70,6 +77,7 @@ void copy_protein_population(protein_t *pop_dest, const protein_t *pop_source,
 }
 
 /** Copies atoms of p_source to p_dest */
+_2PG_CARTESIAN_EXPORT
 void copy_protein_atoms(protein_t *p_dest, const protein_t *p_source){
 	//Coping atoms
 	for (int a = 0; a < p_source->p_topol->numatom; a++){			
@@ -78,6 +86,7 @@ void copy_protein_atoms(protein_t *p_dest, const protein_t *p_source){
 }
 
 /** Copies atoms of each individual of pop_source to pop_dest */
+_2PG_CARTESIAN_EXPORT
 void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_source, 
 	const int *popsize){
 	for (int i = 0; i < *popsize; i++){
@@ -94,6 +103,7 @@ void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_sou
 * Important: res_ini and res_end are considered the number of
 * residue. Therefore, it is not index of residue. 
 */
+_2PG_CARTESIAN_EXPORT
 void copy_protein_atoms_by_residues(protein_t *p_dest, const int *res_num_ini, 
 	const int *res_num_end, const protein_t *p_source){
 	if (*res_num_ini <= 0){
@@ -108,6 +118,7 @@ void copy_protein_atoms_by_residues(protein_t *p_dest, const int *res_num_ini,
 }
 
 /** Initializes the atoms of protein */
+_2PG_CARTESIAN_EXPORT
 void initialize_protein_atoms(protein_t *protein){
 	//set 0 to coordenates of protein
 	for (int a = 0; a < protein->p_topol->numatom; a++){			

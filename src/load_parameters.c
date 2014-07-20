@@ -10,6 +10,8 @@
 #include "objective.h"
 #include "aminoacids.h"
 
+#include "2pg_cartesian_export.h"
+
 static void initialize_parameters(input_parameters_t *param){
 	param->seq_protein_file_name = Malloc(char, MAX_PATH_FILE_NAME );
 	param->path_local_execute = Malloc(char, MAX_PATH );
@@ -160,6 +162,7 @@ void set_apply_how_many_rotations(input_parameters_t *param, char *param_how_man
 	param->how_many_rotations = aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void deAllocateload_parameters(input_parameters_t *param){
     free(param->seq_protein_file_name );
 	free(param->initial_pop_file_name );
@@ -185,6 +188,7 @@ void deAllocateload_parameters(input_parameters_t *param){
 	}
 }
 
+_2PG_CARTESIAN_EXPORT
 void load_parameters_from_file(input_parameters_t *param,
 		const char *conf_file_name){
 	/*Loading the configuration from file*/

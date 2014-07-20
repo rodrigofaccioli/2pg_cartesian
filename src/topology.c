@@ -14,6 +14,8 @@
 #include "topologylib.h"
 #include "pdbatom.h"
 
+#include "2pg_cartesian_export.h"
+
 #define TAM_BLOCO_PRM 80
 #define NUM_HYDROGEN_BACKBONE_NITROGEN 4
 #define NUM_PROTEIN_BACKBONE_ATOMS 8
@@ -45,6 +47,7 @@ static void desAllocate_top_residue_side_chains(top_residue_side_chains_t *side_
 
 }
 
+_2PG_CARTESIAN_EXPORT
 top_global_t *allocateTop_Global(const int *numres,
 	const int *numatom){
 	top_global_t *top_aux;
@@ -61,6 +64,8 @@ top_global_t *allocateTop_Global(const int *numres,
 
 	return top_aux;
 }
+
+_2PG_CARTESIAN_EXPORT
 void  desAllocateTop_Global(top_global_t *top_aux){
 	desAllocate_top_residue_atom_info(top_aux->phi);
 	desAllocate_top_residue_atom_info(top_aux->psi);	
@@ -362,6 +367,7 @@ static void build_topology_individual_atoms(protein_t *prot){
 /** Builds the topology of protein
 * prot is the protein building the topology
 */
+_2PG_CARTESIAN_EXPORT
 void build_topology_individual(protein_t *prot){
 	build_topology_individual_atoms(prot);
 	build_topology_individual_psi(prot);
@@ -374,6 +380,7 @@ void build_topology_individual(protein_t *prot){
 * pop means the population
 * pop_size size of population 
 */
+_2PG_CARTESIAN_EXPORT
 void build_topology_population(protein_t *pop, const int *pop_size){
 	for (int i = 0; i < *pop_size; i++){
 		build_topology_individual(&pop[i]);
@@ -382,6 +389,7 @@ void build_topology_population(protein_t *pop, const int *pop_size){
 
 /** Returns the number of Hydrogens at backbone
 */
+_2PG_CARTESIAN_EXPORT
 int get_number_hydrogen_backbone(const protein_t *prot, const int *numres){
 	int num = 0;
 
@@ -396,6 +404,7 @@ int get_number_hydrogen_backbone(const protein_t *prot, const int *numres){
 
 /** Checks atom is a hydrogen at backbone that can be connected with N
 */
+_2PG_CARTESIAN_EXPORT
 boolean_t is_hydrogen_backbone_Nitrogen(const char *atomname){	
 		for (int i = 0; i < NUM_HYDROGEN_BACKBONE_NITROGEN; i++){
 			if ( strncmp(atomname, hydrogen_backbone_Nitrogen[i], 2) == 0){
@@ -407,6 +416,7 @@ boolean_t is_hydrogen_backbone_Nitrogen(const char *atomname){
 
 /** Checks atmnumber is a fixed atom
 */
+_2PG_CARTESIAN_EXPORT
 boolean_t is_fixed_atom(const int *atmnumber, const int *fixed_atoms, const int *num_fixed){
 	for (int i = 0; i < *num_fixed; i++){
 		if (*atmnumber == fixed_atoms[i]){
@@ -419,6 +429,7 @@ boolean_t is_fixed_atom(const int *atmnumber, const int *fixed_atoms, const int 
 
 /** Returns the number of atoms which are at backbone
 */
+_2PG_CARTESIAN_EXPORT
 int get_number_atoms_backbone(const protein_t *prot, const int *numres){
 	int num = 0;
 	for (int i_a = prot->p_topol->range_atoms[*numres-1].first_atom; i_a <= prot->p_topol->range_atoms[*numres-1].last_atom; i_a++){
@@ -433,6 +444,7 @@ int get_number_atoms_backbone(const protein_t *prot, const int *numres){
 
 /** Checks atomname is a backbone atom
 */
+_2PG_CARTESIAN_EXPORT
 boolean_t is_backbone_atom(const char *atomname){
 	for (int i = 0; i < NUM_PROTEIN_BACKBONE_ATOMS ; i++){
 		if ( strncmp(atomname, protein_backbone[i], 2) == 0){
@@ -446,6 +458,7 @@ boolean_t is_backbone_atom(const char *atomname){
 * res_name is the residue name that wants to know the number
 * of chi
 */
+_2PG_CARTESIAN_EXPORT
 int get_number_chi(const char *res_name){
 		
 	if( strcmp(res_name,"SER")==0 ){
@@ -498,6 +511,7 @@ int get_number_chi(const char *res_name){
 * res_num number of C-Terminal
 * num_atom is the number of atoms
 */
+_2PG_CARTESIAN_EXPORT
 void rename_oxygen_c_terminal(pdb_atom_t *atoms,
 		const int *res_num, const int *num_atom){
 

@@ -2,7 +2,9 @@
 #include <fstream>
 #include <map>
 
-class LoadConfig{
+#include "2pg_cartesian_export.h"
+
+class _2PG_CARTESIAN_EXPORT LoadConfig{
    private:
        std::ifstream fileConf;
        std::map<std::string,std::string> dicParameters;
