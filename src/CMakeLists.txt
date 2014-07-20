@@ -21,9 +21,17 @@ file (GLOB BASE_SOURCES
 	populationio.c
 	rotation.c
 	solution.c
-#	gromacs_objectives.c
+	gromacs_objectives.c
 	solutionio.c
 	algorithms.c)
+
+# This is in order to export rather than import things tagged with
+# _2PG_CARTESIAN_EXPORT
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+	add_definitions (-D_2pg_cartesian_EXPORTS)
+	list (REMOVE_ITEM BASE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/gromacs_objectives.c)
+endif ()
+
 
 set_source_files_properties (${BASE_SOURCES} PROPERTIES LANGUAGE CXX)
 
@@ -40,12 +48,6 @@ GENERATE_EXPORT_HEADER (
 	BASE_NAME 2pg_cartesian)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
-
-# This is in order to export rather than import things tagged with
-# _2PG_CARTESIAN_EXPORT
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	add_definitions (-D_2pg_cartesian_EXPORTS)
-endif ()
 
 
 set_source_files_properties (
