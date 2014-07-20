@@ -29,3 +29,4 @@ protpred-Gromacs-Sort_Method_Files_by_Front_Dominance
 *.swo
 *~
 build
+*.pyc
