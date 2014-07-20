@@ -7,6 +7,7 @@
 #include "string_owner.h"
 #include "messages.h"
 
+_2PG_CARTESIAN_EXPORT
 pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by_model){
 	/* Allocate a population of pdb_atom_t
 	*/
@@ -18,23 +19,27 @@ pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by
     return population;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize){
 	for (int i = 0; i < *inPopSize; i++){
 		desAllocate_pdbatom(pdbatoms[i]);
 	}	
 }
 
+_2PG_CARTESIAN_EXPORT
 pdb_atom_t * allocate_pdbatom(const int *numatom){
 	pdb_atom_t *pdbatom_aux = NULL;
 	pdbatom_aux = Malloc(pdb_atom_t,*numatom);
 	return pdbatom_aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desAllocate_pdbatom(pdb_atom_t *pdbatoms){
 	free(pdbatoms);
 	pdbatoms = NULL;
 }
 
+_2PG_CARTESIAN_EXPORT
 void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,
 		const char *chain_name, const int *resnum, 	const float *x,
 		const float *y, const float *z, const int *index){
@@ -45,6 +50,7 @@ void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,
 	pdbatom->coord.z = *z;
 }
 
+_2PG_CARTESIAN_EXPORT
 void set_pdb_atom_generic_information(pdb_atom_t *pdbatom,
 		char *atmname, char *resname,
 		const char *chain_name, const int *resnum,  const int *index){
@@ -501,6 +507,7 @@ void rename_atom(pdb_atom_t *atoms, const char *name, const char *name_new,
 }
 
 
+_2PG_CARTESIAN_EXPORT
 void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source){
 	strcpy(dest->atmname, source->atmname);
 	strcpy(dest->resname, source->resname);

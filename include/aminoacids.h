@@ -4,7 +4,11 @@
 #include "aminoacids_types.h"
 #include "enums.h"
 
+#include "2pg_cartesian_export.h"
+
 primary_seq_t* allocate_primary_seq(const int *num_res);
+
+_2PG_CARTESIAN_EXPORT
 void desallocate_primary_seq(primary_seq_t* seq);
 
 type_aminos_t _get_amino_id_3(char *c);

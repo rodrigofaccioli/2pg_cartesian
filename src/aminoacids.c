@@ -6,6 +6,8 @@
 #include "defines.h"
 #include "messages.h"
 
+#include "2pg_cartesian_export.h"
+
 static void initialize_primary_seq(primary_seq_t* seq){
 
 	for (int i = 0; i < seq->num_res; i++){
@@ -29,6 +31,7 @@ primary_seq_t* allocate_primary_seq(const int *num_res){
 	return aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desallocate_primary_seq(primary_seq_t* seq){
 	if (seq->seq_res != NULL){
 		for (int i = 0; i< seq->num_res; i++){

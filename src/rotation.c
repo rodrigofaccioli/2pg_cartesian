@@ -5,6 +5,8 @@
 #include "rotation.h"
 #include "vector_types.h"
 
+#include "2pg_cartesian_export.h"
+
 
 /** Makes the rotation
 * p_atoms represents all atoms
@@ -76,6 +78,7 @@ static void rotate_all_atoms(protein_t *prot, const int *atomB, const int *atomC
 *               foward residue until last.
 * angle is the value of rotated angle
 */
+_2PG_CARTESIAN_EXPORT
 void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle){
 	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
 	if (prot->p_topol->psi[*num_res_first-1].num_moved > 0){
@@ -103,6 +106,7 @@ void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle)
 *               foward residue until last.
 * angle is the value of rotated angle
 */
+_2PG_CARTESIAN_EXPORT
 void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle){
 	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
 	if (prot->p_topol->phi[*num_res_first-1].num_moved > 0){
@@ -130,6 +134,7 @@ void rotation_phi(protein_t *prot, const int *num_res_first, const float *angle)
 *               foward residue until last.
 * angle is the value of rotated angle
 */
+_2PG_CARTESIAN_EXPORT
 void rotation_omega(protein_t *prot, const int *num_res_first, const float *angle){
 
 	/* Checking the number of residue. 
@@ -161,6 +166,7 @@ void rotation_omega(protein_t *prot, const int *num_res_first, const float *angl
 * chi means chi of side chain will be moved.
 * angle is the value of rotated angle
 */
+_2PG_CARTESIAN_EXPORT
 void rotation_chi(protein_t *prot, const int *num_res_first, const int *chi,
 	const float *angle){
 

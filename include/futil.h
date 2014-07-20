@@ -3,9 +3,12 @@
 
 #include "enums.h"
 
+#include "2pg_cartesian_export.h"
+
 enum mode_files{fREAD,fWRITE,fAPPEND};
 typedef enum mode_files mode_files_t;
 
+_2PG_CARTESIAN_EXPORT
 char * path_join_file(const char *path, const char *f);
 /*Returns path_file which is union of path and file.
  * There is not check about path and file. Thus,
@@ -13,6 +16,7 @@ char * path_join_file(const char *path, const char *f);
  *            /home/myname/Execute/
  * */
 
+_2PG_CARTESIAN_EXPORT
 FILE * open_file(__const char * filename, mode_files_t mode);
 boolean_t file_is_empty(FILE *file_aux);
 void set_random_file_name(char *file_name,__const char *prefix,

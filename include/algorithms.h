@@ -6,9 +6,14 @@
 #include "solution_types.h"
 #include "protein_type.h"
 
+#include "2pg_cartesian_export.h"
+
+_2PG_CARTESIAN_EXPORT
 void initialize_algorithm_execution(const primary_seq_t *primary_sequence_aux,
 		const input_parameters_t *in_para_aux);
+_2PG_CARTESIAN_EXPORT
 void update_execution_algorithms(const solution_t *solutions, const int *tag);
+_2PG_CARTESIAN_EXPORT
 int get_choose_residue(const int *num_res_prot);
 void apply_crossover(protein_t *ind_new, const protein_t *prot_1, 
     const protein_t * prot_2, type_crossoers_t *crossovers);
