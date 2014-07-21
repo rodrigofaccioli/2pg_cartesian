@@ -29,6 +29,8 @@
 #include "solutionio.h"
 #include "dominance.h"
 
+#include "2pg_cartesian_export.h"
+
 #define INIT_FRONT -1
 
 /* It is used in compare_objective function which is used in qsort
@@ -66,6 +68,7 @@ ea_nsga2_t * allocate_nsga2(const input_parameters_t *in_para){
 	return aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 ea_nsga2_t * allocate_nsga2_without_allocation_of_representation(const input_parameters_t *in_para){
     ea_nsga2_t * aux = NULL;
     protein_t *prot_aux = NULL;
@@ -100,6 +103,7 @@ ea_nsga2_t * allocate_nsga2_RT(const int *size, const input_parameters_t *in_par
     return aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desallocate_solution_nsga2(ea_nsga2_t *nsga2_sol, const int *size){
     int size_aux = 1;    
     protein_t *prot_aux;
@@ -306,6 +310,7 @@ static int get_how_many_zero_front_init(const ea_nsga2_t *nsga2_solutions, const
 * dominance who has computed the dominance criterion 
 * size is number of solutions
 */
+_2PG_CARTESIAN_EXPORT
 void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
         const int *size){    
 
@@ -939,6 +944,7 @@ void copy_survivors_to_next_generation(ea_nsga2_t *solutions_p,
     }
 }
 
+_2PG_CARTESIAN_EXPORT
 int ea_nsga2(const input_parameters_t *in_para){
     primary_seq_t *primary_sequence; // Primary Sequence of Protein
     

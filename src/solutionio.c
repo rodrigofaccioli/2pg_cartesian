@@ -8,6 +8,8 @@
 #include "futil.h"
 #include "string_owner.h"
 
+#include "2pg_cartesian_export.h"
+
 #define MAX_LINE_SOLUTION 200
 
 static void write_header_generation(FILE *fit_file, const int *ger){
@@ -98,6 +100,7 @@ static void initialize_for_reading_file(int *num_solutions_r,
 * Returns: an array of solution
 * Impotant: This array of solution need	to be desallocated
 */
+_2PG_CARTESIAN_EXPORT
 solution_t * loading_file_solutions(int *num_solutions_r, 
 	int *numobj_r, 	const char *path_file_name){
 	FILE * solution_file;	

@@ -7,13 +7,17 @@
 #include "messages.h"
 #include "futil.h"
 
+#include "2pg_cartesian_export.h"
 
+
+_2PG_CARTESIAN_EXPORT
 dominance_t * allocate_dominance(const int *size){
 	dominance_t *dominance;
 	dominance = Malloc(dominance_t, *size);
 	return dominance;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desallocate_dominance(dominance_t *dominance, const int *size){
 	for (int d = 0; d < *size; d++){
 		free(dominance[d].set_dominated);
@@ -22,6 +26,7 @@ void desallocate_dominance(dominance_t *dominance, const int *size){
 	dominance = NULL;
 }
 
+_2PG_CARTESIAN_EXPORT
 void show_dominance(const dominance_t *dominance, const int *size){
 	for (int d = 0; d < *size; d++){
 		printf("Index dominance %i\n", d+1);
@@ -38,6 +43,7 @@ void show_dominance(const dominance_t *dominance, const int *size){
 	}
 }
 
+_2PG_CARTESIAN_EXPORT
 void save_dominance(const dominance_t *dominance, const int *size){
 	FILE *d_file=NULL;
 	char *file_name;
@@ -69,6 +75,7 @@ void save_dominance(const dominance_t *dominance, const int *size){
 * solutions array of Solutions
 * size number of solutions
 */
+_2PG_CARTESIAN_EXPORT
 void set_dominance(dominance_t *dominance, const solution_t *solutions, const int *size){	
 	int is_dominanted;
 	int ind_obj;

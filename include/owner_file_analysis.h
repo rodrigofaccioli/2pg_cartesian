@@ -3,7 +3,11 @@
 
 #include "analysis_types.h"
 
+#include "2pg_cartesian_export.h"
+
+_2PG_CARTESIAN_EXPORT
 owner_file_t* allocate_file_t(const int *num_files, const int *num_obj);
+_2PG_CARTESIAN_EXPORT
 void desalocate_file_t(owner_file_t*file_names, const int *num_files);
 void copy_file_owner(owner_file_t* dest, const owner_file_t*source, const int *num);
 const char *get_filename_ext(const char *filename);

@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef WIN32
 #include <unistd.h>
+#include <dirent.h>
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 #include "defines.h"
 #include "load_parameters.h"
@@ -36,8 +40,11 @@
 #include "dominance.h"
 #include "owner_file_analysis.h"
 
+#include "2pg_cartesian_export.h"
+
 #define MAX_LINE_SOLUTION_FILE 300
 
+_2PG_CARTESIAN_EXPORT
 owner_file_t* allocate_file_t(const int *num_files, const int *num_obj){
 	owner_file_t* file_names_aux = NULL;
 	file_names_aux = Malloc(owner_file_t, *num_files);
@@ -48,6 +55,7 @@ owner_file_t* allocate_file_t(const int *num_files, const int *num_obj){
 	return file_names_aux;
 }
 
+_2PG_CARTESIAN_EXPORT
 void desalocate_file_t(owner_file_t*file_names, const int *num_files){
 	for (int i = 0; i < *num_files; i++){
 		free(file_names[i].file_name);

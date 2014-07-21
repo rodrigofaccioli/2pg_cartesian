@@ -1,6 +1,8 @@
 #ifndef OLD_FUTIL_H
 #define OLD_FUTIL_H
 
+#include <stdio.h>
+
 #include "enums.h"
 
 #include "2pg_cartesian_export.h"

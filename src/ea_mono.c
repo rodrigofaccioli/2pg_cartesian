@@ -27,6 +27,8 @@
 #include "objective.h"
 #include "solutionio.h"
 
+#include "2pg_cartesian_export.h"
+
 static int compare_solution(const void *x, const void *y){
     double fx, fy;
     fx = ((solution_t *)x)->obj_values[0];
@@ -145,6 +147,7 @@ void reproduce_protein(protein_t *pop_new, const solution_t *solutions,
 
 }
 
+_2PG_CARTESIAN_EXPORT
 int ea_mono(const input_parameters_t *in_para){
 
     char *prefix;

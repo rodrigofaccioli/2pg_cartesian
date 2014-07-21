@@ -1165,6 +1165,7 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 
 /** Calculates the objectives of one solution by GROMACS
 */
+_2PG_CARTESIAN_EXPORT
 void get_gromacs_objectives_of_solution(solution_t *solution, 
 	const input_parameters_t *in_para, const int *ind){
 	const protein_t *population_aux;

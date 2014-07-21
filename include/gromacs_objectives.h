@@ -23,6 +23,7 @@ typedef struct soption_fitness_gromacs{
 	char option_name[30];
 }option_fitness_gromacs_t;
 
+_2PG_CARTESIAN_EXPORT
 void get_gromacs_objectives_of_solution(solution_t *solution, 
 	const input_parameters_t *in_para, const int *ind);
 _2PG_CARTESIAN_EXPORT

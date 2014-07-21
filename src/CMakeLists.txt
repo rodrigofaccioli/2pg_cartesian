@@ -27,7 +27,12 @@ file (GLOB BASE_SOURCES
 	solution.c
 	gromacs_objectives.c
 	solutionio.c
-	algorithms.c)
+	algorithms.c
+	ea_mono.c
+	ea_nsga2.c
+	dominance.c
+#	owner_file_analysis.c # Missing dirent.h opendir etc implementation for Windows
+	)
 
 # This is in order to export rather than import things tagged with
 # _2PG_CARTESIAN_EXPORT.
@@ -73,3 +78,79 @@ add_executable (protpred-Gromacs-Random_Algorithm_PSP
 
 target_link_libraries (protpred-Gromacs-Random_Algorithm_PSP
 	2pg_cartesian)
+
+
+
+set_source_files_properties (
+	protpred-Gromacs-MC_Metropolis.c mc_metropolis.c
+	PROPERTIES LANGUAGE CXX)
+
+add_executable (protpred-Gromacs-MC_Metropolis_PSP
+	protpred-Gromacs-MC_Metropolis.c mc_metropolis.c)
+
+target_link_libraries (protpred-Gromacs-MC_Metropolis_PSP
+	2pg_cartesian)
+
+
+
+set_source_files_properties (
+	protpred-Gromacs-Mono.c
+	PROPERTIES LANGUAGE CXX)
+
+add_executable (protpred-Gromacs-Mono_PSP
+	protpred-Gromacs-Mono.c)
+
+target_link_libraries (protpred-Gromacs-Mono_PSP
+	2pg_cartesian)
+
+
+
+set_source_files_properties (
+	protpred-Gromacs-Dominance.c
+	PROPERTIES LANGUAGE CXX)
+
+add_executable (protpred-Gromacs-Dominance
+	protpred-Gromacs-Dominance.c)
+
+target_link_libraries (protpred-Gromacs-Dominance
+	2pg_cartesian)
+
+
+
+set_source_files_properties (
+	protpred-Gromacs-NSGA2.c
+	PROPERTIES LANGUAGE CXX)
+
+add_executable (protpred-Gromacs-NSGA2_PSP
+	protpred-Gromacs-NSGA2.c)
+
+target_link_libraries (protpred-Gromacs-NSGA2_PSP
+	2pg_cartesian)
+
+
+
+# The following targets are commented out because of missing functions from
+# owner_file_analysis.c which is excluded from the 2pg_cartesian_library for
+# lack of dirent.h, opendir etc. implementation on Windows:
+
+#set_source_files_properties (
+#	protpred-Gromacs-Front.c
+#	PROPERTIES LANGUAGE CXX)
+
+#add_executable (protpred-Gromacs-Front
+#	protpred-Gromacs-Front.c)
+
+#target_link_libraries (protpred-Gromacs-Front
+#	2pg_cartesian)
+
+
+
+#set_source_files_properties (
+#	protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c
+#	PROPERTIES LANGUAGE CXX)
+
+#add_executable (protpred-Gromacs-Sort_Method_Files_by_Front_Dominance
+#	protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c)
+
+#target_link_libraries (protpred-Gromacs-Sort_Method_Files_by_Front_Dominance
+#	2pg_cartesian)

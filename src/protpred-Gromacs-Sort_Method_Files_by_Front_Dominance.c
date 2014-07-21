@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef WIN32
 #include <unistd.h>
+#include <dirent.h>
+#endif
+
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 #include "defines.h"
 #include "load_parameters.h"
