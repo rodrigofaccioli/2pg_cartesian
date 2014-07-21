@@ -15,7 +15,11 @@
 #include "topology.h"
 #include "pdbatom.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 //#include "randomlib.h"
 

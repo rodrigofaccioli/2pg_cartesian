@@ -11,7 +11,11 @@
 #include "messages.h"
 #include "aminoacids.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 #define MAX_LINE_FASTA 81
 #define MAX_LEN_PROTEIN 1000

@@ -1,7 +1,11 @@
 #ifndef OLD_MATH_OWNER_H
 #define OLD_MATH_OWNER_H
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 float degree2radians(const float *degree);

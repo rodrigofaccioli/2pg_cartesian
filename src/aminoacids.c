@@ -6,7 +6,11 @@
 #include "defines.h"
 #include "messages.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 static void initialize_primary_seq(primary_seq_t* seq){
 

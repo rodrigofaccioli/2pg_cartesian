@@ -10,7 +10,11 @@
 #include "objective.h"
 #include "aminoacids.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 static void initialize_parameters(input_parameters_t *param){
 	param->seq_protein_file_name = Malloc(char, MAX_PATH_FILE_NAME );

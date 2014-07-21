@@ -3,7 +3,11 @@
 
 #include "protein_type.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 void rotation_psi(protein_t *prot, const int *num_res_first, const float *angle);

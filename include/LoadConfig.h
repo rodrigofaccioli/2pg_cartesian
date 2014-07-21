@@ -2,7 +2,11 @@
 #include <fstream>
 #include <map>
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 class _2PG_CARTESIAN_EXPORT LoadConfig{
    private:

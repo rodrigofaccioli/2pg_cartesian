@@ -10,7 +10,11 @@
 #include "messages.h"
 #include "string_owner.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 #define MAX_LINE_FASTA 81
 

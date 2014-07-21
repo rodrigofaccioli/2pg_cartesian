@@ -4,7 +4,11 @@
 #include "solution_types.h"
 #include "parameters_type.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 void initialize_solution(solution_t * solution_aux, const int *nbj);
 _2PG_CARTESIAN_EXPORT

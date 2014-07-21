@@ -40,7 +40,11 @@
 #include "dominance.h"
 #include "owner_file_analysis.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 #define MAX_LINE_SOLUTION_FILE 300
 

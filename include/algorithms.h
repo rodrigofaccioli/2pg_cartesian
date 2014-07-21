@@ -6,7 +6,11 @@
 #include "solution_types.h"
 #include "protein_type.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 void initialize_algorithm_execution(const primary_seq_t *primary_sequence_aux,

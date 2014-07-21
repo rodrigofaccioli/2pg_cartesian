@@ -4,7 +4,11 @@
 #include "aminoacids_types.h"
 #include "enums.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 primary_seq_t* allocate_primary_seq(const int *num_res);
 

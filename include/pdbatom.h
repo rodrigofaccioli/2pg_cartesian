@@ -4,7 +4,11 @@
 #include "enums.h"
 #include "pdb_types.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by_model);

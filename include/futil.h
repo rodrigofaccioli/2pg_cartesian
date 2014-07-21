@@ -5,7 +5,11 @@
 
 #include "enums.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 enum mode_files{fREAD,fWRITE,fAPPEND};
 typedef enum mode_files mode_files_t;

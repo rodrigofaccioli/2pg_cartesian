@@ -27,7 +27,11 @@
 #include "objective.h"
 #include "solutionio.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 static int compare_solution(const void *x, const void *y){
     double fx, fy;

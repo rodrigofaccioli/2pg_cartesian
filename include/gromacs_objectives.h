@@ -4,7 +4,11 @@
 #include "solution_types.h"
 #include "parameters_type.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 /** option_g_energy enum must be associated with type_fitness_energies.
  * This association is obtained througth

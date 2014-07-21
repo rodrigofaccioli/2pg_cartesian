@@ -1,6 +1,10 @@
 #include "enums.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 void int2str(char *str, const int *number);
 int str2int(__const char *str);

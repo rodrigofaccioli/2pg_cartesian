@@ -29,7 +29,11 @@
 #include "solutionio.h"
 #include "dominance.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 #define INIT_FRONT -1
 

@@ -4,7 +4,11 @@
 #include "protein_type.h"
 #include "aminoacids_types.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 void load_initial_population_file(protein_t *pop, const int *pop_size, const char *path, 

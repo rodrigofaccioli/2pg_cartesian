@@ -5,7 +5,11 @@
 #include "rotation.h"
 #include "vector_types.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 
 /** Makes the rotation

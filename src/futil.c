@@ -9,7 +9,11 @@
 #include "string_owner.h"
 #include "randomlib.h"
 
+#ifdef WIN32
 #include "2pg_cartesian_export.h"
+#else
+#include "2pg_cartesian_export_linux.h"
+#endif
 
 _2PG_CARTESIAN_EXPORT
 char * path_join_file(const char *path, const char *f){
