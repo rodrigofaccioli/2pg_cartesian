@@ -30,11 +30,9 @@ file (GLOB BASE_SOURCES
 	algorithms.c)
 
 # This is in order to export rather than import things tagged with
-# _2PG_CARTESIAN_EXPORT. It also excludes from MSVC a non-compatible source
-# file.
+# _2PG_CARTESIAN_EXPORT.
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	add_definitions (-D_2pg_cartesian_EXPORTS)
-	list (REMOVE_ITEM BASE_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/gromacs_objectives.c)
 endif ()
 
 # Specify that the sources are inteded to be compiled as C++

@@ -11,6 +11,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	add_definitions (-Dsnprintf=_snprintf)
 	add_definitions (-Dgetpid=_getpid)
 	add_definitions (-Dgetcwd=_getcwd)
+	add_definitions (-Disnan=_isnan)
 
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D _CRT_SECURE_NO_WARNINGS")
 endif ()

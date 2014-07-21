@@ -4,6 +4,8 @@
 #include "solution_types.h"
 #include "parameters_type.h"
 
+#include "2pg_cartesian_export.h"
+
 /** option_g_energy enum must be associated with type_fitness_energies.
  * This association is obtained througth
  * get_option_fitness_gromacs_from_type_fitness_energy function
@@ -23,8 +25,11 @@ typedef struct soption_fitness_gromacs{
 
 void get_gromacs_objectives_of_solution(solution_t *solution, 
 	const input_parameters_t *in_para, const int *ind);
+_2PG_CARTESIAN_EXPORT
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para);
+_2PG_CARTESIAN_EXPORT
 void init_gromacs_execution();
+_2PG_CARTESIAN_EXPORT
 void finish_gromacs_execution();
 void build_tpr_file(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field, const char *mdp_file);
