@@ -22,7 +22,7 @@ arq_config="configuracao.conf"
 arquivos="$local"arquivos_pdb/	 #pasta que contém .pdb das estruturas q deseja e .mdp
 
 path_protpred_pop_ini="/home/faccioli/workspace/2pg_build_conformation/"
-path_protpred="/home/faccioli/workspace/2pg_cartesian/"
+path_protpred="/home/faccioli/Programs/2pg_cartesian/"
 path_gromacs="/home/faccioli/Programs/gmx-4.6.5/no_mpi/bin/"
 path_maxcluster="/home/faccioli/workspace/2pg_cartesian/scripts/analysis/maxcluster/"
 
@@ -187,7 +187,7 @@ while [ $pred_atual -le $total_predicoes ]; do
 
 	# Executa o programa
 		if [ $RANKING -eq 1 ]; then
-			"$path_protpred""src/"./protpred-Gromacs-Sort_Method_Files_by_Front_Dominance $arq_config
+			"$path_protpred""bin/"./protpred-Gromacs-Sort_Method_Files_by_Front_Dominance $arq_config
 		fi
 
 	# DM dos individuos nao-dominados da ultima geracao

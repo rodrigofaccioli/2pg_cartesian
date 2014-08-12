@@ -23,7 +23,7 @@ arquivos="$local"arquivos/	 #pasta que contém os FASTA, .pdb e .mdp
 
 #IMPORTANTE: Os path SEMPRE terminam com /
 path_protpred_pop_ini="/home/faccioli/workspace/2pg_build_conformation/"
-path_protpred="/home/faccioli/workspace/2pg_cartesian/"
+path_protpred="/home/faccioli/Programs/2pg_cartesian/"
 path_gromacs="/home/faccioli/Programs/gmx-4.6.5/no_mpi/bin/"
 path_maxcluster="/home/faccioli/workspace/2pg_cartesian/scripts/analysis/maxcluster/"
 
@@ -209,16 +209,16 @@ while [ $pred_atual -le $total_predicoes ]; do
 		if [ $EA -eq 1 ]; then
 
 			if [ "$algoritmo" == "MONO" ]; then
-				"$path_protpred""src/"./protpred-Gromacs-Mono_PSP $arq_config
+				"$path_protpred""bin/"./protpred-Gromacs-Mono_PSP $arq_config
 			fi
 
 
 			if [ "$algoritmo" == "NSGA-II" ]; then				
-					"$path_protpred""src/"./protpred-Gromacs-NSGA2_PSP $arq_config				
+					"$path_protpred""bin/"./protpred-Gromacs-NSGA2_PSP $arq_config				
 			fi
 
 			if [ "$algoritmo" == "MonteCarlo" ]; then				
-					"$path_protpred""src/"./protpred-Gromacs-MC_Metropolis_PSP $arq_config				
+					"$path_protpred""bin/"./protpred-Gromacs-MC_Metropolis_PSP $arq_config				
 			fi
 		fi
 
