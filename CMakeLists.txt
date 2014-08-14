@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 project(2pg_cartesian)
 set(PROJECT_VERSION "1.0")
 
+
 # Compiler specific settings:
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	add_definitions (-D__const=const)
@@ -16,7 +17,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif ()
 
 # Set compiler flags
-SET ( CMAKE_CXX_FLAGS "-pedantic")
+SET ( CMAKE_CXX_FLAGS "-lm -pedantic")
 
 #Set CXX compiler for all files below
 set_source_files_properties(include/LoadConfig.h PROPERTIES LANGUAGE CXX )
@@ -96,8 +97,8 @@ src/random_algorithm.c
 ) #end of 2PG_lib
 
 # add target
-add_executable(protpred-Gromacs-NSGA2_PSP src/protpred-Gromacs-NSGA2.c)
-target_link_libraries(protpred-Gromacs-NSGA2_PSP 2PG_lib)
+add_executable(protpred-Gromacs-NSGA2 src/protpred-Gromacs-NSGA2.c)
+target_link_libraries(protpred-Gromacs-NSGA2 2PG_lib)
 
 add_executable(protpred-Gromacs-Dominance src/protpred-Gromacs-Dominance.c)
 target_link_libraries(protpred-Gromacs-Dominance 2PG_lib)
@@ -108,8 +109,8 @@ target_link_libraries(protpred-Gromacs-Front 2PG_lib)
 add_executable(protpred-Gromacs-MC_Metropolis src/protpred-Gromacs-MC_Metropolis.c)
 target_link_libraries(protpred-Gromacs-MC_Metropolis 2PG_lib)
 
-add_executable(protpred-Gromacs-Mono_PSP src/protpred-Gromacs-Mono.c)
-target_link_libraries(protpred-Gromacs-Mono_PSP 2PG_lib)
+add_executable(protpred-Gromacs-Mono src/protpred-Gromacs-Mono.c)
+target_link_libraries(protpred-Gromacs-Mono 2PG_lib)
 
 add_executable(protpred-Gromacs-Random_Algorithm src/protpred-Gromacs-Random_Algorithm.c)
 target_link_libraries(protpred-Gromacs-Random_Algorithm 2PG_lib)
@@ -119,18 +120,11 @@ target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_
 
 
 # install
-install(TARGETS protpred-Gromacs-NSGA2_PSP DESTINATION bin)
+install(TARGETS protpred-Gromacs-NSGA2 DESTINATION bin)
 install(TARGETS protpred-Gromacs-Dominance DESTINATION bin)
 install(TARGETS protpred-Gromacs-Front DESTINATION bin)
 install(TARGETS protpred-Gromacs-MC_Metropolis DESTINATION bin)
-install(TARGETS protpred-Gromacs-Mono_PSP DESTINATION bin)
+install(TARGETS protpred-Gromacs-Mono DESTINATION bin)
 install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
 install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION bin)
-
-#Coping script directory
-install(DIRECTORY scripts/ DESTINATION scripts 
-	PATTERN "scripts/*" 
-	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-                    GROUP_EXECUTE GROUP_READ
-)#End of Coping script directory
 

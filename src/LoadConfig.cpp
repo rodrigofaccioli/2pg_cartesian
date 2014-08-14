@@ -13,7 +13,6 @@ LoadConfig::LoadConfig(const string &pathFileName)
    :fileConf(pathFileName.c_str())
 {
 	file2Map();
-
 }
 
 
@@ -25,8 +24,14 @@ void LoadConfig::file2Map(){
   char *l;
   l = Malloc(char, MAXLINE);
   strcpy(l, "\0");
-	while (fileConf.eof() == false){       
-       fileConf.getline(l,MAXLINE);
+  while (fileConf.eof() == false){
+#ifdef _WIN32
+       fileConf.getline(l,MAXLINE, '\n');
+#endif
+#ifdef linux
+ 	  fileConf.getline(l,MAXLINE);
+#endif
+	   printf("%s\n", l);
        string s(l);
        int ind_token = s.find("=");
        if (ind_token != string::npos){
@@ -60,5 +65,13 @@ std::string LoadConfig::trim(std::string s){
 
 
 char* LoadConfig::getParameterChar(const std::string &Parameter){  
+#ifdef _WIN32
+	char * c = strdup(getParameter(Parameter).c_str());
+	return c;
+#endif
+
+#ifdef linux
 	return const_cast< char* > ( getParameter(Parameter).c_str() );
+#endif
+	
 }

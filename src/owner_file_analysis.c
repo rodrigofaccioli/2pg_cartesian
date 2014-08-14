@@ -1,10 +1,48 @@
+#ifdef _WIN32
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include "defines.h"
+#include "load_parameters.h"
+#include "messages.h"
+#include <dirent.h>
+#include "defines.h"
+#include "enums.h"
+#include "ea_mono.h"
+#include "protein.h"
+#include "topology.h"
+#include "pdbio.h"
+#include "pdbatom.h"
+#include "messages.h"
+#include "algorithms.h"
+#include "string_owner.h"
+#include "futil.h"
+#include "aminoacids.h"
+#include "aminoacids_io.h"
+#include "populationio.h"
+#include "topology.h"
+#include "topologyio.h"
+#include "rotation.h"
+#include "math_owner.h"
+#include "solution.h"
+#include "gromacs_objectives.h"
+#include "algorithms.h"
+#include "randomlib.h"
+#include "objective.h"
+#include "solutionio.h"
+#include "ea_nsga2.h"
+#include "dominance.h"
+#include "owner_file_analysis.h"
+#endif
+
+#ifdef linux
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
-
 #include "defines.h"
 #include "load_parameters.h"
 #include "messages.h"
@@ -35,6 +73,7 @@
 #include "ea_nsga2.h"
 #include "dominance.h"
 #include "owner_file_analysis.h"
+#endif
 
 #define MAX_LINE_SOLUTION_FILE 300
 
