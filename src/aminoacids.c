@@ -1,9 +1,8 @@
 #include <string.h>
-
-
 #include "aminoacids.h"
 #include "defines.h"
 #include "messages.h"
+#include <stdio.h>
 
 static void initialize_primary_seq(primary_seq_t* seq){
 
@@ -63,7 +62,7 @@ type_terminal_charge_t str2terminal_charge(const char *s_term_charge){
 		ret =  term_charge_NME;
 	}else{
  		char msg[300];
- 	    sprintf(msg,"%s it is not found at  str2terminal_charge function \n", s_term_charge);
+ 		sprintf(msg,"%s it is not found at  str2terminal_charge function \n", s_term_charge);
   		fatal_error(msg);		
 	}
 

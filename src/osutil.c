@@ -1,14 +1,27 @@
+#ifdef _WIN32
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-
 #include "defines.h"
 #include "messages.h"
 #include "string_owner.h"
 #include "osutil.h"
 #include "futil.h"
+#include <process.h>
+#include <direct.h>
+#endif
 
+#ifdef linux
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include "defines.h"
+#include "messages.h"
+#include "string_owner.h"
+#include "osutil.h"
+#include "futil.h"
+#endif
 
 int get_pid(){
 	/*Returnd the process id*/

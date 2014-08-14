@@ -1,3 +1,27 @@
+#ifdef _WIN32
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <math.h>
+#include "gromacs_objectives.h"
+#include "defines.h"
+#include "messages.h"
+#include "futil.h"
+#include "consts.h"
+#include "string_owner.h"
+#include "osutil.h"
+#include "parameters_type.h"
+#include "protein_type.h"
+#include "pdbio.h"
+#include <float.h>
+#endif
+
+#ifdef linux
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +33,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <math.h>
-
 #include "gromacs_objectives.h"
 #include "defines.h"
 #include "messages.h"
@@ -20,6 +43,7 @@
 #include "parameters_type.h"
 #include "protein_type.h"
 #include "pdbio.h"
+#endif
 
 
 #define TAM_LINE_ENER 50
@@ -148,6 +172,7 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
  * where:
  * argv_list[i] = argsi (argsi is in the format expected by execv(3))
  */
+#ifdef linux
 static inline int run_programs_with_pipe(int nprogs, char ***const argv_list,
 							const char *output_file)
 {
@@ -255,6 +280,7 @@ static inline int run_programs_with_pipe(int nprogs, char ***const argv_list,
 
 	return ret_value;
 }
+#endif
 
 void initialize_g_sas_values(){
 	//Hydrophobic

@@ -198,6 +198,7 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->path_gromacs_programs, conf.getParameterChar("Path_Gromacs_Programs"));
 	strcpy(param->seq_protein_file_name, conf.getParameterChar("SequenceAminoAcidsPathFileName"));	
 	strcpy(param->path_local_execute, conf.getParameterChar("Local_Execute"));
+
 	strcpy(param->initial_pop_file_name, conf.getParameterChar("IniPopFileName"));
 	strcpy(param->computed_energies_gromacs_file, conf.getParameterChar("Computed_Energies_Gromacs_File"));
 	strcpy(param->energy_file_xvg, conf.getParameterChar("Energy_File_xvg"));
@@ -205,6 +206,7 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->computed_areas_g_sas_file, conf.getParameterChar("Computed_Areas_g_sas_File"));
 	strcpy(param->computed_radius_g_gyrate_file, conf.getParameterChar("Computed_Radius_g_gyrate_File"));
 	strcpy(param->computed_g_hbond_file,conf.getParameterChar("Computed_g_hbond_File"));
+
 	set_parameter_fitness_energies(param,conf.getParameterChar("Fitness_Energy"));
 	param->individual_mutation_rate = atof(conf.getParameter("Individual_Mutation_Rate").c_str());
 
