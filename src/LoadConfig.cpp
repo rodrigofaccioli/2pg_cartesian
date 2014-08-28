@@ -31,7 +31,6 @@ void LoadConfig::file2Map(){
 #ifdef linux
  	  fileConf.getline(l,MAXLINE);
 #endif
-	   printf("%s\n", l);
        string s(l);
        int ind_token = s.find("=");
        if (ind_token != string::npos){

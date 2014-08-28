@@ -291,7 +291,7 @@ static boolean_t continue_front_computation(const ea_nsga2_t *nsga2_solutions,
 /**
 */
 static int get_how_many_zero_front_init(const ea_nsga2_t *nsga2_solutions, const dominance_t * dominance, const int *size){
-    int ret;
+    int ret = 0;
     for (int i = 0; i < *size; i++){
         if ((dominance[i].how_many_solutions_dominate_it == 0) &&
             (nsga2_solutions[i].front == INIT_FRONT) ){
@@ -329,7 +329,7 @@ void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
     //Check computation of fronts. While front equal -1, computes fronts
     while (continue_front_computation(nsga2_solutions, size) == btrue){
         how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size) - 1;
-        temp_aux = Malloc(int, how_many_is_zero);
+        temp_aux = Malloc(int, how_many_is_zero+1);
         //Setting index for temp_aux based on nsga2_solutions
         int j = 0;
         for (int i = 0; i < *size; i++){ //Loop all popupation looking for index
@@ -958,6 +958,27 @@ int ea_nsga2(const input_parameters_t *in_para){
     //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
+	//primary_seq_t * seq_prim;
+	//int n_residues;
+	//char aux_line = '\0';
+	//int seq_index = 0;
+	//char seq_line[400] = "XMLSDEDFKAVFGMTRSAFANLPLWKQQNLKKEKGLFX";//represents the primary sequence of protein 
+
+	//n_residues = strlen(seq_line);
+	//seq_prim = allocate_primary_seq(&n_residues);
+
+	//check_terminal_charge(seq_line, &n_residues);
+	//for (int i = 0; i < n_residues; i++){
+	//	aux_line = seq_line[i];
+	//	strcpy(seq_prim->seq_res[i].id_1, &aux_line);
+	//	seq_prim->seq_res[i].id = _get_amino_id_1(aux_line);
+	//	set_amino_id_3(seq_prim->seq_res[i].id_3, &seq_prim->seq_res[i].id);
+ //       seq_index = seq_index + 1;
+	//	aux_line = '/0';
+	//}
+
+	//primary_sequence = seq_prim;
+
     //Allocating PDB ATOMS of population_p
     population_p = allocateProtein(&in_para->size_population);    
 
@@ -965,6 +986,41 @@ int ea_nsga2(const input_parameters_t *in_para){
     load_initial_population_file(population_p, &in_para->size_population, 
         in_para->path_local_execute,in_para->initial_pop_file_name,
         primary_sequence);
+
+	//pdb_atom_t **atoms = NULL;
+	//const pdb_atom_t *atm_aux = NULL;
+ //   int *num_atoms_by_model_PDB = NULL;
+ //   char *path_pdb_file_name = NULL;
+
+
+ //   //Loading PDB File of initial population
+ //   num_atoms_by_model_PDB = Malloc(int, in_para->size_population);
+	//num_atoms_by_model_PDB[0] = 605;
+	//num_atoms_by_model_PDB[1] = 605;
+	//num_atoms_by_model_PDB[2] = 605;
+	//num_atoms_by_model_PDB[3] = 605;
+	//num_atoms_by_model_PDB[4] = 605;
+
+ //   atoms = allocate_Population_pdb(&in_para->size_population, num_atoms_by_model_PDB);
+	//load_pdb_model_file(atoms, NULL, in_para->path_local_execute, in_para->initial_pop_file_name, num_atoms_by_model_PDB);
+
+	////Allocation and Copy values to pop
+	//for (int i = 0; i < in_para->size_population; i++){
+	//	population_p[i].p_atoms = allocate_pdbatom(&num_atoms_by_model_PDB[i]);
+	//	population_p[i].p_topol = allocateTop_Global(&primary_sequence->num_res, 
+	//		&num_atoms_by_model_PDB[i]);
+	//	atm_aux = atoms[i];
+	//	for (int a = 0; a < num_atoms_by_model_PDB[i]; a++){			
+	//		copy_pdb_atom(&population_p[i].p_atoms[a], &atm_aux[a]);
+	//	}
+	//	//Rename C-Terminal Oxygen atoms
+	//	rename_oxygen_c_terminal(population_p[i].p_atoms, &primary_sequence->num_res, 
+	//		&num_atoms_by_model_PDB[i]);
+	//}
+	////Building Topology of population
+	//build_topology_population(population_p, &in_para->size_population);	
+
+
 
     //Building Global topology since all models have same topology
     int one = 1;

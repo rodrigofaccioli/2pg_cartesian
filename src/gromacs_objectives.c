@@ -122,7 +122,12 @@ static inline int run_program(const char *file, char *const argv[]){
 	int out, err; /* file descriptors for stdout and stderr */
 	int i = 0;
 
-	strcpy(command, argv[i]);
+	char bat[50] = "C:\\cygwin\\Cygwin.bat";
+	strcpy(command, bat);
+
+	//strcpy(command, argv[i]);
+	strcat(command, " '");
+	strcat(command, argv[i]);
 	strcat(command, " ");
 	i++;
 	do{	
@@ -131,7 +136,10 @@ static inline int run_program(const char *file, char *const argv[]){
 		i++;	
 	}while (argv[i] != NULL);
 	//Avoid output messages
-	strcat(command, " > /dev/null 2> /dev/null ");
+
+	strcat(command, " '");
+	
+	//strcat(command, " > /dev/null 2> /dev/null ");
 
 	system(command);
 
@@ -145,18 +153,29 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 	int out, err; /* file descriptors for stdout and stderr */
 	int i;
 
-	strcpy(command, "echo ");
-	strcat(command, pipe_msg);
-	strcat(command, " | ");
+	char bat[50] = "C:\\cygwin\\Cygwin.bat";
+	strcpy(command, bat);
+
+	//strcpy(command, "echo ");
+	strcat(command, " '");
+	strcat(command, " echo ^> echo 12 ");
+	//strcat(command, pipe_msg);
+	strcat(command, " ^| ");
 
 	i = 0;
-	do{	
+	do{
 		strcat(command, argv[i]);
 		strcat(command, " ");
-		i++;	
+		i++;
 	}while (argv[i] != NULL);
+
+	//strcat(command, " '");
+	//strcat(command, " ^> ");
+	//strcat(command, " echo ^| echo 12 ");	
+	strcat(command, " '");
+
 	//Avoid output messages
-	strcat(command, " > /dev/null 2> /dev/null ");
+	//strcat(command, " > /dev/null 2> /dev/null ");
 
 	system(command);
 	
@@ -599,8 +618,13 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	force_field_aux = Malloc(char, MAX_FORCE_FIELD_NAME);
 	mdp_file_aux = Malloc(char, MAX_FILE_NAME);
 
+	//char bat[50] = "C:\\cygwin\\Cygwin.bat";
+
 	/* pdb2gmx */
 	strcpy(program, path_gromacs_programs);
+	//strcpy(program, bat);
+	//strcat(program, " '");
+	//strcat(program, path_gromacs_programs);
 	strcat(program, "pdb2gmx");
 	pdb2gmx_args[0] = program;
 	//pdb
@@ -629,7 +653,7 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	//Hydrogen
 	pdb2gmx_args[11] = opt_ignh;
 
-	pdb2gmx_args[12] = NULL;	
+	pdb2gmx_args[12] = NULL;
 
 	if (!run_program(program, pdb2gmx_args)){
 		fatal_error("Failed to run pdb2gmx at build_tpr_file function \n");
@@ -637,6 +661,9 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 
 	/* grompp */
 	strcpy(program, path_gromacs_programs);
+	//strcpy(program, bat);
+	//strcat(program, " '");
+	//strcat(program, path_gromacs_programs);
 	strcat(program, "grompp");
 	grompp_args[0] = program;
 	//mdp
@@ -681,7 +708,8 @@ void call_mdrun2energy(const char *pdbfile, const char *local_execute,
 	char *mdrun_args[13];
 	/* mdrun */
 	strcpy(program, path_gromacs_programs);
-	strcat(program, "mdrun");
+	//strcat(program, "mdrun");
+	strcat(program, "mdrun_mpi");
 	mdrun_args[0] = program;
 	//tpŕ
 	mdrun_args[1] = opt_s;		
@@ -766,8 +794,9 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 		const char *path_gromacs_programs, const char *opt_energy ){
 	char *last_line, *line_splited;
 	char *value;
-	
-	if (check_exists_file(file_energy_computed_ener_edr) == btrue){
+
+	//if (check_exists_file(file_energy_computed_ener_edr) == btrue){
+	if (check_exists_file(path_join_file(local_execute, file_energy_computed_ener_edr)) == btrue){
 		//Call g_energy
 		call_g_energy(local_execute, path_gromacs_programs, opt_energy);	
 		if (check_exists_file(energy_xvg) == btrue){
