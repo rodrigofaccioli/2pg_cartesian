@@ -64,15 +64,18 @@ int main(int argc, char *argv[]){
 	column_1= Malloc(char, MAX_RANDOM_STRING);
 	column_2= Malloc(char, MAX_RANDOM_STRING);
 
+	// Initialize values
+	strcpy(column_1, "Objective_1");
+	strcpy(column_2, "Objective_2");
+
 	//Getting Solutions
-	solutions = loading_file_solutions(&num_solutions, &num_obj, path_file_name);
+	solutions = loading_file_solutions_kind_objectives(&num_solutions, &num_obj, path_file_name);
 	in_param.size_population = num_solutions;
-	in_param.number_fitness = num_obj;
-	set_columns_of_solution_file(column_1, column_2, path_file_name);
+	in_param.number_fitness  = num_obj;
 
 /**************** START GETTING FRONT *************************/
 	//Allocating solutions to analysis
-	solutions_ana = loading_owner_file_solution(&num_solutions, &in_param.number_fitness, path_file_name);
+	solutions_ana = loading_owner_file_solution_file_name_at_ending(&num_solutions, &in_param.number_fitness, path_file_name);
 
 	in_param.size_population = num_solutions;	
 	nsga2_solutions_p = allocate_nsga2_without_allocation_of_representation(&in_param);	
@@ -91,8 +94,7 @@ int main(int argc, char *argv[]){
 		solutions_ana[ind].number_solutions_are_dominated = dominance[ind].max_dominated;
 	}	
 
-
-	//Coping values of objective
+	//Coping values of objective from solutions to nsga2_solutions_p
 	for (int ind = 0; ind < num_solutions; ind++){
 		for (int ob = 0; ob < in_param.number_fitness; ob++)	
 			nsga2_solutions_p[ind].sol->obj_values[ob] = solutions[ind].obj_values[ob];
@@ -103,17 +105,11 @@ int main(int argc, char *argv[]){
 
     //Coping values from nsga2_solutions_p to owner_file_t    
 	for (int ind = 0; ind < num_solutions; ind++){
-		/*
-		//Coping objectives
-		for (int ob = 0; ob < in_param.number_fitness; ob++){	
-			solutions_ana[ind].obj_values[ob] = nsga2_solutions_p[ind].sol->obj_values[ob];
-		}
-		*/
 		solutions_ana[ind].front = nsga2_solutions_p[ind].front;
 	}
 	desallocate_dominance(dominance, &num_solutions);
 	desallocate_solution_nsga2(nsga2_solutions_p, &num_solutions);
-/**************** FINISHED GETTING FRONT *************************/
+/**************** FINISHED GETTING FRONT *************************/    
 
 /**************** START GETTING FINAL RESULTS *************************/
     //Sorting solutions

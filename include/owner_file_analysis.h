@@ -24,5 +24,5 @@ int compare_dominated(const void *x, const void *y);
 void set_global_ranking(owner_file_t *file_names, const int *size);
 void sorting_solutions_by_front_dominance(owner_file_t *file_names, const int *size, const int *numobj);
 owner_file_t *loading_owner_file_solution(const int *num_solutions_r, const int *numobj_r, const char *path_file_name);
-
+owner_file_t * loading_owner_file_solution_file_name_at_ending(const int *num_solutions_r, 	const int *numobj_r, const char *path_file_name);
 #endif

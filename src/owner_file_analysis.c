@@ -506,3 +506,48 @@ owner_file_t * loading_owner_file_solution(const int *num_solutions_r, 	const in
 
 	return solutions_aux;
 }
+
+
+/** Loading file that contains the objectives and 
+* final collumn has the identificator 
+*/
+owner_file_t * loading_owner_file_solution_file_name_at_ending(const int *num_solutions_r, 	const int *numobj_r, const char *path_file_name){
+	FILE * solution_file;	
+	char *line;
+	char *line_splited;
+	int sol;
+	owner_file_t * solutions_aux;
+
+	line = Malloc(char, MAX_LINE_SOLUTION_FILE);
+
+	//Alocating Solution
+	solutions_aux = allocate_file_t(num_solutions_r, numobj_r);
+
+	//Reading file and set values of objective
+	sol = -1;
+	solution_file = open_file(path_file_name, fREAD);
+	//Removing first line that is collumn
+	fgets(line,MAX_LINE_SOLUTION_FILE,solution_file);
+	while ( fgets(line,MAX_LINE_SOLUTION_FILE,solution_file) != NULL){
+		sol = sol + 1;
+		//Obtaing index collumn
+		line_splited = strtok (line,"\t");
+		//Objective 0
+		trim(line_splited);
+		solutions_aux[sol].obj_values[0] = str2float(line_splited);
+		//Objective 1
+		line_splited = strtok (NULL,"\t");
+		trim(line_splited);
+		solutions_aux[sol].obj_values[1] = str2float(line_splited);
+		//identificator
+		line_splited = strtok (NULL,"\t");
+		remove_character(line_splited, '\n');
+		trim(line_splited);
+		strcpy(solutions_aux[sol].file_name, line_splited);					
+	}	
+	fclose(solution_file);
+
+	free(line);
+
+	return solutions_aux;
+}
