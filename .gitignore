@@ -21,7 +21,7 @@ protpred-Gromacs-MC_Metropolis_PSP
 protpred-Gromacs-Mono_PSP
 protpred-Gromacs-Dominance
 protpred-Gromacs-NSGA2_PSP
-protpred-Gromacs-Front
+protpred-Gromacs-Sort_Method_by_Front_Dominance
 protpred-Gromacs-Sort_Method_Files_by_Front_Dominance
 
 #Directory

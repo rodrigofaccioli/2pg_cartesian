@@ -22,7 +22,7 @@ SET ( CMAKE_CXX_FLAGS "-pedantic")
 set_source_files_properties(include/LoadConfig.h PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-NSGA2.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Dominance.c  PROPERTIES LANGUAGE CXX )
-set_source_files_properties(src/protpred-Gromacs-Front.c  PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Sort_Method_by_Front_Dominance.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-MC_Metropolis.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Mono.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Random_Algorithm.c  PROPERTIES LANGUAGE CXX )
@@ -102,8 +102,8 @@ target_link_libraries(protpred-Gromacs-NSGA2_PSP 2PG_lib)
 add_executable(protpred-Gromacs-Dominance src/protpred-Gromacs-Dominance.c)
 target_link_libraries(protpred-Gromacs-Dominance 2PG_lib)
 
-add_executable(protpred-Gromacs-Front src/protpred-Gromacs-Front.c)
-target_link_libraries(protpred-Gromacs-Front 2PG_lib)
+add_executable(protpred-Gromacs-Sort_Method_by_Front_Dominance src/protpred-Gromacs-Sort_Method_by_Front_Dominance.c)
+target_link_libraries(protpred-Gromacs-Sort_Method_by_Front_Dominance 2PG_lib)
 
 add_executable(protpred-Gromacs-MC_Metropolis src/protpred-Gromacs-MC_Metropolis.c)
 target_link_libraries(protpred-Gromacs-MC_Metropolis 2PG_lib)
@@ -121,11 +121,12 @@ target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_
 # install
 install(TARGETS protpred-Gromacs-NSGA2_PSP DESTINATION bin)
 install(TARGETS protpred-Gromacs-Dominance DESTINATION bin)
-install(TARGETS protpred-Gromacs-Front DESTINATION bin)
 install(TARGETS protpred-Gromacs-MC_Metropolis DESTINATION bin)
 install(TARGETS protpred-Gromacs-Mono_PSP DESTINATION bin)
 install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
-install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION bin)
+install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION 
+bin)
+install(TARGETS protpred-Gromacs-Sort_Method_by_Front_Dominance DESTINATION bin)
 
 #Coping script directory
 install(DIRECTORY scripts/ DESTINATION scripts 
