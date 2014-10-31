@@ -1,9 +1,9 @@
 2pg_cartesian
 =============
 
-is a framework of optimization algorithms for structural bioinformatics. 
+is a framework of optimization algorithms for structural biology. 
 The goal of this framework is allow to build optimization algorithms for 
-structural bioinformatics area. 
+structural biology area. 
 
 INSTALATION
 =============
@@ -16,7 +16,10 @@ cmake ..
 make 
 make install
 
-If you want to assign an install directory, you may use DCMAKE_INSTALL_PREFIX option.  For example, you want install 2pg_cartesian at /home/faccioli/Programs/.
+If you want to assign an install directory, you may use 
+DCMAKE_INSTALL_PREFIX option.
+For example, you want to install 2pg_cartesian at 
+/home/faccioli/Programs/ directory, you have to use:
 
 mkdir build
 cd build
