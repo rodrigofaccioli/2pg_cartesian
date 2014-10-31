@@ -57,6 +57,7 @@ set_source_files_properties(src/dominance.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/owner_file_analysis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/mc_metropolis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/random_algorithm.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Front.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
@@ -102,6 +103,9 @@ target_link_libraries(protpred-Gromacs-NSGA2_PSP 2PG_lib)
 add_executable(protpred-Gromacs-Dominance src/protpred-Gromacs-Dominance.c)
 target_link_libraries(protpred-Gromacs-Dominance 2PG_lib)
 
+add_executable(protpred-Gromacs-Front src/protpred-Gromacs-Front.c)
+target_link_libraries(protpred-Gromacs-Front 2PG_lib)
+
 add_executable(protpred-Gromacs-Sort_Method_by_Front_Dominance src/protpred-Gromacs-Sort_Method_by_Front_Dominance.c)
 target_link_libraries(protpred-Gromacs-Sort_Method_by_Front_Dominance 2PG_lib)
 
@@ -121,6 +125,7 @@ target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_
 # install
 install(TARGETS protpred-Gromacs-NSGA2_PSP DESTINATION bin)
 install(TARGETS protpred-Gromacs-Dominance DESTINATION bin)
+install(TARGETS protpred-Gromacs-Front DESTINATION bin)
 install(TARGETS protpred-Gromacs-MC_Metropolis DESTINATION bin)
 install(TARGETS protpred-Gromacs-Mono_PSP DESTINATION bin)
 install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
