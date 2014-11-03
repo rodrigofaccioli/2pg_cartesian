@@ -1,6 +1,11 @@
 #ifndef OLD_TOPOLOGY_TYPES_H
 #define OLD_TOPOLOGY_TYPES_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /** represents the resideue and atoms
 * num_fixed number of fixed atoms. Atoms that will be fixed.
 * fixed_atoms array of index fixed atoms.
@@ -56,6 +61,8 @@ typedef struct stop_global{
 	top_residue_side_chains_t *side_chains;
  }top_global_t;
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif

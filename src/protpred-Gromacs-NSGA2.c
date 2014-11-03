@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stdio.h>
+
 #include "load_parameters.h"
 #include "ea_nsga2.h"
 #include "messages.h"
@@ -19,5 +21,6 @@ int main(int argc, char *argv[]){
 	deAllocateload_parameters(&in_param);
 
 	display_msg("Done EA NSGA-II !!! \n");
+	getchar();
 	return 0;
 }

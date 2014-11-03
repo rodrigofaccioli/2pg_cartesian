@@ -7,6 +7,11 @@
 #include "enums.h"
 #include "vector_types.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct spdbatom{
 	type_atoms_t atomid;
     char atmname[NUM_ATOM_NAME];
@@ -21,5 +26,9 @@ typedef struct spdbatom{
     char chain[1];
     char resname[3];
   }pdb_seqres_t;
+
+ #ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -328,8 +328,8 @@ void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
 
     //Check computation of fronts. While front equal -1, computes fronts
     while (continue_front_computation(nsga2_solutions, size) == btrue){
-        how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size) - 1;
-        temp_aux = Malloc(int, how_many_is_zero+1);
+        how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size);
+        temp_aux = Malloc(int, how_many_is_zero);
         //Setting index for temp_aux based on nsga2_solutions
         int j = 0;
         for (int i = 0; i < *size; i++){ //Loop all popupation looking for index
@@ -560,29 +560,40 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
     total_ind = 0;
 
     how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
+	//display_msg("compute_how_many_front 563");
+	//getchar();
     while (how_many_ind_front > 0){
         //Compute the number of individuals that will use
         total_ind = index_begin_back_to_rt + how_many_ind_front;
         //Copy Individuals of front to temp_pop
         temp_pop = allocate_nsga2_RT(&how_many_ind_front, in_para);
+		//display_msg("allocate_nsga2_RT 570");
+		//getchar();
         j = 0;
         //Obtain the individuals by front
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){
             if (solutions_rt[index_rt].front == front){
                 copy_nsga2_solution(&temp_pop[j], &solutions_rt[index_rt]);
+				//display_msg("copy_nsga2_solution 577");
+				//getchar();
                 j++;
             }else{
                 fatal_error("In compute_crowding_distance function the population must be sorted by front \n");
+				getchar();
             }
         }
 
         //Apply to Crowding distance in temp_pop
         set_crowding_distance(temp_pop, &how_many_ind_front, &in_para->number_fitness);
+		//display_msg("set_crowding_distance 588");
+		//getchar();
 
         //Copy to solutions_rt from temp_pop
         j = 0;
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){
             copy_nsga2_solution(&solutions_rt[index_rt], &temp_pop[j]);
+			//display_msg("copy_nsga2_solution 595");
+			//getchar();
             j++;
         }
 
@@ -598,6 +609,9 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
         // Computes how many individuals has for next front
         how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
     }
+
+	display_msg("acabou compute_crowding_distance 613");
+	getchar();
 }
 
 void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt, 
@@ -624,6 +638,9 @@ void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt
     qsort(solutions_rt, *size_RT,  sizeof (ea_nsga2_t), compare_front);
     //Computes Crowding Distance
     compute_crowding_distance(solutions_rt, size_RT, in_para);
+
+	display_msg("voltou para set_dominance_and_crowding_distance_in_soluton_rt 642");
+	getchar();
 
     desallocate_dominance(dominance, size_RT);
     desallocate_solution(solutions, size_RT);
@@ -958,69 +975,13 @@ int ea_nsga2(const input_parameters_t *in_para){
     //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
-	//primary_seq_t * seq_prim;
-	//int n_residues;
-	//char aux_line = '\0';
-	//int seq_index = 0;
-	//char seq_line[400] = "XMLSDEDFKAVFGMTRSAFANLPLWKQQNLKKEKGLFX";//represents the primary sequence of protein 
-
-	//n_residues = strlen(seq_line);
-	//seq_prim = allocate_primary_seq(&n_residues);
-
-	//check_terminal_charge(seq_line, &n_residues);
-	//for (int i = 0; i < n_residues; i++){
-	//	aux_line = seq_line[i];
-	//	strcpy(seq_prim->seq_res[i].id_1, &aux_line);
-	//	seq_prim->seq_res[i].id = _get_amino_id_1(aux_line);
-	//	set_amino_id_3(seq_prim->seq_res[i].id_3, &seq_prim->seq_res[i].id);
- //       seq_index = seq_index + 1;
-	//	aux_line = '/0';
-	//}
-
-	//primary_sequence = seq_prim;
-
-    //Allocating PDB ATOMS of population_p
+	//Allocating PDB ATOMS of population_p
     population_p = allocateProtein(&in_para->size_population);    
 
     //Loading initial population
     load_initial_population_file(population_p, &in_para->size_population, 
         in_para->path_local_execute,in_para->initial_pop_file_name,
         primary_sequence);
-
-	//pdb_atom_t **atoms = NULL;
-	//const pdb_atom_t *atm_aux = NULL;
- //   int *num_atoms_by_model_PDB = NULL;
- //   char *path_pdb_file_name = NULL;
-
-
- //   //Loading PDB File of initial population
- //   num_atoms_by_model_PDB = Malloc(int, in_para->size_population);
-	//num_atoms_by_model_PDB[0] = 605;
-	//num_atoms_by_model_PDB[1] = 605;
-	//num_atoms_by_model_PDB[2] = 605;
-	//num_atoms_by_model_PDB[3] = 605;
-	//num_atoms_by_model_PDB[4] = 605;
-
- //   atoms = allocate_Population_pdb(&in_para->size_population, num_atoms_by_model_PDB);
-	//load_pdb_model_file(atoms, NULL, in_para->path_local_execute, in_para->initial_pop_file_name, num_atoms_by_model_PDB);
-
-	////Allocation and Copy values to pop
-	//for (int i = 0; i < in_para->size_population; i++){
-	//	population_p[i].p_atoms = allocate_pdbatom(&num_atoms_by_model_PDB[i]);
-	//	population_p[i].p_topol = allocateTop_Global(&primary_sequence->num_res, 
-	//		&num_atoms_by_model_PDB[i]);
-	//	atm_aux = atoms[i];
-	//	for (int a = 0; a < num_atoms_by_model_PDB[i]; a++){			
-	//		copy_pdb_atom(&population_p[i].p_atoms[a], &atm_aux[a]);
-	//	}
-	//	//Rename C-Terminal Oxygen atoms
-	//	rename_oxygen_c_terminal(population_p[i].p_atoms, &primary_sequence->num_res, 
-	//		&num_atoms_by_model_PDB[i]);
-	//}
-	////Building Topology of population
-	//build_topology_population(population_p, &in_para->size_population);	
-
-
 
     //Building Global topology since all models have same topology
     int one = 1;

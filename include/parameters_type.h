@@ -3,6 +3,10 @@
 
 #include "enums.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 typedef struct sinput_parameters{
     char *path_local_execute;
@@ -32,6 +36,7 @@ typedef struct sinput_parameters{
     type_objective_analysis_t objective_analysis; // shows what kind of objective analysis
     char *path_dimo_sources; // shows where DIMO source is
     char *path_call_GreedyTreeGenerator2PG;
+	char *script_g_energy;
     float individual_mutation_rate;
     float min_angle_mutation_phi;
     float max_angle_mutation_phi;
@@ -60,5 +65,11 @@ typedef struct sinput_parameters{
     /*Represents number of rotations in residues. Default is 1*/
     int how_many_rotations;    
  }input_parameters_t;
+
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

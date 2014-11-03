@@ -1,5 +1,10 @@
 #include <malloc.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #define TAM_BLOCO 400
 #define MAX(A,B) (((A)>=(B)) ? (A) : (B))
@@ -24,3 +29,7 @@
 /* These defines are used for distance crowding*/
 #define MIN_DIST -999999999
 #define MAX_DIST 999999999
+
+#ifdef __cplusplus
+}
+#endif
