@@ -282,4 +282,5 @@ void check_terminal_charge(char *primary_seq, const int *num_res){
 	//Checking C-Terminal
 	if (primary_seq[*num_res-1] == 'X'){		
 		primary_seq[*num_res-1] = '1'; // It Means NME
+	}
 }
