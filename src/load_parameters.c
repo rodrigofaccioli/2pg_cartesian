@@ -26,7 +26,8 @@ static void initialize_parameters(input_parameters_t *param){
 
 	param->objective_analysis = objective_analysis_none;
 	param->path_dimo_sources = NULL;
-	param->path_call_GreedyTreeGenerator2PG = NULL;	
+	param->path_call_GreedyTreeGenerator2PG = NULL;
+	param->script_g_energy = Malloc(char, MAX_PATH_FILE_NAME );
 
 	param->point_1_cros_rate = 0.0;
 	param->individual_mutation_rate = 1.0;
@@ -183,6 +184,9 @@ void deAllocateload_parameters(input_parameters_t *param){
 	if (param->path_call_GreedyTreeGenerator2PG != NULL){
 		free(param->path_call_GreedyTreeGenerator2PG);
 	}
+	if (param->script_g_energy != NULL){
+		free(param->script_g_energy);
+	}
 }
 
 void load_parameters_from_file(input_parameters_t *param,
@@ -198,6 +202,8 @@ void load_parameters_from_file(input_parameters_t *param,
 	strcpy(param->path_gromacs_programs, conf.getParameterChar("Path_Gromacs_Programs"));
 	strcpy(param->seq_protein_file_name, conf.getParameterChar("SequenceAminoAcidsPathFileName"));	
 	strcpy(param->path_local_execute, conf.getParameterChar("Local_Execute"));
+
+	strcpy(param->script_g_energy, conf.getParameterChar("Script_g_energy"));
 
 	strcpy(param->initial_pop_file_name, conf.getParameterChar("IniPopFileName"));
 	strcpy(param->computed_energies_gromacs_file, conf.getParameterChar("Computed_Energies_Gromacs_File"));

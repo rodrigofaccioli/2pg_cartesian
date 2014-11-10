@@ -4,6 +4,11 @@
 #include "enums.h"
 #include "pdb_types.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 pdb_atom_t** allocate_Population_pdb(const int *inPopSize, const int *numatom_by_model);
 void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize);
 pdb_atom_t * allocate_pdbatom(const int *numatom);
@@ -36,4 +41,9 @@ void rename_atom(pdb_atom_t *atoms, const char *name, const char *name_new,
 static boolean_t is_residue_number_ok(pdb_atom_t *atoms);
 static pdb_atom_t * search_pdb_atom_from_resnum_atomid_alow_change(pdb_atom_t *atoms,
 		const int *res_num, const type_atoms_t *atomid,	const int *num_atom);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

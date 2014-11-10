@@ -4,6 +4,11 @@
 #include "solution_types.h"
 #include "parameters_type.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /** option_g_energy enum must be associated with type_fitness_energies.
  * This association is obtained througth
  * get_option_fitness_gromacs_from_type_fitness_energy function
@@ -24,6 +29,7 @@ typedef struct soption_fitness_gromacs{
 void get_gromacs_objectives_of_solution(solution_t *solution, 
 	const input_parameters_t *in_para, const int *ind);
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para);
+option_g_energy_t get_option_g_energy_t_from_type_fitness_energy(const type_fitness_energies_t *fit_ener);
 void init_gromacs_execution();
 void finish_gromacs_execution();
 void build_tpr_file(const char *pdbfile, const char *local_execute,
@@ -31,4 +37,10 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field);
 void clean_gromacs_simulation(const char *path_local_execute);
+
+#ifdef __cplusplus
+}
+#endif
+
+
 #endif

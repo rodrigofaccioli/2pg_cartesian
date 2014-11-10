@@ -55,4 +55,3 @@ static void check_path(char *path){
 	strcat(path,"/");
 	strcat(path,"\0");
 }
-

@@ -7,6 +7,12 @@
  * obj_values is an array of objecive values
  * representation is a pointer to something struct such as protein_t
 */
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct ssolution {
    int ID;
    int num_obj;
@@ -14,5 +20,9 @@ typedef struct ssolution {
    void *representation;
  }solution_t;
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -31,9 +31,7 @@ static boolean_t _check_pdb_fasta_file(char *line){
 	return bfalse;
 }
 
-
 /** _load_amino_seq loads a Fasta File
-
 */
 primary_seq_t *_load_amino_seq(const char *file_name_protein){	
 	/* load amino_t based on pdb fasta file.
@@ -41,14 +39,14 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	 * >1VII:A|PDBID|CHAIN|SEQUENCE
      * MLSDEDFKAVFGMTRSAFANLPLWKQQNLKKEKGLF
 	*/
-	FILE *arq;
+	FILE *arq = NULL;
 	primary_seq_t * seq_prim;
 	int n_residues;
 	int fscanfError;	
     int seq_index;    
     char line[MAX_LINE_FASTA+1] = "\0"; //represents Fasta lines
     char seq_line[MAX_LEN_PROTEIN] = "\0";//represents the primary sequence of protein    
-    char aux_line;    
+    char aux_line = '\0';
     int i;
     boolean_t first_line = btrue;
     boolean_t read_fasta_file = btrue;
@@ -87,7 +85,9 @@ primary_seq_t *_load_amino_seq(const char *file_name_protein){
 	check_terminal_charge(seq_line, &n_residues);
 	for (int i = 0; i < n_residues; i++){
 		aux_line = seq_line[i];
-		strcpy(seq_prim->seq_res[i].id_1, &aux_line);
+		//strcpy(seq_prim->seq_res[i].id_1, &aux_line);
+		strncpy(seq_prim->seq_res[i].id_1, &aux_line, 2);
+		seq_prim->seq_res[i].id_1[1] = '\0';
 		seq_prim->seq_res[i].id = _get_amino_id_1(aux_line);
 		set_amino_id_3(seq_prim->seq_res[i].id_3, &seq_prim->seq_res[i].id);
         seq_index = seq_index + 1;

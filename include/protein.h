@@ -4,6 +4,11 @@
 #include "protein_type.h"
 #include "solution_types.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 protein_t * allocateProtein(const int *size);
 void desallocateProtein(protein_t *pop, const int *inPopSize);
 void set_proteins2solutions(solution_t *sol, protein_t *pop, const int *pop_size);
@@ -17,4 +22,9 @@ void copy_protein_population_atoms(protein_t *pop_dest, const protein_t *pop_sou
 	const int *popsize);
 void initialize_protein_atoms(protein_t *protein);
 void initialize_protein_population_atoms(protein_t *protein, const int *popsize);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

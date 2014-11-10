@@ -291,7 +291,7 @@ static boolean_t continue_front_computation(const ea_nsga2_t *nsga2_solutions,
 /**
 */
 static int get_how_many_zero_front_init(const ea_nsga2_t *nsga2_solutions, const dominance_t * dominance, const int *size){
-    int ret;
+    int ret = 0;
     for (int i = 0; i < *size; i++){
         if ((dominance[i].how_many_solutions_dominate_it == 0) &&
             (nsga2_solutions[i].front == INIT_FRONT) ){
@@ -328,7 +328,7 @@ void compute_fronts(ea_nsga2_t *nsga2_solutions, dominance_t * dominance,
 
     //Check computation of fronts. While front equal -1, computes fronts
     while (continue_front_computation(nsga2_solutions, size) == btrue){
-        how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size) - 1;
+        how_many_is_zero = get_how_many_zero_front_init(nsga2_solutions, dominance, size);
         temp_aux = Malloc(int, how_many_is_zero);
         //Setting index for temp_aux based on nsga2_solutions
         int j = 0;
@@ -560,29 +560,40 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
     total_ind = 0;
 
     how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
+	//display_msg("compute_how_many_front 563");
+	//getchar();
     while (how_many_ind_front > 0){
         //Compute the number of individuals that will use
         total_ind = index_begin_back_to_rt + how_many_ind_front;
         //Copy Individuals of front to temp_pop
         temp_pop = allocate_nsga2_RT(&how_many_ind_front, in_para);
+		//display_msg("allocate_nsga2_RT 570");
+		//getchar();
         j = 0;
         //Obtain the individuals by front
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){
             if (solutions_rt[index_rt].front == front){
                 copy_nsga2_solution(&temp_pop[j], &solutions_rt[index_rt]);
+				//display_msg("copy_nsga2_solution 577");
+				//getchar();
                 j++;
             }else{
                 fatal_error("In compute_crowding_distance function the population must be sorted by front \n");
+				getchar();
             }
         }
 
         //Apply to Crowding distance in temp_pop
         set_crowding_distance(temp_pop, &how_many_ind_front, &in_para->number_fitness);
+		//display_msg("set_crowding_distance 588");
+		//getchar();
 
         //Copy to solutions_rt from temp_pop
         j = 0;
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){
             copy_nsga2_solution(&solutions_rt[index_rt], &temp_pop[j]);
+			//display_msg("copy_nsga2_solution 595");
+			//getchar();
             j++;
         }
 
@@ -598,6 +609,9 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
         // Computes how many individuals has for next front
         how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
     }
+
+	display_msg("acabou compute_crowding_distance 613");
+	getchar();
 }
 
 void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt, 
@@ -624,6 +638,9 @@ void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt
     qsort(solutions_rt, *size_RT,  sizeof (ea_nsga2_t), compare_front);
     //Computes Crowding Distance
     compute_crowding_distance(solutions_rt, size_RT, in_para);
+
+	display_msg("voltou para set_dominance_and_crowding_distance_in_soluton_rt 642");
+	getchar();
 
     desallocate_dominance(dominance, size_RT);
     desallocate_solution(solutions, size_RT);
@@ -958,7 +975,7 @@ int ea_nsga2(const input_parameters_t *in_para){
     //Loading Fasta file
     primary_sequence = _load_amino_seq(in_para->seq_protein_file_name);
 
-    //Allocating PDB ATOMS of population_p
+	//Allocating PDB ATOMS of population_p
     population_p = allocateProtein(&in_para->size_population);    
 
     //Loading initial population

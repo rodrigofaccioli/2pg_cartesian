@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include "pdbatom.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #define MAX_LINE_PDB 100
 
 void save_pdb_file(const char *path, const char *file_name, const int *numatom,
@@ -26,6 +31,11 @@ void writeHeader(FILE *pdbfile, float dif, const int *npdb );
 void writeATOM(FILE *pdbfile, const pdb_atom_t *atoms, const int *npdb );
 void writeModel(FILE *pdbfile, const int *model);
 void writeEndModel(FILE *pdbfile);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 

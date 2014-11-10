@@ -11,4 +11,5 @@ solution_t * loading_file_solutions(int *num_solutions_r,
 	int *numobj_r, 	const char *path_file_name);
 solution_t * loading_file_solutions_kind_objectives(int *num_solutions_r, 
 	int *numobj_r, 	const char *path_file_name);
+
 #endif

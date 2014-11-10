@@ -4,6 +4,11 @@
 #include "topology_types.h"
 #include "pdb_types.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
  * protein_t represents an atomistic conformation of protein
  * ID is an identification of protein
@@ -16,5 +21,8 @@ typedef struct sprotein {
    top_global_t *p_topol;
  }protein_t;
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
