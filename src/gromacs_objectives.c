@@ -1167,7 +1167,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 
 #ifdef linux
 void call_g_energy(const char *local_execute, const char *path_gromacs_programs, 
-	const char *opt_energy, const char *script_g_energy){
+	const char *opt_energy){
 
 	char *g_energy_args[7];
 
@@ -1194,13 +1194,13 @@ void call_g_energy(const char *local_execute, const char *path_gromacs_programs,
 }
 
 void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
-		const char *path_gromacs_programs, const char *opt_energy, const char *script_g_energy ){
+		const char *path_gromacs_programs, const char *opt_energy){
 	char *last_line, *line_splited;
 	char *value;
 
 	if (check_exists_file(file_energy_computed_ener_edr) == btrue){
 		//Call g_energy
-		call_g_energy(local_execute, path_gromacs_programs, opt_energy, script_g_energy);	
+		call_g_energy(local_execute, path_gromacs_programs, opt_energy);
 		if (check_exists_file(energy_xvg) == btrue){
 			value = Malloc(char,MAX_VALUE);
 			//get the last line of xvg file
@@ -1239,14 +1239,14 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 * solution will set MAX value
 */
 void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_execute,
-		const char *path_gromacs_programs, const char *opt_energy, const char *script_g_energy ){
+		const char *path_gromacs_programs, const char *opt_energy){
 	char *last_line, *line_splited;
 	char *value;
 	double G_solv, G_pol, G_np;	
 
 	//Call g_energy - gmx_GB_Polarization
 	call_g_energy(local_execute, path_gromacs_programs, 
-		option_g_energy_program[gmx_GB_Polarization].option_name, script_g_energy);
+		option_g_energy_program[gmx_GB_Polarization].option_name);
 	if (check_exists_file(energy_xvg) == btrue){
 		value = Malloc(char,MAX_VALUE);
 		//get the last line of xvg file
@@ -1268,7 +1268,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 	    delete_file(local_execute, energy_xvg);
 		//Call g_energy - gmx_Nonpolar_Sol
 		call_g_energy(local_execute, path_gromacs_programs, 
-			option_g_energy_program[gmx_Nonpolar_Sol].option_name, script_g_energy);
+			option_g_energy_program[gmx_Nonpolar_Sol].option_name);
 		if (check_exists_file(energy_xvg) == btrue){
 			value = Malloc(char,MAX_VALUE);
 			//get the last line of xvg file
@@ -1740,6 +1740,7 @@ void initialize_values_for_next_solution(){
 	initialize_g_sas_values();
 }
 
+#ifdef _WIN32
 /** Calculates the objectives by GROMACS
 */
 void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para){
@@ -1910,7 +1911,180 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 	
 	free(opt_objective);
 }
+#endif
 
+#ifdef linux
+/** Calculates the objectives by GROMACS
+*/
+void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_para){
+	const protein_t *population_aux;
+	char pdbfile_aux[30];
+	char aux [20];
+	char aux_ind[5];
+	char msg [50];	
+	option_g_energy *opt_objective;
+	int has_energy_objective;
+	int has_sas_objective;
+
+	has_energy_objective = 0;
+	has_sas_objective = 0;
+	//getting the gromacs objectives from input parameters
+	opt_objective = Malloc(option_g_energy,in_para->number_fitness);
+	for (int ob = 0; ob < in_para->number_fitness; ob++){
+		opt_objective[ob] = get_option_g_energy_t_from_type_fitness_energy(&in_para->fitness_energies[ob]);
+		if ( is_energy_objective(&opt_objective[ob]) == btrue){
+			has_energy_objective = has_energy_objective + 1;
+		}else  if ( is_sas_objective(&opt_objective[ob]) == btrue){
+			has_sas_objective = has_sas_objective + 1;
+		}
+	}
+	// calculating the objectivies of population
+	for (int ind = 0; ind < in_para->size_population; ind++){
+		//getting the protein from solution
+		population_aux = (protein_t*) solutions[ind].representation;
+		// saving pdb file of protein
+    	int2str(aux_ind,&ind);
+    	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
+   	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+   	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
+   	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
+    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+	        	in_para->force_field, in_para->mdp_file);
+    	/*Check if call mdrun to calculate the energies. 
+    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+    	*/
+    	if (has_energy_objective > 0){
+    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+	    		in_para->path_gromacs_programs);
+    	}
+    	if (has_sas_objective > 0){
+			call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+				in_para->computed_areas_g_sas_file);
+    	}
+   	    // obtaing the values of objectivies
+   	    for (int ob = 0; ob < in_para->number_fitness; ob++){
+	   	    if (opt_objective[ob] == gmx_gyrate) {
+   		    	compute_gyrate(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+						in_para->computed_radius_g_gyrate_file);
+   	    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
+   	    	 			(opt_objective[ob] == gmx_elel_ener) ||
+   	    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+   	    		compute_energy(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs,
+   	    				option_g_energy_program[opt_objective[ob]].value_opt);
+   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+   	    		compute_energy_GBSA(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs,
+   	    				option_g_energy_program[opt_objective[ob]].value_opt);
+   	    	}else if ( opt_objective[ob] == gmx_hydrophobic){
+   	    		solutions[ind].obj_values[ob] = g_sas_values[0];
+   	    	}else if ( opt_objective[ob] == gmx_hydrophilic){
+   	    		solutions[ind].obj_values[ob] = g_sas_values[1];
+   	    	}else if ( opt_objective[ob] == gmx_total_area){
+   	    		solutions[ind].obj_values[ob] = g_sas_values[2];
+   	    	}else if ( opt_objective[ob] == gmx_hbond){
+   		    	compute_hbond(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+   	    				in_para->computed_g_hbond_file);
+   	    	}else if ( opt_objective[ob] == gmx_hbond_main){
+   		    	compute_hbond_main(&solutions[ind], &ob, in_para->path_local_execute,
+   	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+   	    				in_para->computed_g_hbond_file);
+   	    	}
+   	    }
+   	    initialize_values_for_next_solution();
+   	    clean_gromacs_simulation(in_para->path_local_execute);
+	}
+
+	free(opt_objective);
+}
+
+
+/** Calculates the objectives of one solution by GROMACS
+*/
+void get_gromacs_objectives_of_solution(solution_t *solution, 
+	const input_parameters_t *in_para, const int *ind){
+	const protein_t *population_aux;
+	char pdbfile_aux[30];
+	char aux [20];
+	char aux_ind[5];
+	char msg [50];	
+	option_g_energy *opt_objective;
+	int has_energy_objective;
+	int has_sas_objective;
+
+	has_energy_objective = 0;
+	has_sas_objective = 0;
+	//getting the gromacs objectives from input parameters
+	opt_objective = Malloc(option_g_energy,in_para->number_fitness);
+	for (int ob = 0; ob < in_para->number_fitness; ob++){
+		opt_objective[ob] = get_option_g_energy_t_from_type_fitness_energy(&in_para->fitness_energies[ob]);
+		if ( is_energy_objective(&opt_objective[ob]) == btrue){
+			has_energy_objective = has_energy_objective + 1;
+		}else  if ( is_sas_objective(&opt_objective[ob]) == btrue){
+			has_sas_objective = has_sas_objective + 1;
+		}
+	}
+	//getting the protein from solution
+	population_aux = (protein_t*) solution->representation;
+	// saving pdb file of protein
+	int2str(aux_ind,ind);
+	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
+	save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
+	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
+	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+        	in_para->force_field, in_para->mdp_file);
+	/*Check if call mdrun to calculate the energies. 
+	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+	*/
+	if (has_energy_objective > 0){
+		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+    		in_para->path_gromacs_programs);
+	}
+	if (has_sas_objective > 0){
+		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+			in_para->computed_areas_g_sas_file);
+	}
+    // obtaing the values of objectivies
+    for (int ob = 0; ob < in_para->number_fitness; ob++){
+	    if (opt_objective[ob] == gmx_gyrate) {
+	    	compute_gyrate(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+					in_para->computed_radius_g_gyrate_file);
+    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
+    	 			(opt_objective[ob] == gmx_elel_ener) ||
+    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+    		compute_energy(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs,
+    				option_g_energy_program[opt_objective[ob]].value_opt);
+    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+    		compute_energy_GBSA(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs,
+    				option_g_energy_program[opt_objective[ob]].value_opt);
+    	}else if ( opt_objective[ob] == gmx_hydrophobic){
+    		solution->obj_values[ob] = g_sas_values[0];
+    	}else if ( opt_objective[ob] == gmx_hydrophilic){
+    		solution->obj_values[ob] = g_sas_values[1];
+    	}else if ( opt_objective[ob] == gmx_total_area){
+    		solution->obj_values[ob] = g_sas_values[2];
+    	}else if ( opt_objective[ob] == gmx_hbond){
+	    	compute_hbond(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+    				in_para->computed_g_hbond_file);
+    	}else if ( opt_objective[ob] == gmx_hbond_main){
+	    	compute_hbond_main(solution, &ob, in_para->path_local_execute,
+    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
+    				in_para->computed_g_hbond_file);
+    	}
+    }
+    initialize_values_for_next_solution();
+    clean_gromacs_simulation(in_para->path_local_execute);
+	
+	free(opt_objective);
+}
+#endif
 
 /** Run of pdb2gmx for pattern of atom names
 * Output is the same name of pdbfile. 

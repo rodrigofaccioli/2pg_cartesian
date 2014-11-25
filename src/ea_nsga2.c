@@ -560,33 +560,24 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
     total_ind = 0;
 
     how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
-	//display_msg("compute_how_many_front 563");
-	//getchar();
     while (how_many_ind_front > 0){
         //Compute the number of individuals that will use
         total_ind = index_begin_back_to_rt + how_many_ind_front;
         //Copy Individuals of front to temp_pop
         temp_pop = allocate_nsga2_RT(&how_many_ind_front, in_para);
-		//display_msg("allocate_nsga2_RT 570");
-		//getchar();
         j = 0;
         //Obtain the individuals by front
         for (int index_rt = index_begin_back_to_rt; index_rt <total_ind; index_rt++){
             if (solutions_rt[index_rt].front == front){
                 copy_nsga2_solution(&temp_pop[j], &solutions_rt[index_rt]);
-				//display_msg("copy_nsga2_solution 577");
-				//getchar();
                 j++;
             }else{
                 fatal_error("In compute_crowding_distance function the population must be sorted by front \n");
-				getchar();
             }
         }
 
         //Apply to Crowding distance in temp_pop
         set_crowding_distance(temp_pop, &how_many_ind_front, &in_para->number_fitness);
-		//display_msg("set_crowding_distance 588");
-		//getchar();
 
         //Copy to solutions_rt from temp_pop
         j = 0;
@@ -609,9 +600,6 @@ void compute_crowding_distance(ea_nsga2_t * solutions_rt,
         // Computes how many individuals has for next front
         how_many_ind_front = compute_how_many_front(solutions_rt, size, &front);
     }
-
-	display_msg("acabou compute_crowding_distance 613");
-	getchar();
 }
 
 void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt, 
@@ -638,9 +626,6 @@ void set_dominance_and_crowding_distance_in_soluton_rt(ea_nsga2_t * solutions_rt
     qsort(solutions_rt, *size_RT,  sizeof (ea_nsga2_t), compare_front);
     //Computes Crowding Distance
     compute_crowding_distance(solutions_rt, size_RT, in_para);
-
-	display_msg("voltou para set_dominance_and_crowding_distance_in_soluton_rt 642");
-	getchar();
 
     desallocate_dominance(dominance, size_RT);
     desallocate_solution(solutions, size_RT);
