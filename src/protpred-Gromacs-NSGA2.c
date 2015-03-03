@@ -21,6 +21,9 @@ int main(int argc, char *argv[]){
 	deAllocateload_parameters(&in_param);
 
 	display_msg("Done EA NSGA-II !!! \n");
+	
+#ifdef _WIN32	
 	getchar();
+#endif	
 	return 0;
 }
