@@ -217,7 +217,7 @@ static inline int run_program(const char *file, char *const argv[]){
 	int i = 0;
 
 	strcpy(command, argv[i]);
-	strcat(command, argv[i]);
+//	strcat(command, argv[i]);
 	strcat(command, " ");
 	i++;
 	do{	
@@ -2033,7 +2033,7 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
 	save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
 	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
+	//Building Generic tpr file. It will be used in all GROMACS execution   	    
 	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
         	in_para->force_field, in_para->mdp_file);
 	/*Check if call mdrun to calculate the energies. 
