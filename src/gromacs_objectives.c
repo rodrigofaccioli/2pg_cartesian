@@ -102,9 +102,9 @@ static double *g_sas_values = NULL;
 //It is based on GROMACS version 4.6.5
 #ifdef _WIN32
 static option_fitness_gromacs_t option_g_energy_program [] = {
-      		                                                  {gmx_potential_ener, "12","Potential"},
-      		                                                  {gmx_edw_ener,"8","LJ-14"},
-      		                                                  {gmx_elel_ener,"9","Coulomb-14"},
+      		                                                  {gmx_potential_ener, "11","Potential"},
+      		                                                  {gmx_edw_ener,"7","LJ-14"},
+      		                                                  {gmx_elel_ener,"8","Coulomb-14"},
       		                                                  {gmx_hydrophobic,"-1","Hydrophobic"},
       		                                                  {gmx_hydrophilic,"-1","Hydrophilic"},
       		                                                  {gmx_total_area,"-1","Total_Area"},
@@ -112,8 +112,8 @@ static option_fitness_gromacs_t option_g_energy_program [] = {
       		                                                  {gmx_hbond,"-1","H_Bond"},
       		                                                  {gmx_hbond_main,"-1","H_Bond_Main"},
       		                                                  {gmx_GBSA_Solvatation,"-1","GBSA_Sol"},
-      		                                                  {gmx_GB_Polarization,"6","GB-Polarization"},
-      		                                                  {gmx_Nonpolar_Sol,"7","Nonpolar-Sol."},
+      		                                                  {gmx_GB_Polarization,"5","GB-Polarization"},
+      		                                                  {gmx_Nonpolar_Sol,"6","Nonpolar-Sol."},
       		                                                  {gmx_stride_total,"-1","Stride_total"},
       		                                                  {gmx_stride_helix,"-1","Stride_helix"},
       		                                                  {gmx_stride_beta,"-1","Stride_beta"}
