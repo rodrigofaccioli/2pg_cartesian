@@ -6,7 +6,7 @@
 #include "defines.h"
 #include "load_parameters.h"
 #include "messages.h"
-#include <dirent.h>
+#include <dirent_2pgwin.h>
 #include "defines.h"
 #include "enums.h"
 #include "ea_mono.h"
@@ -37,6 +37,7 @@
 #endif
 
 #ifdef linux
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -113,11 +114,12 @@ const char *get_filename_ext(const char *filename) {
     return dot + 1;
 }
 
-int how_many_files_directory_by_extension(const char *path, const char *ext){
+int how_many_files_directory_by_extension(const char *path, const char *ext){	
 	const char *ext_aux = NULL;	
+	struct dirent *ent = NULL;
 	int r = 0;
+
 	DIR *dir = opendir(path);
-	struct dirent *ent;
 	while (ent = readdir(dir)) {
 		ext_aux = get_filename_ext(ent->d_name);
 		if (strcmp (ext_aux, ext) == 0){

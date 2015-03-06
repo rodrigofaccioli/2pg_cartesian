@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
+#include <dirent_2pgwin.h>
 #include "defines.h"
 #include "load_parameters.h"
 #include "messages.h"
