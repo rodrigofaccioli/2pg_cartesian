@@ -468,7 +468,7 @@ void init_gromacs_execution (){
 * be used in order to release memory used by internal variables 
 */
 void finish_gromacs_execution(){
-
+	
 	free(command);
 	free(program);
 	free(script);
@@ -507,7 +507,7 @@ void finish_gromacs_execution(){
 	free(opt_e);
 	free(opt_g);
 	free(opt_num);
-	free(g_sas_values);
+	free(g_sas_values);	
 	program = NULL;
 	filenm1 = NULL;
 	filenm2 = NULL;
@@ -1386,7 +1386,7 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 		//Hydrophilic
 		g_sas_values[1] = MIN_ENERGY;
 		//Total Area 
-		g_sas_values[3] = MAX_ENERGY;
+		g_sas_values[2] = MAX_ENERGY;
 	}
 }
 
@@ -1599,7 +1599,7 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 		//Hydrophilic
 		g_sas_values[1] = MIN_ENERGY;
 		//Total Area 
-		g_sas_values[3] = MAX_ENERGY;
+		g_sas_values[2] = MAX_ENERGY;
 	}
 }
 
