@@ -59,6 +59,7 @@ set_source_files_properties(src/owner_file_analysis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/mc_metropolis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/random_algorithm.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Front.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Crossover.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
@@ -122,6 +123,8 @@ target_link_libraries(protpred-Gromacs-Random_Algorithm 2PG_lib)
 add_executable(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance src/protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c)
 target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_lib)
 
+add_executable(protpred-Gromacs-Crossover src/protpred-Gromacs-Crossover.c)
+target_link_libraries(protpred-Gromacs-Crossover 2PG_lib)
 
 # install
 install(TARGETS protpred-Gromacs-NSGA2 DESTINATION bin)
@@ -133,4 +136,5 @@ install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
 install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION 
 bin)
 install(TARGETS protpred-Gromacs-Sort_Method_by_Front_Dominance DESTINATION bin)
+install(TARGETS protpred-Gromacs-Crossover DESTINATION bin)
 
