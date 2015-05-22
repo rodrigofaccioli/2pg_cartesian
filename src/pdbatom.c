@@ -360,7 +360,7 @@ static pdb_atom_t * search_pdb_atom_from_resnum_atom_name_alow_change(pdb_atom_t
 	 */
 	int i;
 	for (i = 0; i < *num_atom;i++){
-		if (atoms[i].resnum ==  *res_num){			
+		if (atoms[i].resnum ==  *res_num){
 			if ( strcmp(atoms[i].atmname, atomname) == 0 ){
 				return &atoms[i];
 			}
