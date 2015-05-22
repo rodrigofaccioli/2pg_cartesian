@@ -186,6 +186,511 @@ float compute_omega_residue(pdb_atom_t *prot,
 	}
 	return 0;
 }
+
+/* compute chi of residue
+* chi array that contains each chi angles of residues
+* num_chi stores how many chi exists in residue
+*/
+void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top){	
+	
+	char *atmA1 = NULL;
+	char *atmA2 = NULL;
+	char *atmA3 = NULL;
+	char *atmA4 = NULL;
+	char *res_name = NULL;
+	const own_vector_t *a1,*a2,*a3,*a4;
+
+	*num_chi = -1;
+	//Obtaing residue name
+	res_name = (char*)malloc(sizeof(char)*4);
+	get_res_name_from_res_num(res_name,res_num, prot, &top->numatom);
+
+	atmA1 = (char*)malloc(sizeof(char)*5);
+	atmA2 = (char*)malloc(sizeof(char)*5);
+	atmA3 = (char*)malloc(sizeof(char)*5);		
+	atmA4 = (char*)malloc(sizeof(char)*5);
+
+	if ( strcmp(res_name, "ALA") == 0 ){
+		*num_chi = 1;
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "C");		
+		strcpy(atmA3, "CA");
+		strcpy(atmA4, "N");
+		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "ARG") == 0 ){
+		*num_chi = 4;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi3		
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "CG");		
+		strcpy(atmA3, "CD");
+		strcpy(atmA4, "NE");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[2] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi4			
+		strcpy(atmA1, "CG");
+		strcpy(atmA2, "CD");		
+		strcpy(atmA3, "NE");
+		strcpy(atmA4, "CZ");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[3] = compute_diehdral_angle(a1, a2, a3, a4);
+
+	}else if ( strcmp(res_name, "LYS") == 0 ){
+		*num_chi = 4;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi3		
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "CG");		
+		strcpy(atmA3, "CD");
+		strcpy(atmA4, "CE");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[2] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi4		
+		strcpy(atmA1, "CG");
+		strcpy(atmA2, "CD");		
+		strcpy(atmA3, "CE");
+		strcpy(atmA4, "NZ");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[3] = compute_diehdral_angle(a1, a2, a3, a4);
+
+	}else if ( strcmp(res_name, "ASP") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "OD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "GLU") == 0 ){
+		*num_chi = 3;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi3				
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "CG");		
+		strcpy(atmA3, "CD");
+		strcpy(atmA4, "OE1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[2] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "GLN") == 0 ){
+		*num_chi = 3;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi3		
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "CG");		
+		strcpy(atmA3, "CD");
+		strcpy(atmA4, "OE1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[2] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "ASN") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "OD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "HIS") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "ND1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "SER") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "OG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "THR") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "OG1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "TYR") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "CYS") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "SG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "MET") == 0 ){
+		*num_chi = 3;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "SD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi3		
+		strcpy(atmA1, "CB");
+		strcpy(atmA2, "CG");		
+		strcpy(atmA3, "SD");
+		strcpy(atmA4, "CE");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[2] = compute_diehdral_angle(a1, a2, a3, a4);
+
+	}else if ( strcmp(res_name, "TRP") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "ILE") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG1");
+		strcpy(atmA4, "CD");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "LEU") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "PHE") == 0 ){
+		*num_chi = 2;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+
+		//chi2		
+		strcpy(atmA1, "CA");
+		strcpy(atmA2, "CB");		
+		strcpy(atmA3, "CG");
+		strcpy(atmA4, "CD1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[1] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "VAL") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG1");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "PRO") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "ALA") == 0 ){
+		*num_chi = 1;
+		//chi1		
+		strcpy(atmA1, "N");
+		strcpy(atmA2, "CA");		
+		strcpy(atmA3, "CB");
+		strcpy(atmA4, "CG");		
+		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
+		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
+		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
+		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
+		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+	}else if ( strcmp(res_name, "GLY") == 0 ){
+		*num_chi = 0;
+	}
+
+
+	
+				
+	free(atmA1);
+	free(atmA2);
+	free(atmA3);
+	free(atmA4);
+	free(res_name);
+		
+	
+}
+
 int main(int argc, char *argv[]){
 	input_parameters_t *in_para;
 	in_para = (input_parameters_t *)malloc(sizeof(input_parameters_t));
@@ -211,14 +716,16 @@ int main(int argc, char *argv[]){
     float phi;
     float psi;
     float omega;
+    float *chi = (float*)malloc(sizeof(float)*MAX_CHI);
+
     printf("phi\tpsi\tomega\n");
     for (res_num = 1; res_num < population_p[0].p_topol->numres; res_num++){
     	phi = compute_phi_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
     	psi = compute_psi_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
 	    omega = compute_omega_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
     	printf("%f\t%f\t%f\n", phi, psi, omega);    	
-    }
-    printf("FALTA CHI \n");
+    }    
+    free(chi);
 	deAllocateload_parameters(in_para);
 
 	display_msg("Done 2PG Crossover \n");
