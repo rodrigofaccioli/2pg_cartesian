@@ -35,6 +35,24 @@ void desAllocate_pdbatom(pdb_atom_t *pdbatoms){
 	pdbatoms = NULL;
 }
 
+const own_vector_t * get_pdb_atom_coordinates(pdb_atom_t *atoms,
+		const int *res_num, const char *atomname, const int *num_atom){
+
+	pdb_atom_t *aux_ret = NULL;
+	const own_vector_t *coord = NULL;
+	aux_ret = search_pdb_atom_from_resnum_atom_name_alow_change(atoms, res_num, atomname,
+			num_atom);
+	if (aux_ret == NULL){
+		char msg[300];
+		sprintf(msg,"Atom %s not found in residue number %d when was executing get_pdb_atom_coordinates function \n",atomname,*res_num);
+		fatal_error(msg);
+	}else{
+		coord = &aux_ret->coord;
+	}
+	return coord;
+}
+
+
 void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,
 		const char *chain_name, const int *resnum, 	const float *x,
 		const float *y, const float *z, const int *index){
@@ -332,6 +350,23 @@ type_atoms_t get_atomid_from_atom_name(const  char *__atmname){
 		fatal_error(msg);
 	}
 		
+}
+
+static pdb_atom_t * search_pdb_atom_from_resnum_atom_name_alow_change(pdb_atom_t *atoms,
+		const int *res_num, const char *atomname,	const int *num_atom){
+	/* Returns pdb_atom_t  based on residue number and atom name. Otherwise,
+	 * returns NULL if not found.
+	 * It allows to change information about the atom
+	 */
+	int i;
+	for (i = 0; i < *num_atom;i++){
+		if (atoms[i].resnum ==  *res_num){			
+			if ( strcmp(atoms[i].atmname, atomname) == 0 ){
+				return &atoms[i];
+			}
+		}
+	}
+	return NULL;
 }
 
 static pdb_atom_t * search_pdb_atom_from_resnum_atomid_alow_change(pdb_atom_t *atoms,

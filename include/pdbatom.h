@@ -14,6 +14,8 @@ void desAllocate_Population_pdb(pdb_atom_t** pdbatoms, const int *inPopSize);
 pdb_atom_t * allocate_pdbatom(const int *numatom);
 void desAllocate_pdbatom(pdb_atom_t *pdbatoms);
 void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source);
+const own_vector_t * get_pdb_atom_coordinates(pdb_atom_t *atoms,
+		const int *res_num, const char *atomname, const int *num_atom);
 void set_pdb_atom_coordinates(pdb_atom_t *pdbatom,	char *atmname, char *resname,
 		const char *chain_name, const int *resnum, 	const float *x,
 		const float *y, const float *z, const int *index);
@@ -39,6 +41,8 @@ void rename_atom(pdb_atom_t *atoms, const char *name, const char *name_new,
 		const int *res_num, const type_atoms_t *atomid,
 		const type_atoms_t *atomid_new, const int *num_atom);
 static boolean_t is_residue_number_ok(pdb_atom_t *atoms);
+static pdb_atom_t * search_pdb_atom_from_resnum_atom_name_alow_change(pdb_atom_t *atoms,
+		const int *res_num, const char *atomname, const int *num_atom);
 static pdb_atom_t * search_pdb_atom_from_resnum_atomid_alow_change(pdb_atom_t *atoms,
 		const int *res_num, const type_atoms_t *atomid,	const int *num_atom);
 
