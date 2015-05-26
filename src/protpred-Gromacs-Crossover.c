@@ -679,9 +679,6 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 		*num_chi = 0;
 	}
 
-
-	
-				
 	free(atmA1);
 	free(atmA2);
 	free(atmA3);
@@ -712,19 +709,28 @@ int main(int argc, char *argv[]){
         in_para->path_local_execute,in_para->initial_pop_file_name,
         primary_sequence);
 
-    int res_num;
+    int res_num, n_chi, ind;
     float phi;
     float psi;
     float omega;
     float *chi = (float*)malloc(sizeof(float)*MAX_CHI);
+    int chi_number;
 
-    printf("phi\tpsi\tomega\n");
-    for (res_num = 1; res_num < population_p[0].p_topol->numres; res_num++){
-    	phi = compute_phi_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
-    	psi = compute_psi_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
-	    omega = compute_omega_residue(population_p[0].p_atoms, &res_num, population_p[0].p_topol);
-    	printf("%f\t%f\t%f\n", phi, psi, omega);    	
-    }    
+    for (ind = 0; ind < in_para->size_population; ind++){
+    	printf("Individuo %i\n", ind);    	
+    	for (res_num = 1; res_num <= population_p[ind].p_topol->numres; res_num++){
+    		printf("phi\tpsi\tomega do residuo %i \n", res_num);
+    		phi = compute_phi_residue(population_p[ind].p_atoms, &res_num, population_p[ind].p_topol);
+    		psi = compute_psi_residue(population_p[ind].p_atoms, &res_num, population_p[ind].p_topol);
+	    	omega = compute_omega_residue(population_p[ind].p_atoms, &res_num, population_p[ind].p_topol);
+    		printf("%f\t%f\t%f\n", phi, psi, omega);    	
+    		compute_chi_residue(chi, &chi_number, population_p[ind].p_atoms, &res_num, population_p[ind].p_topol);
+			printf("Chi do residuo %i\n", res_num);	
+			for (n_chi = 0; n_chi < chi_number; n_chi++){
+				printf("%f\n", chi[n_chi]);
+			}    	
+	    }    
+    }
     free(chi);
 	deAllocateload_parameters(in_para);
 
