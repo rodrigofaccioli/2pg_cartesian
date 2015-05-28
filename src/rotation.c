@@ -180,3 +180,75 @@ void rotation_chi(protein_t *prot, const int *num_res_first, const int *chi,
 	}
 	*/
 }
+
+/** Rotates residue of protein in a PHI dihedral movement
+* prot is the protein which will be moved (rotated)
+* num_res  means the residue will be moved. The dihedral moviment is continued in  
+*               foward residue until last.
+* angle is the value of rotated angle
+*/
+void rotation_phi_residue(protein_t *prot, const int *num_res, const float *angle){
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
+	if (prot->p_topol->phi[*num_res-1].num_moved > 0){
+		//The first residue does not make rotation 
+		if (*num_res > 1){		
+			//rotates all moved atoms of first residue
+			for (int i = 0; i < prot->p_topol->phi[*num_res-1].num_moved; i++){
+				rotation_by_angle_dih(prot->p_atoms, 
+					&prot->p_topol->phi[*num_res-1].fixed_atoms[0], 
+					&prot->p_topol->phi[*num_res-1].fixed_atoms[1],
+			    	&prot->p_topol->phi[*num_res-1].moved_atoms[i], angle);
+			}
+		}		
+	}
+
+}
+
+/** Rotates residue of protein in a PSI dihedral movement
+* prot is the protein which will be moved (rotated)
+* num_res means the residue will be moved. The dihedral moviment is continued in  
+*               foward residue until last.
+* angle is the value of rotated angle
+*/
+void rotation_psi_residue(protein_t *prot, const int *num_res, const float *angle){
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move
+	if (prot->p_topol->psi[*num_res-1].num_moved > 0){
+		//last residue does not make rotation
+		if (*num_res < prot->p_topol->numres){
+			//rotates first residue
+			rotation_by_angle_dih(prot->p_atoms, 
+				&prot->p_topol->psi[*num_res-1].fixed_atoms[0], 
+				&prot->p_topol->psi[*num_res-1].fixed_atoms[1],
+			    &prot->p_topol->psi[*num_res-1].moved_atoms[0], angle);
+		}		
+	}
+}
+
+/** Rotates residue of protein in a OMEGA dihedral movement
+* prot is the protein which will be moved (rotated)
+* num_res means the first residue will be moved. The dihedral moviment is continued in  
+*               foward residue until last.
+* angle is the value of rotated angle
+*/
+void rotation_omega_residue(protein_t *prot, const int *num_res, const float *angle){
+
+	/* Checking the number of residue. 
+	* if num_res_first is greater than number of residue of protein 
+	* no makes rotation in protein.
+	*/
+	//When num_moved is zero it means that residue can not move. Otherwise, residue can move	
+	if (*num_res < prot->p_topol->numres){
+		/*rotates all moved atoms of first residue
+		for (int i = 0; i < prot->p_topol->omega[num_res_next-1].num_moved; i++){
+			rotation_by_angle_dih(prot->p_atoms, 
+				&prot->p_topol->omega[num_res_next-1].fixed_atoms[0], 
+				&prot->p_topol->omega[num_res_next-1].fixed_atoms[1],
+		    	&prot->p_topol->omega[num_res_next-1].moved_atoms[i], angle);
+		}*/
+
+		// rotates all atoms from the forward residue
+		rotate_all_atoms(prot, &prot->p_topol->omega[*num_res-1].fixed_atoms[0], 
+			&prot->p_topol->omega[*num_res-1].fixed_atoms[1], 
+			num_res, angle);
+	}
+}
