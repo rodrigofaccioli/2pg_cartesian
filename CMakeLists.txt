@@ -58,8 +58,10 @@ set_source_files_properties(src/dominance.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/owner_file_analysis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/mc_metropolis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/random_algorithm.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/diehdral.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Front.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Crossover.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Test_compute_Diehdral.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
@@ -96,6 +98,7 @@ src/dominance.c
 src/owner_file_analysis.c
 src/mc_metropolis.c
 src/random_algorithm.c
+src/diehdral.c
 ) #end of 2PG_lib
 
 # add target
@@ -125,6 +128,10 @@ target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_
 
 add_executable(protpred-Gromacs-Crossover src/protpred-Gromacs-Crossover.c)
 target_link_libraries(protpred-Gromacs-Crossover 2PG_lib)
+
+add_executable(protpred-Gromacs-Test_compute_Diehdral src/protpred-Gromacs-Test_compute_Diehdral.c)
+target_link_libraries(protpred-Gromacs-Test_compute_Diehdral 2PG_lib)
+
 
 # install
 install(TARGETS protpred-Gromacs-NSGA2 DESTINATION bin)
