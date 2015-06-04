@@ -69,7 +69,7 @@ void sub_vector(own_vector_t* P,const own_vector_t *va,
 	P->z = vb->z - va->z;
 }
 
-long double scalar_prod(const own_vector_t* v1, const own_vector_t* v2){
+double scalar_prod(const own_vector_t* v1, const own_vector_t* v2){
 	return (v1->x*v2->x) + (v1->y*v2->y) + (v1->z*v2->z);
 }
 
