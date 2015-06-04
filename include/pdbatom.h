@@ -45,7 +45,7 @@ static pdb_atom_t * search_pdb_atom_from_resnum_atom_name_alow_change(pdb_atom_t
 		const int *res_num, const char *atomname, const int *num_atom);
 static pdb_atom_t * search_pdb_atom_from_resnum_atomid_alow_change(pdb_atom_t *atoms,
 		const int *res_num, const type_atoms_t *atomid,	const int *num_atom);
-
+int get_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom);
 #ifdef __cplusplus
 }
 #endif

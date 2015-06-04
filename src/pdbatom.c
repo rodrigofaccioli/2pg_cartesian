@@ -547,3 +547,9 @@ void copy_pdb_atom(pdb_atom_t *dest, const pdb_atom_t *source){
 	dest->coord.z   = source->coord.z; 
 }
 
+int get_number_res_from_atom(const pdb_atom_t *atoms, const int *num_atom){
+	/*Based on the number of atom, returns resnum from its last atom which
+	 * represents the number of residues
+	 */
+	return atoms[*num_atom - 1].resnum;
+}
