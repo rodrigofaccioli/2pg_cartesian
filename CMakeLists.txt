@@ -62,6 +62,7 @@ set_source_files_properties(src/diehdral.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Front.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Crossover.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Test_compute_Diehdral.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Test_rotation.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
@@ -131,6 +132,9 @@ target_link_libraries(protpred-Gromacs-Crossover 2PG_lib)
 
 add_executable(protpred-Gromacs-Test_compute_Diehdral src/protpred-Gromacs-Test_compute_Diehdral.c)
 target_link_libraries(protpred-Gromacs-Test_compute_Diehdral 2PG_lib)
+
+add_executable(protpred-Gromacs-Test_rotation src/protpred-Gromacs-Test_rotation.c)
+target_link_libraries(protpred-Gromacs-Test_rotation 2PG_lib)
 
 
 # install
