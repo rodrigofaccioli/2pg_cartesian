@@ -119,6 +119,6 @@ void initialize_protein_atoms(protein_t *protein){
 /** Initializes the atoms of each individual of protein */
 void initialize_protein_population_atoms(protein_t *protein, const int *popsize){
 	for (int i = 0; i < *popsize; i++){
-		initialize_protein_atoms(protein);
+		initialize_protein_atoms(&protein[i]);
 	}
 }
