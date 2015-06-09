@@ -155,3 +155,10 @@ install(DIRECTORY scripts/ DESTINATION scripts
 	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
                     GROUP_EXECUTE GROUP_READ
 )#End of Coping script directory
+
+#Coping test directory
+install(DIRECTORY test/ DESTINATION test 
+	PATTERN "test/*" 
+	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+)#End of Coping test directory
