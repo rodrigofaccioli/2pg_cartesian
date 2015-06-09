@@ -144,10 +144,11 @@ install(TARGETS protpred-Gromacs-Front DESTINATION bin)
 install(TARGETS protpred-Gromacs-MC_Metropolis DESTINATION bin)
 install(TARGETS protpred-Gromacs-Mono DESTINATION bin)
 install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
-install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION 
-bin)
+install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION bin)
 install(TARGETS protpred-Gromacs-Sort_Method_by_Front_Dominance DESTINATION bin)
 install(TARGETS protpred-Gromacs-Crossover DESTINATION bin)
+install(TARGETS protpred-Gromacs-Test_compute_Diehdral DESTINATION bin)
+install(TARGETS protpred-Gromacs-Test_rotation DESTINATION bin)
 
 #Coping script directory
 install(DIRECTORY scripts/ DESTINATION scripts 
