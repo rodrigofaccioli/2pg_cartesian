@@ -149,3 +149,9 @@ bin)
 install(TARGETS protpred-Gromacs-Sort_Method_by_Front_Dominance DESTINATION bin)
 install(TARGETS protpred-Gromacs-Crossover DESTINATION bin)
 
+#Coping script directory
+install(DIRECTORY scripts/ DESTINATION scripts 
+	PATTERN "scripts/*" 
+	PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                    GROUP_EXECUTE GROUP_READ
+)#End of Coping script directory
