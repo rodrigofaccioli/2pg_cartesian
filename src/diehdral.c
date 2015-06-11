@@ -210,20 +210,7 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 	atmA3 = (char*)malloc(sizeof(char)*5);		
 	atmA4 = (char*)malloc(sizeof(char)*5);
 
-	if ( strcmp(res_name, "ALA") == 0 ){
-		*num_chi = 1;
-		strcpy(atmA1, "CB");
-		strcpy(atmA2, "C");		
-		strcpy(atmA3, "CA");
-		strcpy(atmA4, "N");
-		
-		a1 = get_pdb_atom_coordinates(prot,res_num, atmA1, &top->numatom);
-		a2 = get_pdb_atom_coordinates(prot,res_num, atmA2, &top->numatom);			
-		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
-		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
-
-		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
-	}else if ( strcmp(res_name, "ARG") == 0 ){
+	if ( strcmp(res_name, "ARG") == 0 ){
 		*num_chi = 4;
 		//chi1		
 		strcpy(atmA1, "N");
@@ -663,6 +650,10 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
 		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
 	}else if ( strcmp(res_name, "ALA") == 0 ){
+		*num_chi = 0;
+/*	In Topology is considered ALA with out side chain. See 
+set_fixed_moved_atoms_side_chains_chi function at topology.c */
+/*		
 		*num_chi = 1;
 		//chi1		
 		strcpy(atmA1, "N");
@@ -674,6 +665,7 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
 		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
 		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+*/		
 	}else if ( strcmp(res_name, "GLY") == 0 ){
 		*num_chi = 0;
 	}
