@@ -24,12 +24,19 @@
 
 
 void crossover_diehdral(protein_t *new_prot, const protein_t * p1, const protein_t * p2) {
-    int res_num_choose, next_res, max_res, res, a;   
-    float phi_1, phi_2, psi_1, psi_2, angle_diff;   
+    int res_num_choose, next_res, max_res, res, a, chi_ref, num_chi;   
+    float phi_1, phi_2, psi_1, psi_2, omega_1, omega_2, chi_1, chi_2,angle_diff_phi, angle_diff_psi, angle_diff_omega, angle_diff_chi;    
+    float *v_chi_1, *v_chi_2;
+    int side_chain;
     max_res = get_number_res_from_atom(new_prot->p_atoms, &new_prot->p_topol->numatom);  
-    res_num_choose = _get_int_random_number(&max_res);
+    res_num_choose = 10;//_get_int_random_number(&max_res);
 
     printf("%d\n", res_num_choose);
+
+    //Allocanting chi for compute chi angles
+    v_chi_1 = (float*)malloc(sizeof(float)*MAX_CHI);
+    v_chi_2 = (float*)malloc(sizeof(float)*MAX_CHI);
+
 
     //Coping atoms from p1 to new_prot
     a = 0;
@@ -45,16 +52,34 @@ void crossover_diehdral(protein_t *new_prot, const protein_t * p1, const protein
     //Performing the rotation in remaining protein 
     for (res = next_res; res <= max_res; res++){
         //Rotating residue
-        psi_1 = compute_psi_residue(p1->p_atoms, &res, p1->p_topol);
-        psi_2 = compute_psi_residue(p2->p_atoms, &res, p2->p_topol);
-        angle_diff = psi_1 - psi_2;
-        rotation_psi_residue(new_prot, &res, &angle_diff);
+        //phi
         phi_1 = compute_phi_residue(p1->p_atoms, &res, p1->p_topol);
         phi_2 = compute_phi_residue(p2->p_atoms, &res, p2->p_topol);
-        angle_diff = phi_1 - phi_2;
-        rotation_phi_residue(new_prot, &res, &angle_diff);
-
+        angle_diff_phi = phi_2 - phi_1;
+        rotation_phi(new_prot, &res, &angle_diff_phi); 
+        //psi
+        psi_1 = compute_psi_residue(p1->p_atoms, &res, p1->p_topol);
+        psi_2 = compute_psi_residue(p2->p_atoms, &res, p2->p_topol);
+        angle_diff_psi = psi_2 - psi_1;
+        rotation_psi(new_prot, &res, &angle_diff_psi);
+        //omega
+        omega_1 = compute_omega_residue(p1->p_atoms, &res, p1->p_topol);
+        omega_2 = compute_omega_residue(p2->p_atoms, &res, p2->p_topol);
+        angle_diff_omega = omega_2 - omega_1;
+        rotation_omega(new_prot, &res, &angle_diff_omega);
+        //chi        
+        compute_chi_residue(v_chi_1, &num_chi, p1->p_atoms, &res, p1->p_topol);
+        compute_chi_residue(v_chi_2, &num_chi, p2->p_atoms, &res, p2->p_topol);
+        if (num_chi > 0){
+            for (chi_ref = 0; chi_ref < num_chi; chi_ref++){
+                side_chain = chi_ref + 1;
+                angle_diff_chi = v_chi_2[chi_ref] - v_chi_1[chi_ref];
+                rotation_chi(new_prot, &res, &side_chain, &angle_diff_chi);
+            }
+        }
     }
+    free(v_chi_1);
+    free(v_chi_2);
 }
 
 int main(int argc, char *argv[]){
