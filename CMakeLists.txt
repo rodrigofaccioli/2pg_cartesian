@@ -65,6 +65,8 @@ set_source_files_properties(src/protpred-Gromacs-Test_compute_Diehdral.c PROPERT
 set_source_files_properties(src/protpred-Gromacs-Test_rotation.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Test_load_population.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Test_compute_objetivies.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Test_random_number
+.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
@@ -144,6 +146,9 @@ target_link_libraries(protpred-Gromacs-Test_load_population 2PG_lib)
 add_executable(protpred-Gromacs-Test_compute_objetivies src/protpred-Gromacs-Test_compute_objetivies.c)
 target_link_libraries(protpred-Gromacs-Test_compute_objetivies 2PG_lib)
 
+add_executable(protpred-Gromacs-Test_random_number src/protpred-Gromacs-Test_random_number.c)
+target_link_libraries(protpred-Gromacs-Test_random_number 2PG_lib)
+
 
 
 # install
@@ -160,6 +165,7 @@ install(TARGETS protpred-Gromacs-Test_compute_Diehdral DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_rotation DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_load_population DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_compute_objetivies DESTINATION bin)
+install(TARGETS protpred-Gromacs-Test_random_number DESTINATION bin)
 
 #Coping script directory
 install(DIRECTORY scripts/ DESTINATION scripts 
