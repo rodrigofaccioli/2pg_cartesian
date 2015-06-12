@@ -6,7 +6,7 @@
 
 int _get_int_random_number(__const int *max_number){
 	int max_int;
-	srand(time(NULL));
+	//srand(time(NULL));
 	if (max_number == NULL){
 		max_int = MAX_INT_NUMBER_RANDOM;		
 	}else{
