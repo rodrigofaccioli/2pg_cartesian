@@ -409,6 +409,7 @@ void reproduce_protein(protein_t *pop_new, const ea_nsga2_t *solutions,
     const ea_nsga2_t *nsga2_sol_1, *nsga2_sol_2; 
     protein_t *prot_aux_1, *prot_aux_2;
     int max_random, index_ind_1, index_ind_2;
+    float rate;
 
     max_random = in_para->size_population -1;
     for (int i = 0; i < in_para->size_population; i++){
@@ -426,14 +427,17 @@ void reproduce_protein(protein_t *pop_new, const ea_nsga2_t *solutions,
             nsga2_sol_2 = tournament_front(&solutions[index_ind_1], 
                 &solutions[index_ind_2]);
             prot_aux_2 = (protein_t*) nsga2_sol_2->sol->representation;        
-            // Appling crossover operator between prot_aux_1 and prot_aux_2.             
+            // Appling crossover operator between prot_aux_1 and prot_aux_2.
             apply_crossover(&pop_new[i], prot_aux_1, prot_aux_2, in_para->crossovers);
         }else{
             //Coping prot_aux_1 to pop_new[i] when is not used crossover. 
             copy_protein(&pop_new[i], prot_aux_1);
         }        
         //Appling mutation operator in pop_new[i]
-        apply_mutation(&pop_new[i], in_para);        
+        rate = _get_float();
+        if (rate <= in_para->individual_mutation_rate){
+            apply_mutation(&pop_new[i], in_para);
+        }
     }
 }
 
