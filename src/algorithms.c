@@ -91,45 +91,6 @@ int get_choose_residue(const int *num_res_prot){
     return num_residue_choose;    
 }
 
-/** Implementation of 1 point crossover
-* p_new represents the new solution
-* p1 means the solution 1 that will build s_new
-* p2 means the solution 2 that will build s_new
-*/
-static void crossover_1_part(protein_t *p_new, const protein_t *p1, 
-    const protein_t *p2){
-    int res_aux, res_ini;
-    res_aux = 0;
-    res_ini = 1;
-
-    //getting a random residue
-    res_aux = get_choose_residue(&p1->p_topol->numres);
-    //coping from solution s1
-    copy_protein_atoms_by_residues(p_new, &res_ini, &res_aux, p1);
-    //coping from solution s2
-    res_ini = res_aux + 1;
-    if (res_ini <= p2->p_topol->numres){
-        res_aux = p2->p_topol->numres;
-        copy_protein_atoms_by_residues(p_new, &res_ini, &res_aux, p2);
-    }
-    build_topology_individual(p_new);
-}
-
-/** Applies the crossover parents.
-* p_new is based on one of its parents
-* When choose = 0 is considered father 1. Otherwise, father 2
-*/
-void crossover_parents(protein_t *p_new, const protein_t *p1,
-        const protein_t *p2){
-    int choose;
-    int aux = 2;
-    choose = _get_int_random_number(&aux);
-    if (choose == 0){        
-        copy_protein_atoms(p_new,p1);
-    }else{
-        copy_protein_atoms(p_new,p2);
-    }
-}
 
 /** Applies the crossover operator
 * ind_new is an individual of new population
