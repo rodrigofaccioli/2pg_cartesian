@@ -538,10 +538,25 @@ void rename_oxygen_c_terminal(pdb_atom_t *atoms,
 		n_test = n_test + 1;
 	}	
 
+
 	free(atm_OT1);
 	free(atm_OT2);
 	free(atm_OC1);
 	free(atm_OC2);
 	free(atm_O);
 
+}
+
+boolean_t residue_is_caps_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top){
+		boolean_t ret;
+		ret = bfalse;
+		char *res_name;
+		res_name = Malloc(char, 4);
+		get_res_name_from_res_num(res_name, res_num, prot, &top->numatom);
+		if ( (strcmp(res_name,"ACE") ==0) || (strcmp(res_name,"NME") ==0)){
+			ret = btrue;
+		}		
+		free(res_name);
+		return ret;
 }

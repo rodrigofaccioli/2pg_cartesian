@@ -67,6 +67,9 @@ float compute_diehdral_angle(const own_vector_t *a1,
 float compute_phi_residue(pdb_atom_t *prot, 
 	const int *res_num, const top_global_t *top){	
 	if (*res_num > 1){
+		if (residue_is_caps_from_num(prot, res_num, top) == btrue){
+			return 0;
+		}
 		char *atmC_ = NULL;
 		char *atmN = NULL;
 		char *atmCA = NULL;
@@ -107,6 +110,9 @@ float compute_phi_residue(pdb_atom_t *prot,
 float compute_psi_residue(pdb_atom_t *prot, 
 	const int *res_num, const top_global_t *top){	
 	if (*res_num < top->numres ){
+		if (residue_is_caps_from_num(prot, res_num, top) == btrue){
+			return 0;
+		}
 		char *atmN = NULL;
 		char *atmCA = NULL;
 		char *atmC = NULL;
@@ -148,13 +154,19 @@ float compute_psi_residue(pdb_atom_t *prot,
 float compute_omega_residue(pdb_atom_t *prot, 
 	const int *res_num, const top_global_t *top){
 
-	if (*res_num < top->numres ){		
+	if (*res_num < top->numres ){	
+		int res_num_plus;
+		res_num_plus = *res_num + 1;
+
+		if ( (residue_is_caps_from_num(prot, res_num, top) == btrue) || 
+		 (residue_is_caps_from_num(prot, &res_num_plus, top) == btrue) ){
+			return 0;
+		}
 		char *atmCA = NULL;
 		char *atmC = NULL;
 		char *atmCA_plus = NULL;
 		char *atmN_plus = NULL;
-
-		int res_num_plus;		
+		
 		float omega;
 		const own_vector_t *a1,*a2,*a3,*a4;
 				
@@ -170,7 +182,7 @@ float compute_omega_residue(pdb_atom_t *prot,
 		
 		a1 = get_pdb_atom_coordinates(prot,res_num, atmCA, &top->numatom);
 		a2 = get_pdb_atom_coordinates(prot,res_num, atmC, &top->numatom);		
-		res_num_plus = *res_num + 1;
+		
 		a3 = get_pdb_atom_coordinates(prot, &res_num_plus, atmN_plus, &top->numatom);
 		a4 = get_pdb_atom_coordinates(prot,&res_num_plus, atmCA_plus, &top->numatom);
 		

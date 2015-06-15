@@ -24,7 +24,8 @@ boolean_t is_backbone_atom(const char *atomname);
 int get_number_chi(const char *res_name);
 void rename_oxygen_c_terminal(pdb_atom_t *atoms,
 		const int *res_num, const int *num_atom);
-
+boolean_t residue_is_caps_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top);
 #ifdef __cplusplus
 }
 #endif
