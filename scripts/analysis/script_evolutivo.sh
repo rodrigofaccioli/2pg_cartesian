@@ -86,7 +86,8 @@ while [ $pred_atual -le $total_predicoes ]; do
 	MonteCarloSteps=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $21}') 	
 	FrequencyMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $22}') 	
 	TemperatureMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $23}') 	
-	par=24	# contem o número do próximo parâmetro a ser lido do arquivo
+	cros_1_Point==$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $24}') 	
+	par=25	# contem o número do próximo parâmetro a ser lido do arquivo
 	i=1	# número do objetivo atual
 	while [ $i -le $objetivos ]; do	# para cada objetivo
 		obj[$i]=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $'"$par"'}')	# cada objetivo é armazenado em um elemento do vetor obj[]
@@ -163,6 +164,7 @@ while [ $pred_atual -le $total_predicoes ]; do
 			echo "min_angle_mutation_side_chain = -$rot_mut_side_chain" >> $arq_config
 			echo "max_angle_mutation_side_chain = $rot_mut_side_chain" >> $arq_config
 			echo "apply_crossover = $apply_cros" >> $arq_config
+			echo "1_point_cros_Rate = $cros_1_Point" >> $arq_config
 			echo "Individual_Mutation_Rate = $Individual_Mutation_Rate" >> $arq_config
 			echo "mdp_file_min = energy_minimization_implicit.mdp" >> $arq_config
 			echo "mdp_file_name = compute_energy_implicit.mdp" >> $arq_config
