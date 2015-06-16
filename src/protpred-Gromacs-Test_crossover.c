@@ -21,6 +21,8 @@
 #include "vector_math.h"
 #include "algorithms.h"
 
+#define MAX_CROS 1
+
 int main(int argc, char *argv[]){
 	input_parameters_t *in_para;
 	in_para = (input_parameters_t *)malloc(sizeof(input_parameters_t));
@@ -28,7 +30,7 @@ int main(int argc, char *argv[]){
 	load_parameters_from_file(in_para,argv[1]);
 
     char *crossover_file_name = NULL;
-    int ind, ind_ref_1, ind_ref_2;
+    int ind, ind_ref_1, ind_ref_2, cros_choose;
 
     //Setting crossover file name 
     crossover_file_name = Malloc(char, MAX_FILE_NAME);
@@ -56,10 +58,19 @@ int main(int argc, char *argv[]){
         primary_sequence);
     initialize_protein_population_atoms(new_population, &in_para->size_population);
 
+    //Checking what crossover will be applied
+    cros_choose = 0;
+    while ( (cros_choose <= 0) || (cros_choose > MAX_CROS)){
+        printf ("Enter type of  crossover 1 - 1-Point ");
+        scanf ("%d",&cros_choose);            
+    }
+
     for (ind = 0; ind < in_para->size_population; ind++){
         ind_ref_1 = 0;
         ind_ref_2 = 1;
-        apply_crossover(&new_population[ind], &population_p[ind_ref_1], &population_p[ind_ref_2], in_para->crossovers);
+        if (cros_choose == 1){
+            crossover_one_point(&new_population[ind], &population_p[ind_ref_1], &population_p[ind_ref_2]);
+        }        
     }
 
     save_population_file(new_population, in_para->path_local_execute, crossover_file_name, &in_para->size_population);
