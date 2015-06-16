@@ -98,12 +98,18 @@ int get_choose_residue(const int *num_res_prot){
 * prot_2 is second indiviual
 */
 void apply_crossover(protein_t *ind_new, const protein_t *prot_1, 
-    const protein_t * prot_2, type_crossoers_t *crossovers){
+    const protein_t * prot_2, type_crossoers_t *crossovers){    
     if (crossovers[0] != crossoer_none){
         //int choose;
         //int aux = 2;
         //choose = _get_int_random_number(&aux);
-        crossover_one_point(ind_new, prot_1, prot_2);
+        float rate;
+        rate = _get_float();
+        if (rate <= in_para->point_1_cros_rate){
+            crossover_one_point(ind_new, prot_1, prot_2);
+        }else{
+            copy_protein(ind_new, prot_1);
+        }        
     }
 }
 
