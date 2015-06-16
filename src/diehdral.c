@@ -650,7 +650,9 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
 		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
 	}else if ( strcmp(res_name, "PRO") == 0 ){
-		*num_chi = 1;
+		*num_chi = 0;
+/*It is considered without chi, because it will be not moved.
+See get_number_chi function at topology.c 	
 		//chi1		
 		strcpy(atmA1, "N");
 		strcpy(atmA2, "CA");		
@@ -661,6 +663,7 @@ void compute_chi_residue(float *chi, int *num_chi, pdb_atom_t *prot,
 		a3 = get_pdb_atom_coordinates(prot,res_num, atmA3, &top->numatom);
 		a4 = get_pdb_atom_coordinates(prot,res_num, atmA4, &top->numatom);
 		chi[0] = compute_diehdral_angle(a1, a2, a3, a4);
+*/		
 	}else if ( strcmp(res_name, "ALA") == 0 ){
 		*num_chi = 0;
 /*	In Topology is considered ALA with out side chain. See 
