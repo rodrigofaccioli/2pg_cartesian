@@ -86,7 +86,7 @@ while [ $pred_atual -le $total_predicoes ]; do
 	MonteCarloSteps=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $21}') 	
 	FrequencyMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $22}') 	
 	TemperatureMC=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $23}') 	
-	cros_1_Point==$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $24}') 	
+	cros_1_Point=$(head -n $linha $arq_parametros | tail -n 1 | awk '{print $24}') 	
 	par=25	# contem o número do próximo parâmetro a ser lido do arquivo
 	i=1	# número do objetivo atual
 	while [ $i -le $objetivos ]; do	# para cada objetivo
