@@ -434,10 +434,7 @@ void reproduce_protein(protein_t *pop_new, const ea_nsga2_t *solutions,
             copy_protein(&pop_new[i], prot_aux_1);
         }        
         //Appling mutation operator in pop_new[i]
-        rate = _get_float();
-        if (rate <= in_para->individual_mutation_rate){
-            apply_mutation(&pop_new[i], in_para);
-        }
+        apply_mutation(&pop_new[i], in_para);
     }
 }
 
