@@ -211,16 +211,16 @@ while [ $pred_atual -le $total_predicoes ]; do
 		if [ $EA -eq 1 ]; then
 
 			if [ "$algoritmo" == "MONO" ]; then
-				"$path_protpred""bin/"./protpred-Gromacs-Mono_PSP $arq_config
+				"$path_protpred""bin/"./protpred-Gromacs-Mono $arq_config
 			fi
 
 
 			if [ "$algoritmo" == "NSGA-II" ]; then				
-					"$path_protpred""bin/"./protpred-Gromacs-NSGA2_PSP $arq_config				
+					"$path_protpred""bin/"./protpred-Gromacs-NSGA2 $arq_config				
 			fi
 
 			if [ "$algoritmo" == "MonteCarlo" ]; then				
-					"$path_protpred""bin/"./protpred-Gromacs-MC_Metropolis_PSP $arq_config				
+					"$path_protpred""bin/"./protpred-Gromacs-MC_Metropolis $arq_config				
 			fi
 		fi
 
