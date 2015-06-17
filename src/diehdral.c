@@ -158,10 +158,6 @@ float compute_omega_residue(pdb_atom_t *prot,
 		int res_num_plus;
 		res_num_plus = *res_num + 1;
 
-		if ( (residue_is_caps_from_num(prot, res_num, top) == btrue) || 
-		 (residue_is_caps_from_num(prot, &res_num_plus, top) == btrue) ){
-			return 0;
-		}
 		char *atmCA = NULL;
 		char *atmC = NULL;
 		char *atmCA_plus = NULL;
@@ -170,15 +166,22 @@ float compute_omega_residue(pdb_atom_t *prot,
 		float omega;
 		const own_vector_t *a1,*a2,*a3,*a4;
 				
-		atmCA = (char*)malloc(sizeof(char)*3);
+		atmCA = (char*)malloc(sizeof(char)*4); //Remember CH3
 		atmC = (char*)malloc(sizeof(char)*2);
 		atmN_plus = (char*)malloc(sizeof(char)*2);		
-		atmCA_plus = (char*)malloc(sizeof(char)*3);
-
-		strcpy(atmCA, "CA");
+		atmCA_plus = (char*)malloc(sizeof(char)*4); //Remember CH3
+		if ( (residue_is_ACE_from_num(prot, res_num, top) == btrue) ) {
+			strcpy(atmCA, "CH3");
+		}else{
+			strcpy(atmCA, "CA");
+		}		
 		strcpy(atmC, "C");		
 		strcpy(atmN_plus, "N");
-		strcpy(atmCA_plus, "CA");
+		if ( (residue_is_NME_from_num(prot, &res_num_plus, top) == btrue) ){
+			strcpy(atmCA_plus, "CH3");
+		}else{
+			strcpy(atmCA_plus, "CA");
+		}				
 		
 		a1 = get_pdb_atom_coordinates(prot,res_num, atmCA, &top->numatom);
 		a2 = get_pdb_atom_coordinates(prot,res_num, atmC, &top->numatom);		
