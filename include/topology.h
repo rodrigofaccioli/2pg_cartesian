@@ -26,6 +26,10 @@ void rename_oxygen_c_terminal(pdb_atom_t *atoms,
 		const int *res_num, const int *num_atom);
 boolean_t residue_is_caps_from_num(pdb_atom_t *prot, 
 	const int *res_num, const top_global_t *top);
+boolean_t residue_is_ACE_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top);
+boolean_t residue_is_NME_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top);
 #ifdef __cplusplus
 }
 #endif

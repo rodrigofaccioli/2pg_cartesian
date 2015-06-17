@@ -560,3 +560,31 @@ boolean_t residue_is_caps_from_num(pdb_atom_t *prot,
 		free(res_name);
 		return ret;
 }
+
+boolean_t residue_is_ACE_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top){
+		boolean_t ret;
+		ret = bfalse;
+		char *res_name;
+		res_name = Malloc(char, 4);
+		get_res_name_from_res_num(res_name, res_num, prot, &top->numatom);
+		if  (strcmp(res_name,"ACE") ==0) {
+			ret = btrue;
+		}		
+		free(res_name);
+		return ret;
+}
+
+boolean_t residue_is_NME_from_num(pdb_atom_t *prot, 
+	const int *res_num, const top_global_t *top){
+		boolean_t ret;
+		ret = bfalse;
+		char *res_name;
+		res_name = Malloc(char, 4);
+		get_res_name_from_res_num(res_name, res_num, prot, &top->numatom);
+		if  (strcmp(res_name,"NME") ==0) {
+			ret = btrue;
+		}		
+		free(res_name);
+		return ret;
+}
