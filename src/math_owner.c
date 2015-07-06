@@ -10,6 +10,10 @@ float degree2radians(const float *degree){
 	return *degree*PI/180;
 }
 
+float degree2radians_no_pointer(float degree){
+	return degree2radians(&degree);
+}
+
 float radians2degree(const float *radians){
 	return *radians*180/PI;
 }
