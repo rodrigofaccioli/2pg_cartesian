@@ -9,6 +9,7 @@
 #include "string_owner.h"
 #include "objective.h"
 #include "aminoacids.h"
+#include "math_owner.h"
 
 static void initialize_parameters(input_parameters_t *param){
 	param->seq_protein_file_name = Malloc(char, MAX_PATH_FILE_NAME );
@@ -33,17 +34,17 @@ static void initialize_parameters(input_parameters_t *param){
 	param->individual_mutation_rate = 1.0;
 	param->crossovers = NULL;
 	
-    param->min_angle_mutation_phi = -180.0;
-	param->max_angle_mutation_phi = 180.0;
+    param->min_angle_mutation_phi = -3.14;
+	param->max_angle_mutation_phi = 3.14;
     
-    param->min_angle_mutation_psi = -180.0;
-    param->max_angle_mutation_psi = 180.0;
+    param->min_angle_mutation_psi = -3.14;
+    param->max_angle_mutation_psi = 3.14;
     
-    param->min_angle_mutation_omega = -180.0;
-    param->max_angle_mutation_omega = 180.0;
+    param->min_angle_mutation_omega = -3.14;
+    param->max_angle_mutation_omega = 3.14;
     
-    param->min_angle_mutation_side_chain = -180.0;
-    param->max_angle_mutation_side_chain = 180.0;
+    param->min_angle_mutation_side_chain = -3.14;
+    param->max_angle_mutation_side_chain = 3.14;
 
     param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
     param->mdp_file = Malloc(char, MAX_FILE_NAME);   	
@@ -228,17 +229,17 @@ void load_parameters_from_file(input_parameters_t *param,
 			conf.getParameterChar("Program_Run_GreedyTreeGenerator2PG") );
 
 
-    param->min_angle_mutation_phi = atof(conf.getParameter("min_angle_mutation_phi").c_str());
-	param->max_angle_mutation_phi = atof(conf.getParameter("max_angle_mutation_phi").c_str());
+    param->min_angle_mutation_phi = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_phi").c_str()));
+	param->max_angle_mutation_phi = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_phi").c_str()));
 
-    param->min_angle_mutation_psi = atof(conf.getParameter("min_angle_mutation_psi").c_str());
-    param->max_angle_mutation_psi = atof(conf.getParameter("max_angle_mutation_psi").c_str());
+    param->min_angle_mutation_psi = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_psi").c_str()));
+    param->max_angle_mutation_psi = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_psi").c_str()));
 
-    param->min_angle_mutation_omega = atof(conf.getParameter("min_angle_mutation_omega").c_str());
-    param->max_angle_mutation_omega = atof(conf.getParameter("max_angle_mutation_omega").c_str());
+    param->min_angle_mutation_omega = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_omega").c_str()));
+    param->max_angle_mutation_omega = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_omega").c_str()));
 
-    param->min_angle_mutation_side_chain = atof(conf.getParameter("min_angle_mutation_side_chain").c_str());
-    param->max_angle_mutation_side_chain = atof(conf.getParameter("max_angle_mutation_side_chain").c_str());
+    param->min_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_side_chain").c_str()));
+    param->max_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_side_chain").c_str()));
 
 
 	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));	
