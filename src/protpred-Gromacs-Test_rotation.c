@@ -21,13 +21,6 @@
 #include "math_owner.h"
 #include "vector_math.h"
 
-float degree2radians(const float *degree){
-    if (*degree > 360){
-        fatal_error("Invalid value for degree");
-    }
-    return *degree*PI/180;
-}
-
 int main(int argc, char *argv[]){
 	input_parameters_t *in_para;
 	in_para = (input_parameters_t *)malloc(sizeof(input_parameters_t));

@@ -24,10 +24,6 @@
 
 
 
-float radians2degree(const float *radians){
-	return *radians*180/PI;
-}
-
 int main(int argc, char *argv[]){
 	input_parameters_t *in_para;
 	in_para = (input_parameters_t *)malloc(sizeof(input_parameters_t));
