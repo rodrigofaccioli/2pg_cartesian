@@ -118,7 +118,7 @@ void apply_crossover(protein_t *ind_new, const protein_t *prot_1,
 * in_para is the input parameter
 */
 void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
-    float angle_radians, angle_degree, rate;
+    float angle_radians, rate;
     int num_residue_choose;
     int what_rotation;
     int max_kind_of_rotation = 4;  
@@ -133,26 +133,18 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
             //Obtaing kind of rotation
             what_rotation = _get_int_random_number(&max_kind_of_rotation);        
             //Appling the rotation 
-            if (what_rotation == 0){
-                //Obtaing a random degree angule 
-                angle_degree = _get_float_random_interval(&in_para->min_angle_mutation_psi, 
+            if (what_rotation == 0){                                            
+                angle_radians = _get_float_random_interval(&in_para->min_angle_mutation_psi, 
                 &in_para->max_angle_mutation_psi);
-                //Cast to radians
-                angle_radians = degree2radians(&angle_degree);
                 rotation_psi(ind_new, &num_residue_choose, &angle_radians);
             }else if (what_rotation == 1){
-                //Obtaing a random degree angule 
-                angle_degree = _get_float_random_interval(&in_para->min_angle_mutation_phi, 
+                angle_radians = _get_float_random_interval(&in_para->min_angle_mutation_phi, 
                 &in_para->max_angle_mutation_phi);
-                //Cast to radians
-                angle_radians = degree2radians(&angle_degree);
                 rotation_phi(ind_new, &num_residue_choose, &angle_radians);            
             }else if (what_rotation == 2){
                 //Obtaing a random degree angule 
-                angle_degree = _get_float_random_interval(&in_para->min_angle_mutation_omega, 
+                angle_radians = _get_float_random_interval(&in_para->min_angle_mutation_omega, 
                 &in_para->max_angle_mutation_omega);
-                //Cast to radians
-                angle_radians = degree2radians(&angle_degree);
                 rotation_omega(ind_new, &num_residue_choose, &angle_radians);            
             }else if (what_rotation == 3){
                 int chi = 0;
@@ -171,11 +163,8 @@ void apply_mutation(protein_t *ind_new, const input_parameters_t *in_para){
                             chi = _get_int_random_number(&max_chi);
                         }                    
                     }                
-                    //Obtaing a random degree angule 
-                    angle_degree = _get_float_random_interval(&in_para->min_angle_mutation_side_chain, 
+                    angle_radians = _get_float_random_interval(&in_para->min_angle_mutation_side_chain, 
                     &in_para->max_angle_mutation_side_chain);
-                    //Cast to radians
-                    angle_radians = degree2radians(&angle_degree);
                     rotation_chi(ind_new, &num_residue_choose, &chi, &angle_radians);
                 }
                 free(res_name);
