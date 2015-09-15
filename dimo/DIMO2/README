@@ -1,0 +1,412 @@
+=============================================================================
+ Objective Reduction Algorithms for Evolutionary Multiobjective Optimization
+
+=============================================================================
+copyright  2006-2009  Systems Optimization Group
+                      Computer Engineering and Networks Laboratory (TIK)
+                      ETH Zurich
+                      8092 Zurich
+                      Switzerland
+                       
+                      and
+                        
+                2011  System Modeling and Optimization Team (sysmo)
+                      Laboratoire d'Informatique (LIX)
+                      École Polytechnique
+                      91128 Palaiseau Cedex
+                      France 
+author                Dimo Brockhoff, brockho@lix.polytechnique.fr
+version               May 23, 2011
+=============================================================================
+related papers:
+[bz2010a] D. Brockhoff and E. Zitzler. Automated Aggregation and Omission of
+          Objectives to Handle Many-Objective Problems. In Conference on
+          Multiple Objective and Goal Programming (MOPGP 2008), Lecture Notes
+          in Economics and Mathematical Systems, pages 81102. Springer, 2010.
+
+[bz2009c] D. Brockhoff and E. Zitzler. Objective Reduction in Evolutionary
+          Multiobjective Optimization: Theory and Applications. Evolutionary
+          Computation, 17(2):135166, 2009
+
+[bz2007d] D. Brockhoff and E. Zitzler: Dimensionality Reduction in
+          Multiobjective Optimization: The Minimum Objective Subset Problem.
+          In K. H. Waldmann and U. M. Stocker, editors, Operations Research
+          Proceedings 2006, pages 423429. Springer, 2007.
+
+[bz2007c] D. Brockhoff and E. Zitzler. Improving Hypervolume-based
+          Multiobjective Evolutionary Algorithms by Using Objective Reduction
+          Methods. In Congress on Evolutionary Computation (CEC 2007), pages
+          20862093. IEEE Press, 2007
+            
+[bz2007a] D. Brockhoff and E. Zitzler. Offline and Online Objective Reduction
+          in Evolutionary Multiobjective Optimization Based on Objective
+          Conflicts. TIK Report 269, Institut für Technische Informatik und
+          Kommunikationsnetze, ETH Zürich, April 2007.            
+            
+[bz2006d] D. Brockhoff and E. Zitzler. Are All Objectives Necessary? On
+          Dimensionality Reduction in Evolutionary Multiobjective
+          Optimization. In T. P. Runarsson et al., editors, Conference on
+          Parallel Problem Solving from Nature (PPSN IX), volume 4193 of
+          LNCS, pages 533542, Berlin, Germany, 2006. Springer.
+            
+[bz2006c] D. Brockhoff and E. Zitzler. Dimensionality Reduction in
+          Multiobjective Optimization with (Partial) Dominance Structure
+          Preservation: Generalized Minimum Objective Subset Problems. TIK
+          Report 247, Institut für Technische Informatik und
+          Kommunikationsnetze, ETH Zürich, April 2006.
+            
+[bz2006a] D. Brockhoff and E. Zitzler. On Objective Conflicts and Objective
+          Reduction in Multiple Criteria Optimization. TIK Report 243,
+          Institut für Technische Informatik und Kommunikationsnetze, ETH
+          Zürich, February 2006.            
+=============================================================================
+
+
+***********************************
+ How to compile the java sources? 
+***********************************
+Linux/Unix: Change into the directory with the file colt.jar and type
+            the following two lines into your shell:
+
+            javac -classpath $PWD/conflicts/ conflicts/sets/*.java
+            javac -classpath $PWD/:$PWD/colt.jar conflicts/*.java
+
+
+Windows:    Open the "Command Prompt" window, change into the directory
+            with the file colt.jar and type the following two lines:
+
+            javac.exe -classpath .\conflicts\ conflicts\sets\*.java
+            javac.exe -classpath .\;.\colt.jar conflicts\*.java
+
+Note, that in both cases the Java 1.5 compiler (javac) has to be installed
+
+
+***********************************
+ How do I use the algorithms?
+***********************************
+The algorithms have to be invoked by the command
+
+java -classpath ./:./colt.jar conflicts/Algorithm [parameters] (for Linux/Unix)
+
+and
+
+java.exe -classpath .\;.\colt.jar conflicts.Algorithm [parameters] (for Windows)
+
+where 'Algorithm' is the name of the Java classes, i.e.,
+
+AllMinimalSets
+ConflictCalculator
+DeltaCalculator
+FilePreparation
+FilePreparationKnapsack
+FirstExperiments
+FrontCalculator
+GreedyAggregationDeltaMOSS
+GreedyAggregationkEMOSS
+GreedyAggregationkEMOSSIncremental
+GreedyDeltaMOSS
+GreedyKEMOSS
+GreedyTreeGenerator
+MaxSpreadCalculator
+GreedyTreeGenerator2PG
+
+and instead of [parameters], the corresponding parameters have to be given.
+See below for a detailed description of the algorithms.
+
+
+
+***********************************
+ What are the algorithms doing?
+***********************************
+
+AllMinimalSets
+--------------
+Computes all minimal sets for a given set of individuals with the
+exact algorithm of [bz2006d] and [bz2009c].
+
+usage:
+   AllMinimalSets filename type value
+
+where type = 1:  delta-MOSS
+   and type = 2:  k-EMOSS
+   and value=delta, resp. value=k
+
+ConflictCalculator
+------------------
+Computes the size of a minimum non-redundant set for a given
+set of individuals in a file named data.
+
+usage:
+   ConflictCalculator filename type value [g]
+
+where type = 1:  delta-MOSS
+   and type = 2:  k-EMOSS
+   and value=delta, resp. value=k 
+If the single character g is used as optional forth
+   argument, the greedy heuristic is used.
+If only one argument is given (filename), the exact
+   algorithm for MOSS is performed
+
+DeltaCalculator
+---------------
+Computes the delta error for all solutions in filename
+   according to the sets set1 and set2 which are given
+   by the arguments arg[1]-arg[s-1] and arg[s+1]-arg[arg.length-1]
+   where s is a separator argument including the character s.
+
+example usage of DeltaCalculator for calculating the delta
+   error between the sets {f_1, f_3, f_5} and {f_3, f_4, f_7}:
+
+   DeltaCalculator filename 1 3 5 s 3 4 7
+
+FilePreparationKnapsack
+-----------------------
+Takes files coming from a PISA module (such as 'dtlz_output.log')
+and transfers them to the correct format of input data files for
+the objective reduction algorithms, i.e.
+   - the two lines with 'k=' and 'n=' at the beginning of the file
+     are added
+   - an 'EOF' is added at the end of the file
+
+usage:
+   FilePreparationKnapsack filename
+
+where
+   the string 'filename' is a file written by the PISA knapsack
+   module
+
+FilePreparationKnapsack
+-----------------------
+Takes files coming from the PISA knapsack module (such as
+'knapsack_output.log') and transfers them to the correct format of
+input data files for the objective reduction algorithms, i.e.
+   - all objective vectors are multiplied by -1 in order to comply
+     with minimization
+   - the last column (genotype) is deleted
+   - the two lines with 'k=' and 'n=' at the beginning of the file
+     are added
+   - an 'EOF' is added at the end of the file
+
+usage:
+   FilePreparationKnapsack filename
+
+where
+   the string 'filename' is a file written by the PISA knapsack
+   module
+
+FirstExperiments
+----------------
+Performs the experiments with the random problem of [bz2007d] and [bz2009c].
+
+usage:
+   FirstExperiments n k_min k_max k_step iterations problem algo relation seed
+   or
+   FirstExperiments n k_min k_max k_step iterations problem algo relation
+
+where
+   if n<0 then the population is the whole search space of dimension |n|
+   if n>0 then the population size is n
+   k: objective space dimension from k_min up to k_max in steps of k_step
+      each parameter set is iterated for iterations times
+   problem==0: RandomProblem with objective values in [0,1]
+   problem==1: RandomProblem with objective values in {0,1}
+   algo==0: exact algorithm
+   algo==1: greedy algorithm
+   relation is a double value, iff =-1 the dominance relation is the weak
+      dominance relation
+      if relation = epsilon > 0 then the relation is the epsilon-dominance
+      relation
+   seed: random seed for the Mersenne Twister
+
+FrontCalculator
+---------------
+Calculates the nondominated or dominated points in a set of individuals,
+given in the file 'filename'.
+
+usage:
+   FrontCalculator filename dominated
+
+where
+   the nondominated points in filename are printed if dominated = 0
+   and the dominated points in filename are printed if dominated = 1
+
+GreedyAggregationDeltaMOSS
+--------------------------
+Performs the greedy delta-MOSS algorithm where aggregation is allowed.
+Both maximum and average error as well as the weights for the
+aggregated objectives are computed. The minimization is either based
+on the maximum or the averaged delta-error, see [bz2010a] for details.
+
+usage:
+   GreedyAggregationDeltaMOSS filename delta
+   or
+   GreedyAggregationDeltaMOSS filename delta a
+
+where
+   the second version with the single character 'a' as third argument
+   indicates that the average delta error has to be optimized instead
+   of the maximum error.
+
+note
+   that using GreedyAggregationDeltaMOSS without the parameter 'a' is
+   *not* equivalent to the GreedyDeltaMOSS algorithm below.
+
+GreedyAggregationKEMOSS
+-----------------------
+Performs the greedy algorithm for kEMOSS where aggregation is allowed.
+Both maximum and average error as well as the weights for the
+aggregated objectives are computed. The minimization is either based
+on the maximum or the averaged delta-error, see [bz2010a] for details.
+
+usage:
+   GreedyAggregationKEMOSS filename k
+   or
+   GreedyAggregationKEMOSS filename k a
+
+where
+   the second version with the single character 'a' as third argument
+   indicates that the average delta error has to be optimized instead
+   of the maximum error.
+
+note
+   that using GreedyAggregationKEMOSS without the parameter 'a' is
+   *not* equivalent to the GreedyKEMOSS algorithm below.
+
+GreedyAggregationKEMOSSIncremental
+----------------------------------
+Performs the greedy incremental algorithm for kEMOSS where aggregation
+is allowed. Both maximum and average error as well as the weights for
+the aggregated objectives are computed. The minimization is either
+based on the maximum or the averaged delta-error, see [bz2010a] for
+details.
+
+usage:
+   GreedyAggregationKEMOSS filename k variant
+   or
+   GreedyAggregationKEMOSS filename k variant a
+
+where
+   the integer parameter 'variant' indicates whether each of the
+   original objectives is allowed (variant=2) or not allowed
+   (variant=1) to appear in more than one aggregated objective.
+
+   the second version with the single character 'a' as third argument
+   indicates that the average delta error has to be optimized instead
+   of the maximum error.
+
+GreedyDeltaMOSS
+---------------
+Performs the greedy delta-MOSS algorithm of [bz2006d] and [bz2009c]
+for a given delta and the individuals given in the file 'filename'.
+
+usage:
+   GreedyDeltaMOSS filename delta
+
+GreedyKEMOSS
+------------
+Performs the greedy k-EMOSS algorithm of [bz2006d] and [bz2009c] for
+a given k and the individuals given in the file 'filename'.
+
+usage:
+   GreedyKEMOSS filename k
+
+GreedyTreeGenerator
+-------------------
+Computes a tree-like visualization of the hierarchical clustering based
+greedy algorithm for both delta-MOSS and kEMOSS, see [bz2007a] or
+[bz2009c] for details. 
+
+usage:
+   GreedyTreeGenerator filename
+
+MaxSpreadCalculator
+-------------------
+Computes the maximal spread of a given population:
+
+   max_spread = max_i [ max_p (f_i(p)) - min_p (f_i(p)) ]
+
+Note, that it only works for populations of at least 2 individuals
+and at least 2 objectives.
+
+usage:
+   MaxSpreadCalculator filename
+
+GreedyTreeGenerator2PG
+-------------------
+Computes a tree-like visualization of the hierarchical clustering based
+greedy algorithm for both delta-MOSS and kEMOSS, see [bz2007a] or
+[bz2009c] for details. It is based on GreedyTreeGenerator algorithm. Here,
+it was added one more parameter.
+
+usage:
+   GreedyTreeGenerator2PG filename -o filename -o2 filename2PG 
+
+
+! Output Redirection !
+----------------------
+Note that all algorithms have the additional functionality to use
+
+   -o outputfilename
+
+as last argument which will write the output of the algorithms directly
+to the file specified by the string 'outputfilename'; otherwise, all
+output is written to standard out.
+
+example:
+   GreedyAggregationKEMOSS input.txt 3
+   writes to stdout, while
+   GreedyAggregationKEMOSS input.txt 3 -o output.txt
+   writes to the file 'output.txt'.
+
+
+***********************************
+ What is the format of data files?
+***********************************
+Files with individuals' objective vectors always have the following
+format:
+
+k=...
+n=...
+id1 obj_1 obj_2 obj_3 . . . obj_k
+id2 obj_1 obj_2 obj_3 . . . obj_k
+id3 obj_1 obj_2 obj_3 . . . obj_k
+.
+.
+.
+idn obj_1 obj_2 obj_3 . . . obj_k
+EOF
+
+where in the first two lines the number of objectives (k) and the
+number of individuals (n) have to be specified instead of the dots.
+
+All objective values and the individual's IDs have to be separated
+by blanks or tabulators.
+
+Alternatively, also internal PISA files can be used as input with the
+following format:
+
+XXXX
+id1 obj_1 obj_2 obj_3 . . . obj_k
+id2 obj_1 obj_2 obj_3 . . . obj_k
+id3 obj_1 obj_2 obj_3 . . . obj_k
+.
+.
+.
+idn obj_1 obj_2 obj_3 . . . obj_k
+END
+
+where XXXX is an integer, indicating the number of blocks/numbers to
+be read before the final 'END', i.e. XXXX = (k+1)*n.
+
+
+
+***********************************
+ Versions & Updates
+***********************************
+version 1
+  - published online on October 22, 2007
+5/20/2011 (v1.01)
+  - added possibility of writing to files directly via the optional
+    argument '-o outputfilename'
+5/23/2011 (v1.20)
+  - added aggregation algorithms from the MOP-GP paper

@@ -1,0 +1,69 @@
+/*=============================================================================
+   Objective Reduction Algorithms for Evolutionary Multiobjective Optimization
+
+  =============================================================================
+  copyright             Systems Optimization Group
+                        Computer Engineering and Networks Laboratory (TIK)
+                        ETH Zurich
+                        8092 Zurich
+                        Switzerland
+  author                Dimo Brockhoff, dimo.brockhoff@tik.ee.ethz.ch
+  version               October 22, 2007
+  =============================================================================
+  related papers:
+  [bz2007d] D. Brockhoff and E. Zitzler: Dimensionality Reduction in
+            Multiobjective Optimization: The Minimum Objective Subset Problem.
+            In K. H. Waldmann and U. M. Stocker, editors, Operations Research
+            Proceedings 2006, pages 423–429. Springer, 2007.
+            
+  [bz2007a] D. Brockhoff and E. Zitzler. Offline and Online Objective Reduction
+            in Evolutionary Multiobjective Optimization Based on Objective
+            Conflicts. TIK Report 269, Institut für Technische Informatik und
+            Kommunikationsnetze, ETH Zürich, April 2007.            
+            
+  [bz2006d] D. Brockhoff and E. Zitzler. Are All Objectives Necessary? On
+            Dimensionality Reduction in Evolutionary Multiobjective
+            Optimization. In T. P. Runarsson et al., editors, Conference on
+            Parallel Problem Solving from Nature (PPSN IX), volume 4193 of
+            LNCS, pages 533–542, Berlin, Germany, 2006. Springer.
+            
+  [bz2006c] D. Brockhoff and E. Zitzler. Dimensionality Reduction in
+            Multiobjective Optimization with (Partial) Dominance Structure
+            Preservation: Generalized Minimum Objective Subset Problems. TIK
+            Report 247, Institut für Technische Informatik und
+            Kommunikationsnetze, ETH Zürich, April 2006.
+            
+  [bz2006a] D. Brockhoff and E. Zitzler. On Objective Conflicts and Objective
+            Reduction in Multiple Criteria Optimization. TIK Report 243,
+            Institut für Technische Informatik und Kommunikationsnetze, ETH
+            Zürich, February 2006.            
+  =============================================================================
+*/
+
+package test;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+public class AllTests {
+
+	public static void main(String[] args) {
+		junit.swingui.TestRunner.run(AllTests.class);
+	}
+
+	public static Test suite() {
+		TestSuite suite = new TestSuite("Test for test");
+		//$JUnit-BEGIN$
+		suite.addTestSuite(TestIntSet.class);
+		suite.addTestSuite(TestSetOfIntSets.class);
+		suite.addTestSuite(TestMOSSGreedyAlgorithm.class);
+		suite.addTestSuite(TestObjectiveSet.class);
+		suite.addTestSuite(TestSetOfObjectiveSets.class);
+		suite.addTestSuite(TestDeltaMOSSExactAlgorithm.class);
+		suite.addTestSuite(TestDeltaMOSSGreedyAlgorithm.class);
+		suite.addTestSuite(TestRelation.class);
+		//$JUnit-END$
+		return suite;
+	}
+
+}

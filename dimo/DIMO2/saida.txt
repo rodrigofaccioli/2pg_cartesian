@@ -1,0 +1,16 @@
+Greedy algorithm for finding the best aggregation with 4 objectives
+ where the overall maximum delta error is optimized.
+
+Gives an overall error of delta = 0.009460747000000103
+  and an average error of delta = 7.828424444444377E-4
+
+Weights for the aggregated objectives:
+0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 1.0 
+ ...aggregated objective 0
+0.0 0.6025685259954887 0.0 0.0 0.3974314740045113 0.0 0.0 0.0 0.0 
+ ...aggregated objective 1
+0.0 0.0 0.0 0.0832054992349589 0.0 0.9167945007650411 0.0 0.0 0.0 
+ ...aggregated objective 2
+0.7332339870301867 0.0 0.03327639103762478 0.0 0.0 0.0 0.15725842197493298 0.07623119995725548 0.0 
+ ...aggregated objective 3
+Elapsed time during computation: 367 milliseconds
