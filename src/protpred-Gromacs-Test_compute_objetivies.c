@@ -19,9 +19,11 @@
 #include "topologyio.h"
 #include "gromacs_objectives.h"
 #include "objective.h"
+#include "algorithms.h"
 
 int main(int argc, char *argv[]){
 	input_parameters_t *in_para;
+    int ger = 0;
 	in_para = (input_parameters_t *)malloc(sizeof(input_parameters_t));
 	display_msg("Reading the configure file \n");
 	load_parameters_from_file(in_para,argv[1]);
@@ -51,6 +53,9 @@ int main(int argc, char *argv[]){
     //Setting reference of proteins to solution 
     set_proteins2solutions(solutions_p, population_p, &in_para->size_population);
 
+    //Initialize algorithm execution
+    initialize_algorithm_execution(primary_sequence, in_para);    
+
     //Initialize Gromacs Execution
     init_gromacs_execution();
 
@@ -68,6 +73,9 @@ int main(int argc, char *argv[]){
             printf("%s %d value %f \n", objective_name, obj+1,solutions_p[ind].obj_values[obj]);
         }
     }
+
+    //Saving objetive files
+    build_fitness_files(solutions_p, &ger, &in_para->size_population);
 
     free(objective_name);
     desallocate_solution(solutions_p, &in_para->size_population);
