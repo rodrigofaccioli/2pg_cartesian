@@ -2058,11 +2058,11 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
     	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
     		compute_energy(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
-    				option_g_energy_program[opt_objective[ob]].value_opt);
+    				option_g_energy_program[opt_objective[ob]].option_name);
     	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
     		compute_energy_GBSA(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
-    				option_g_energy_program[opt_objective[ob]].value_opt);
+    				option_g_energy_program[opt_objective[ob]].option_name);
     	}else if ( opt_objective[ob] == gmx_hydrophobic){
     		solution->obj_values[ob] = g_sas_values[0];
     	}else if ( opt_objective[ob] == gmx_hydrophilic){
