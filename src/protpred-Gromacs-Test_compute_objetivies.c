@@ -60,19 +60,10 @@ int main(int argc, char *argv[]){
     init_gromacs_execution();
 
     display_msg("Computing Objectives\n");
-    get_gromacs_objectives(&solutions_p[ind], in_para);        
+    get_gromacs_objectives(solutions_p, in_para);        
 
     //Finish Gromacs Execution
     finish_gromacs_execution();
-
-    //Showing Objetivies
-    for (ind = 0; ind < in_para->size_population; ind++){
-        printf("Ind %d \n", ind+1);
-        for (obj = 0; obj < in_para->number_fitness; obj++){
-            type_fitness_energies2str(objective_name, &in_para->fitness_energies[obj]);
-            printf("%s %d value %f \n", objective_name, obj+1,solutions_p[ind].obj_values[obj]);
-        }
-    }
 
     //Saving objetive files
     build_fitness_files(solutions_p, &ger, &in_para->size_population);
