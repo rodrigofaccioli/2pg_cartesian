@@ -41,7 +41,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmHG, atmHG1, atmHG2, atmHG3,atmHG11, atmHG12, atmHG13,
 	             atmHG21, atmHG22, atmHG23,
 	             atmHN,
-	             atmHH31, atmHH32, atmHH33, 
+	             atmHH31, atmHH32, atmHH33,
 	             atmH1, atmH2, atmH3,
 	             atmHB, atmHB1,atmHB2,atmHB3,
 	             atmHD1, atmHD2, atmHD3, atmHD11, atmHD12, atmHD13, atmHD21,
@@ -50,7 +50,7 @@ enum type_atoms { atmC, atmCA, atmCB, atmCG,atmCG1, atmCG2,
 	             atmHZ, atmHZ1, atmHZ2, atmHZ3,
 	             atmC_, atmCA_, atmCA_plus, atmN_plus, atmO_, atmN_,
 	             atmOT1, atmOT2, atmOXT, atmOC1, atmOC2,
-	             atmSG,atmSD,  
+	             atmSG,atmSD,
 	             atmNR /*This line must be the last*/
                  };
 typedef enum type_atoms type_atoms_t;
@@ -109,10 +109,15 @@ enum type_objective_analysis {objective_analysis_none,
 typedef enum type_objective_analysis type_objective_analysis_t;
 
 /*Identificy c-terminal or n-terminal that neutralize protein */
-enum type_terminal_charge {term_charge_ACE, term_charge_NME, term_charge_none, 
+enum type_terminal_charge {term_charge_ACE, term_charge_NME, term_charge_none,
 	term_charge_NR};
 
 typedef enum type_terminal_charge type_terminal_charge_t;
+
+/*Represents kind of mutation */
+enum type_mutations {general_rotation, dm_refinement, none};
+
+typedef type_mutations type_mutations_t;
 
 #endif
 

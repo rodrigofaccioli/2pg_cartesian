@@ -23,7 +23,7 @@ static void initialize_parameters(input_parameters_t *param){
 	param->computed_radius_g_gyrate_file = Malloc(char, MAX_FILE_NAME );
 	param->computed_g_hbond_file = Malloc(char, MAX_FILE_NAME );
 	param->apply_crossover = Malloc(char, 4);
-	
+
 
 	param->objective_analysis = objective_analysis_none;
 	param->path_dimo_sources = NULL;
@@ -33,21 +33,21 @@ static void initialize_parameters(input_parameters_t *param){
 	param->point_1_cros_rate = 0.0;
 	param->individual_mutation_rate = 1.0;
 	param->crossovers = NULL;
-	
+
     param->min_angle_mutation_phi = -3.14;
 	param->max_angle_mutation_phi = 3.14;
-    
+
     param->min_angle_mutation_psi = -3.14;
     param->max_angle_mutation_psi = 3.14;
-    
+
     param->min_angle_mutation_omega = -3.14;
     param->max_angle_mutation_omega = 3.14;
-    
+
     param->min_angle_mutation_side_chain = -3.14;
     param->max_angle_mutation_side_chain = 3.14;
 
-    param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);    
-    param->mdp_file = Malloc(char, MAX_FILE_NAME);   	
+    param->force_field = Malloc(char, MAX_FORCE_FIELD_NAME);
+    param->mdp_file = Malloc(char, MAX_FILE_NAME);
 
     param->MonteCarloSteps = 100;
     param->freq_mc = 10;
@@ -57,6 +57,8 @@ static void initialize_parameters(input_parameters_t *param){
     param->StepNumber = 1000;
     param->started_generation = -1;
     param->how_many_rotations = 1;
+    param->mutations = NULL;
+    param->mutation_operator = Malloc(char, MAX_FILE_NAME);
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -107,7 +109,7 @@ void set_parameter_number_crossover(input_parameters_t *param){
 	int how_many = 1;
 	if (how_many == 0){
 		fatal_error("The number of crossover is 0. \n");
-	}			
+	}
 	param->number_crossover = how_many;
 }
 
@@ -121,12 +123,12 @@ void set_apply_crossover(input_parameters_t *param, char *apply_cros){
 		fatal_error("In apply_crossover parameter must be yes or no. Check it!! \n");
 	}
 
-	
+
 }
 
 /** Sets what kind of crossover will be used
 */
-void set_crossovers(input_parameters_t *param){	
+void set_crossovers(input_parameters_t *param){
 	if ( strcmp(param->apply_crossover, "yes") == 0){// It means that the crossover will be used.
 		param->crossovers = Malloc(type_crossoers_t, param->number_crossover);
 
@@ -147,7 +149,7 @@ void set_crossovers(input_parameters_t *param){
 	}
 }
 
-void set_terminal_charge(input_parameters_t *param, char *param_c_terminal, 
+void set_terminal_charge(input_parameters_t *param, char *param_c_terminal,
 	char *param_n_terminal){
 	param->n_terminal_charge = str2terminal_charge(param_n_terminal);
 	param->c_terminal_charge = str2terminal_charge(param_c_terminal);
@@ -173,8 +175,9 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->computed_g_hbond_file);
 	free(param->fitness_energies);
 	free(param->force_field);
-	free(param->mdp_file);	
+	free(param->mdp_file);
 	free(param->apply_crossover);
+	free(param->mutation_operator);
 	if (param->crossovers != NULL){
 		free(param->crossovers);
 	}
@@ -188,6 +191,9 @@ void deAllocateload_parameters(input_parameters_t *param){
 	if (param->script_g_energy != NULL){
 		free(param->script_g_energy);
 	}
+	if (param->mutations != NULL){
+		free(param->mutations);
+	}
 }
 
 void load_parameters_from_file(input_parameters_t *param,
@@ -196,12 +202,12 @@ void load_parameters_from_file(input_parameters_t *param,
 
 	initialize_parameters(param);
 
-	LoadConfig conf(conf_file_name);	
+	LoadConfig conf(conf_file_name);
 	param->number_generation = atoi(conf.getParameterChar("NumberGeration"));
 	param->size_population = atoi(conf.getParameter("SizePopulation").c_str());
-	param->number_fitness = atoi(conf.getParameter("NumberObjective").c_str());	
+	param->number_fitness = atoi(conf.getParameter("NumberObjective").c_str());
 	strcpy(param->path_gromacs_programs, conf.getParameterChar("Path_Gromacs_Programs"));
-	strcpy(param->seq_protein_file_name, conf.getParameterChar("SequenceAminoAcidsPathFileName"));	
+	strcpy(param->seq_protein_file_name, conf.getParameterChar("SequenceAminoAcidsPathFileName"));
 	strcpy(param->path_local_execute, conf.getParameterChar("Local_Execute"));
 
 	strcpy(param->script_g_energy, conf.getParameterChar("Script_g_energy"));
@@ -242,7 +248,7 @@ void load_parameters_from_file(input_parameters_t *param,
     param->max_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_side_chain").c_str()));
 
 
-	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));	
+	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
 	strcpy(param->force_field,conf.getParameterChar("force_field"));
 
 	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());

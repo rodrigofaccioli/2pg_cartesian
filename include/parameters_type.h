@@ -12,18 +12,18 @@ typedef struct sinput_parameters{
     char *path_local_execute;
     char *path_gromacs_programs;
     int size_population;
-    char *seq_protein_file_name;    
+    char *seq_protein_file_name;
     char *initial_pop_file_name;
     int started_generation;
     int number_fitness;
     type_fitness_energies_t *fitness_energies;
     int number_generation;
     char *apply_crossover;
-    float point_1_cros_rate;    
+    float point_1_cros_rate;
     int number_crossover; //it shows how many crossovers the user chose. This parameter is obtained by set_parameter_number_crossover function
     /*It stores the crossovers the user chose. It is considered a crossover chose when its rate is greater than 0.
      * Otherwise, the crossover is not chosen. For example, point_1_cros_rate > 0, in crossovers contains at least crossoer_point_1.
-     */    
+     */
     type_crossoers_t *crossovers;
     type_energy_minimization_t gromacs_energy_min; //Set which energy minimization: none, implicit or explicit. none is default.
     type_energy_minimization_t gromacs_energy_min_gen_oper; ////Set which energy minimization for genetic operators: none, implicit or explicit. none is default.
@@ -58,12 +58,14 @@ typedef struct sinput_parameters{
     int temp_mc;
     /*set who can be neutralize N-Terminal*/
     type_terminal_charge_t n_terminal_charge;
-    /*set who can be neutralize C-Terminal*/    
-    type_terminal_charge_t c_terminal_charge;    
+    /*set who can be neutralize C-Terminal*/
+    type_terminal_charge_t c_terminal_charge;
     /*Indicates the number of Steps. For example, number of rotations*/
     int StepNumber;
     /*Represents number of rotations in residues. Default is 1*/
-    int how_many_rotations;    
+    int how_many_rotations;
+    type_mutations_t *mutations;
+    char *mutation_operator;
  }input_parameters_t;
 
 
