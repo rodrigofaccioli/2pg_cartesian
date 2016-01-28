@@ -37,6 +37,11 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field);
 void clean_gromacs_simulation(const char *path_local_execute);
+void call_pdb2gmx_for_md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs, const char *force_field);
+void call_mdrun2md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs, const char *mdp_file);
+void call_trjconv2md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs);
+
+
 
 #ifdef __cplusplus
 }

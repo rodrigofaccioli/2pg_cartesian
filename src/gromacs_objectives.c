@@ -47,14 +47,14 @@
 
 
 #define TAM_LINE_ENER 50
-#define MAX_ENERGY 9999999999999999999999999.9999				   
+#define MAX_ENERGY 9999999999999999999999999.9999
 #define MIN_ENERGY -9999999999999999999999999.9999
 #define MAX_VALUE 40
 #define MAX_VALUE_G_SAS 3
 
 static char *command = NULL;
 static char *program = NULL; /* program (executable) file name */
-static char *script = NULL; 
+static char *script = NULL;
 static char *filenm1 = NULL; /* data file names */
 static char *filenm2 = NULL;
 static char *filenm3 = NULL;
@@ -91,7 +91,13 @@ static char *opt_rerun = NULL;
 static char *opt_e = NULL;
 static char *opt_g = NULL;
 static char *opt_num = NULL;
-/* Stores the values of g_sas program 
+static char *opt_v = NULL;
+static char *opt_pd = NULL;
+static char *opt_deffnm = NULL;
+static char *opt_fit = NULL;
+static char *md_pdb = NULL;
+static char *md_last_pdb = NULL;
+/* Stores the values of g_sas program
 * g_sas_values[0] Hydrophobic
 * g_sas_values[1] Hydrophilic
 * g_sas_values[3] Total Area
@@ -146,23 +152,23 @@ static inline int run_program(const char *file, char *const argv[]){
 	int i = 0;
 
 	char bat[50] = "C:\\cygwin\\Cygwin.bat";
-	
+
 	strcpy(command, bat);
 	strcat(command, " '");
 	strcat(command, argv[i]);
 	strcat(command, " ");
 	i++;
-	do{	
+	do{
 		strcat(command, argv[i]);
 		strcat(command, " ");
-		i++;	
+		i++;
 	}while (argv[i] != NULL);
-	
+
 	//Avoid output messages
 	//strcat(command, " > /dev/null 2> /dev/null ");
-	
+
 	strcat(command, " '");
-	
+
 	system(command);
 
 	return 1;
@@ -176,7 +182,7 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 	int i=0;
 
 	char bat[50] = "C:\\cygwin\\Cygwin1.bat";
-	
+
 	strcpy(command, bat);
 	//strcat(command, " /cygdrive/c/Users/Alexandre/Documents/2pg_cartesian/scripts/run_g_energy.sh ");
 	strcat(command, " ");
@@ -191,12 +197,12 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 	}while (argv[i] != NULL);
 
 	strcat(command, pipe_msg);
-	
+
 	//Avoid output messages
 	//strcat(command, " > /dev/null 2> /dev/null ");
 
 	system(command);
-	
+
 	return 1;
 }
 #endif
@@ -204,7 +210,7 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 /*
  * Run nprogs programs with pipes interconecting them and (optionally, if
  * output_file is not NULL) write the output to a file, as in:
- * 
+ *
  * prog0 [args0] | prog1 [args1] | ... | progn-1 [argsn-1] > output_file
  *
  * where:
@@ -220,12 +226,12 @@ static inline int run_program(const char *file, char *const argv[]){
 //	strcat(command, argv[i]);
 	strcat(command, " ");
 	i++;
-	do{	
+	do{
 		strcat(command, argv[i]);
 		strcat(command, " ");
-		i++;	
+		i++;
 	}while (argv[i] != NULL);
-	
+
 	//Avoid output messages
 	strcat(command, " > /dev/null 2> /dev/null ");
 
@@ -256,7 +262,7 @@ static inline int run_program_after_pipe(const char *pipe_msg, const char *file,
 	strcat(command, " > /dev/null 2> /dev/null ");
 
 	system(command);
-	
+
 	return 1;
 }
 
@@ -374,7 +380,7 @@ void initialize_g_sas_values(){
 	g_sas_values[0] = MAX_ENERGY;
 	//Hydrophilic
 	g_sas_values[1] = MIN_ENERGY;
-	//Total Area 
+	//Total Area
 	g_sas_values[2] = MAX_ENERGY;
 }
 
@@ -425,9 +431,15 @@ void init_gromacs_execution (){
 	opt_e = Malloc(char, 3);
 	opt_g = Malloc(char, 3);
 	opt_num = Malloc(char, 5);
+	opt_v = Malloc(char, 3);
+	opt_pd = Malloc(char, 4);
+	opt_deffnm = Malloc(char, 8);
+	opt_fit = Malloc(char, 5);
+	md_pdb = Malloc(char, 7);
+	md_last_pdb = Malloc(char, 12);
 	g_sas_values = Malloc(double, MAX_VALUE_G_SAS);
-	
-	strcpy(opt_f, "-f");	
+
+	strcpy(opt_f, "-f");
 	strcpy(opt_o, "-o");
 	strcpy(opt_ff, "-ff");
 	strcpy(opt_water, "-water");
@@ -451,24 +463,30 @@ void init_gromacs_execution (){
 	strcpy(prot_sys_trr, "prot_sys.trr");
 	strcpy(prot_sys_tpr, "prot_sys.tpr");
 	strcpy(prot_sys_top, "prot_sys.top");
-	strcpy(prot_sys_gro, "prot_sys.gro");	
+	strcpy(prot_sys_gro, "prot_sys.gro");
 	strcpy(energy_xvg, "energy.xvg");
 	strcpy(traj_xtc, "traj.xtc");
 	strcpy(xvg_1, "*.xvg_1*");
 	strcpy(opt_rerun, "-rerun");
-	strcpy(opt_e, "-e");	
+	strcpy(opt_e, "-e");
 	strcpy(opt_g, "-g");
 	strcpy(opt_num, "-num");
+    strcpy(opt_v, "-v");
+	strcpy(opt_pd, "-pd");
+	strcpy(opt_deffnm, "-deffnm");
+	strcpy(opt_fit, "-fit");
+	strcpy(md_pdb, "md.pdb");
+	strcpy(md_last_pdb, "md_last.pdb");
 	initialize_g_sas_values();
 
 }
 
-/** Finish GROMACS execution 
+/** Finish GROMACS execution
 * This function is to be called when the Gromacs funcions below will no longer
-* be used in order to release memory used by internal variables 
+* be used in order to release memory used by internal variables
 */
 void finish_gromacs_execution(){
-	
+
 	free(command);
 	free(program);
 	free(script);
@@ -507,7 +525,13 @@ void finish_gromacs_execution(){
 	free(opt_e);
 	free(opt_g);
 	free(opt_num);
-	free(g_sas_values);	
+	free(opt_v);
+	free(opt_pd);
+	free(opt_deffnm);
+	free(opt_fit);
+	free(md_pdb);
+	free(md_last_pdb);
+	free(g_sas_values);
 	program = NULL;
 	filenm1 = NULL;
 	filenm2 = NULL;
@@ -561,7 +585,7 @@ void clean_gromacs_simulation(const char *path_local_execute){
 	delete_file(path_local_execute, prot_top);
 	delete_file(path_local_execute, prot_tpr);
 	delete_file(path_local_execute, prot_trr);
-	delete_file(path_local_execute, prot_log);	
+	delete_file(path_local_execute, prot_log);
 	delete_file(path_local_execute, confout_gro);
 	delete_file(path_local_execute, posre_itp);
 	delete_file(path_local_execute, mdout_mdp);
@@ -573,6 +597,8 @@ void clean_gromacs_simulation(const char *path_local_execute){
 	delete_file(path_local_execute, energy_xvg);
 	delete_file(path_local_execute, traj_xtc);
 	delete_file(path_local_execute, xvg_1);
+	delete_file(path_local_execute, md_pdb);
+	delete_file(path_local_execute, md_last_pdb);
 
 }
 
@@ -590,8 +616,8 @@ double get_objective_value(const char *value){
 	return aux;
 }
 
-/* Sets the value of objective in solution 
-* sol represents the solution (individual). The value of objective will be 
+/* Sets the value of objective in solution
+* sol represents the solution (individual). The value of objective will be
 *     set in obj_values field.
 * value the calculated value that will be set in solution
 * obj represents the index of objective
@@ -615,8 +641,8 @@ static void build_pdb_file_name(char *pdb_file_name, const char *aux_name,
 void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
 		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file,
-		const char *script_g_energy){	
-	
+		const char *script_g_energy){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -643,7 +669,7 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 	//xvg
 	g_gyrate_args[6] = opt_o;
 	strcpy(filenm3, local_execute);
-	strcat(filenm3, computed_g_gyrate_value_file);	
+	strcat(filenm3, computed_g_gyrate_value_file);
 	g_gyrate_args[7] = filenm3;
 	//final parameter
 	g_gyrate_args[8] = NULL;
@@ -662,7 +688,7 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -681,8 +707,8 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 void build_tpr_file(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field, const char *mdp_file){
 
-	const protein_t *protein_aux;	
-	
+	const protein_t *protein_aux;
+
 	char *pdbfile_aux;
 	char *force_field_aux;
 	char *mdp_file_aux;
@@ -701,7 +727,7 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	//pdb
 	strcpy(pdbfile_aux, pdbfile);
 	pdb2gmx_args[1] = opt_f;
-	strcpy(filenm1, local_execute);	
+	strcpy(filenm1, local_execute);
 	strcat(filenm1, pdbfile_aux);
 	pdb2gmx_args[2] = filenm1;
 	//gro
@@ -779,7 +805,7 @@ void call_mdrun2energy(const char *pdbfile, const char *local_execute,
 	strcat(program, "mdrun_mpi");
 	mdrun_args[0] = program;
 	//tpŕ
-	mdrun_args[1] = opt_s;		
+	mdrun_args[1] = opt_s;
 	strcpy(filenm1, local_execute);
 	strcat(filenm1, prot_tpr);
 	mdrun_args[2] = filenm1;
@@ -818,8 +844,8 @@ void call_mdrun2energy(const char *pdbfile, const char *local_execute,
  */
 void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
-		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file){	
-	
+		const option_g_energy *opt_fitness, const char *computed_g_gyrate_value_file){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -842,7 +868,7 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 	//xvg
 	g_gyrate_args[5] = opt_o;
 	strcpy(filenm3, local_execute);
-	strcat(filenm3, computed_g_gyrate_value_file);	
+	strcat(filenm3, computed_g_gyrate_value_file);
 	g_gyrate_args[6] = filenm3;
 	//final parameter
 	g_gyrate_args[7] = NULL;
@@ -860,7 +886,7 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -879,8 +905,8 @@ void compute_gyrate(solution_t *sol, const int *fit, const char *local_execute,
 void build_tpr_file(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field, const char *mdp_file){
 
-	const protein_t *protein_aux;	
-	
+	const protein_t *protein_aux;
+
 	char *pdbfile_aux;
 	char *force_field_aux;
 	char *mdp_file_aux;
@@ -899,7 +925,7 @@ void build_tpr_file(const char *pdbfile, const char *local_execute,
 	//pdb
 	strcpy(pdbfile_aux, pdbfile);
 	pdb2gmx_args[1] = opt_f;
-	strcpy(filenm1, local_execute);	
+	strcpy(filenm1, local_execute);
 	strcat(filenm1, pdbfile_aux);
 	pdb2gmx_args[2] = filenm1;
 	//gro
@@ -977,7 +1003,7 @@ void call_mdrun2energy(const char *pdbfile, const char *local_execute,
 	strcat(program, "mdrun");
 	mdrun_args[0] = program;
 	//tpŕ
-	mdrun_args[1] = opt_s;		
+	mdrun_args[1] = opt_s;
 	strcpy(filenm1, local_execute);
 	strcat(filenm1, prot_tpr);
 	mdrun_args[2] = filenm1;
@@ -1021,12 +1047,12 @@ boolean_t is_energy_objective(const option_g_energy *opt_objective){
 		 	return btrue;
 	}
 	return bfalse;
-}	
+}
 
 #ifdef _WIN32
 /** Calls the g_energy program
 */
-void call_g_energy(const char *local_execute, const char *path_gromacs_programs, 
+void call_g_energy(const char *local_execute, const char *path_gromacs_programs,
 	const char *opt_energy, const char *script_g_energy ){
 	char *g_energy_args[8];
 
@@ -1046,12 +1072,12 @@ void call_g_energy(const char *local_execute, const char *path_gromacs_programs,
 	//xvg
 	g_energy_args[4] = opt_o;
 	strcpy(filenm2, local_execute);
-	strcat(filenm2, energy_xvg);	
+	strcat(filenm2, energy_xvg);
 	g_energy_args[5] = filenm2;
 
 	g_energy_args[6] = NULL;
 	g_energy_args[7] = NULL;
-	
+
 	if (!run_program_after_pipe(opt_energy, program, g_energy_args))
 		fatal_error("Failed to run g_energy at compute_energy_minimum function\n");
 }
@@ -1066,7 +1092,7 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 	//if (check_exists_file(file_energy_computed_ener_edr) == btrue){
 	if (check_exists_file(path_join_file(local_execute, file_energy_computed_ener_edr)) == btrue){
 		//Call g_energy
-		call_g_energy(local_execute, path_gromacs_programs, opt_energy, script_g_energy);	
+		call_g_energy(local_execute, path_gromacs_programs, opt_energy, script_g_energy);
 		if (check_exists_file(path_join_file(local_execute,energy_xvg)) == btrue){
 			value = Malloc(char,MAX_VALUE);
 			//get the last line of xvg file
@@ -1077,11 +1103,11 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 	 		line_splited = strtok(NULL, " ");
 	 		strcpy(value, line_splited);
 	 		//Looking the end of line_splited
-		  	while (line_splited != NULL){	    	
+		  	while (line_splited != NULL){
 	    		line_splited = strtok(NULL, " ");
 	  		}
 			//Set the value of energy option in solution
-		    set_objective_from_gromacs_in_solution(sol,value, obj);	
+		    set_objective_from_gromacs_in_solution(sol,value, obj);
 		    free(line_splited);
 		    free(last_line);
 		    free(value);
@@ -1098,19 +1124,19 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 * It value is composed by two values: gmx_GB_Polarization and gmx_Nonpolar_Sol
 * Therefore g_energy program is called twice. The value of gmx_GB_Polarization
 * is stored at G_pol. the value of gmx_Nonpolar_Sol is stored at G_np. Therefore,
-* the value of GBSA is stored at G_solv. 
+* the value of GBSA is stored at G_solv.
 * G_solv variable is setted in solution.
-* Important: When error is found either gmx_GB_Polarization or gmx_Nonpolar_Sol 
+* Important: When error is found either gmx_GB_Polarization or gmx_Nonpolar_Sol
 * solution will set MAX value
 */
 void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_execute,
 		const char *path_gromacs_programs, const char *opt_energy, const char *script_g_energy ){
 	char *last_line, *line_splited;
 	char *value;
-	double G_solv, G_pol, G_np;	
+	double G_solv, G_pol, G_np;
 
 	//Call g_energy - gmx_GB_Polarization
-	call_g_energy(local_execute, path_gromacs_programs, 
+	call_g_energy(local_execute, path_gromacs_programs,
 		option_g_energy_program[gmx_GB_Polarization].option_name, script_g_energy);
 	if (check_exists_file(path_join_file(local_execute,energy_xvg)) == btrue){
 		value = Malloc(char,MAX_VALUE);
@@ -1122,7 +1148,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of energy option in solution
@@ -1132,7 +1158,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 	    free(value);
 	    delete_file(local_execute, energy_xvg);
 		//Call g_energy - gmx_Nonpolar_Sol
-		call_g_energy(local_execute, path_gromacs_programs, 
+		call_g_energy(local_execute, path_gromacs_programs,
 			option_g_energy_program[gmx_Nonpolar_Sol].option_name, script_g_energy);
 		if (check_exists_file(path_join_file(local_execute,energy_xvg)) == btrue){
 			value = Malloc(char,MAX_VALUE);
@@ -1144,7 +1170,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
  			line_splited = strtok(NULL, " ");
  			strcpy(value, line_splited);
  			//Looking the end of line_splited
-	  		while (line_splited != NULL){	    	
+	  		while (line_splited != NULL){
     			line_splited = strtok(NULL, " ");
   			}
 			//Set the value of energy option in solution
@@ -1154,7 +1180,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 			sol->obj_values[*obj] = G_solv;
 	    	free(line_splited);
 	    	free(last_line);
-	    	free(value);	    
+	    	free(value);
 	    	delete_file(local_execute, energy_xvg);
 		}else{
 			sol->obj_values[*obj] = MAX_ENERGY;
@@ -1166,12 +1192,12 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 #endif
 
 #ifdef linux
-void call_g_energy(const char *local_execute, const char *path_gromacs_programs, 
+void call_g_energy(const char *local_execute, const char *path_gromacs_programs,
 	const char *opt_energy){
 
 	char *g_energy_args[7];
 
-	/*g_energy*/	
+	/*g_energy*/
 	strcpy(program, path_gromacs_programs);
 	strcat(program, "g_energy");
 	g_energy_args[0] = program;
@@ -1183,12 +1209,12 @@ void call_g_energy(const char *local_execute, const char *path_gromacs_programs,
 	//xvg
 	g_energy_args[3] = opt_o;
 	strcpy(filenm2, local_execute);
-	strcat(filenm2, energy_xvg);	
+	strcat(filenm2, energy_xvg);
 	g_energy_args[4] = filenm2;
 
 	g_energy_args[5] = NULL;
 	g_energy_args[6] = NULL;
-	
+
 	if (!run_program_after_pipe(opt_energy, program, g_energy_args))
 		fatal_error("Failed to run g_energy at compute_energy_minimum function\n");
 }
@@ -1211,11 +1237,11 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 	 		line_splited = strtok(NULL, " ");
 	 		strcpy(value, line_splited);
 	 		//Looking the end of line_splited
-		  	while (line_splited != NULL){	    	
+		  	while (line_splited != NULL){
 	    		line_splited = strtok(NULL, " ");
 	  		}
 			//Set the value of energy option in solution
-		    set_objective_from_gromacs_in_solution(sol,value, obj);	
+		    set_objective_from_gromacs_in_solution(sol,value, obj);
 		    free(line_splited);
 		    free(last_line);
 		    free(value);
@@ -1233,19 +1259,19 @@ void compute_energy(solution_t *sol, const int *obj, const char *local_execute,
 * It value is composed by two values: gmx_GB_Polarization and gmx_Nonpolar_Sol
 * Therefore g_energy program is called twice. The value of gmx_GB_Polarization
 * is stored at G_pol. the value of gmx_Nonpolar_Sol is stored at G_np. Therefore,
-* the value of GBSA is stored at G_solv. 
+* the value of GBSA is stored at G_solv.
 * G_solv variable is setted in solution.
-* Important: When error is found either gmx_GB_Polarization or gmx_Nonpolar_Sol 
+* Important: When error is found either gmx_GB_Polarization or gmx_Nonpolar_Sol
 * solution will set MAX value
 */
 void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_execute,
 		const char *path_gromacs_programs, const char *opt_energy){
 	char *last_line, *line_splited;
 	char *value;
-	double G_solv, G_pol, G_np;	
+	double G_solv, G_pol, G_np;
 
 	//Call g_energy - gmx_GB_Polarization
-	call_g_energy(local_execute, path_gromacs_programs, 
+	call_g_energy(local_execute, path_gromacs_programs,
 		option_g_energy_program[gmx_GB_Polarization].option_name);
 	if (check_exists_file(energy_xvg) == btrue){
 		value = Malloc(char,MAX_VALUE);
@@ -1257,7 +1283,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of energy option in solution
@@ -1267,7 +1293,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 	    free(value);
 	    delete_file(local_execute, energy_xvg);
 		//Call g_energy - gmx_Nonpolar_Sol
-		call_g_energy(local_execute, path_gromacs_programs, 
+		call_g_energy(local_execute, path_gromacs_programs,
 			option_g_energy_program[gmx_Nonpolar_Sol].option_name);
 		if (check_exists_file(energy_xvg) == btrue){
 			value = Malloc(char,MAX_VALUE);
@@ -1279,7 +1305,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
  			line_splited = strtok(NULL, " ");
  			strcpy(value, line_splited);
  			//Looking the end of line_splited
-	  		while (line_splited != NULL){	    	
+	  		while (line_splited != NULL){
     			line_splited = strtok(NULL, " ");
   			}
 			//Set the value of energy option in solution
@@ -1289,7 +1315,7 @@ void compute_energy_GBSA(solution_t *sol, const int *obj, const char *local_exec
 			sol->obj_values[*obj] = G_solv;
 	    	free(line_splited);
 	    	free(last_line);
-	    	free(value);	    
+	    	free(value);
 	    	delete_file(local_execute, energy_xvg);
 		}else{
 			sol->obj_values[*obj] = MAX_ENERGY;
@@ -1313,11 +1339,11 @@ boolean_t is_sas_objective(const option_g_energy *opt_objective){
 }
 
 #ifdef _WIN32
-/** runs g_sas program to calculate hydrophobic, hydrophilic and total 
-* solvent accessible surface area. 
+/** runs g_sas program to calculate hydrophobic, hydrophilic and total
+* solvent accessible surface area.
 * See Eisenhaber F, Lijnzaad P, Argos P, Sander C, & Scharf M (1995) J. Comput. Chem. 16, 273-284.
  */
-void call_g_sas(const char *local_execute, const char *path_gromacs_programs, 
+void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 	const char *pdbfile, const char *computed_g_sas_value_file, const char *script_g_energy){
 	char *g_sas_args[10];
 	char *last_line, *line_splited;
@@ -1343,7 +1369,7 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 	g_sas_args[5] = filenm2;
 	//xvg
 	g_sas_args[6] = opt_o;
-	strcpy(filenm3, local_execute);	
+	strcpy(filenm3, local_execute);
 	strcat(filenm3, computed_g_sas_value_file);
 	g_sas_args[7] = filenm3;
 
@@ -1352,14 +1378,14 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 
 	if (!run_program_after_pipe("Protein Protein", program, g_sas_args)){
 		fatal_error("Failed to run g_sas program at call_g_sas function\n");
-	}		
+	}
 	if (check_exists_file(path_join_file(local_execute,computed_g_sas_value_file))){
 		value = Malloc(char,MAX_VALUE);
 		//get the last line of xvg file
 		last_line = get_last_line(path_join_file(local_execute,computed_g_sas_value_file));
 		// Split last line by space and obtaing the first value
  		line_splited = strtok (last_line," ");
- 		//Set the value for hydrophobic objective		
+ 		//Set the value for hydrophobic objective
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		g_sas_values[0] = get_objective_value(value);
@@ -1371,11 +1397,11 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
  		//Set the value for total area objective
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
- 		g_sas_values[2] = get_objective_value(value); 		
+ 		g_sas_values[2] = get_objective_value(value);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
-  		}	    	
+  		}
 	    free(line_splited);
 	    free(last_line);
 	    free(value);
@@ -1385,19 +1411,19 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 		g_sas_values[0] = MAX_ENERGY;
 		//Hydrophilic
 		g_sas_values[1] = MIN_ENERGY;
-		//Total Area 
+		//Total Area
 		g_sas_values[2] = MAX_ENERGY;
 	}
 }
 
-/** Runs g_hbond program to compute the number of hydrogen bonds of the protein 
+/** Runs g_hbond program to compute the number of hydrogen bonds of the protein
 * The Group is Protein Protein
 */
 void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
 		const option_g_energy *opt_fitness, const char *computed_hbond_value_file,
-		const char *script_g_energy){	
-	
+		const char *script_g_energy){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -1443,7 +1469,7 @@ void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -1459,14 +1485,14 @@ void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
 	}
 }
 
-/** Runs g_hbond program to compute the number of hydrogen bonds of the protein 
+/** Runs g_hbond program to compute the number of hydrogen bonds of the protein
 * The Group is "MainChain+H MainChain+H"
 */
 void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
 		const option_g_energy *opt_fitness, const char *computed_hbond_value_file,
-		const char *script_g_energy){	
-	
+		const char *script_g_energy){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -1512,7 +1538,7 @@ void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execu
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -1530,11 +1556,11 @@ void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execu
 #endif
 
 #ifdef linux
-/** runs g_sas program to calculate hydrophobic, hydrophilic and total 
-* solvent accessible surface area. 
+/** runs g_sas program to calculate hydrophobic, hydrophilic and total
+* solvent accessible surface area.
 * See Eisenhaber F, Lijnzaad P, Argos P, Sander C, & Scharf M (1995) J. Comput. Chem. 16, 273-284.
  */
-void call_g_sas(const char *local_execute, const char *path_gromacs_programs, 
+void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 	const char *pdbfile, const char *computed_g_sas_value_file){
 	char *g_sas_args[9];
 	char *last_line, *line_splited;
@@ -1556,7 +1582,7 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 	g_sas_args[4] = filenm2;
 	//xvg
 	g_sas_args[5] = opt_o;
-	strcpy(filenm3, local_execute);	
+	strcpy(filenm3, local_execute);
 	strcat(filenm3, computed_g_sas_value_file);
 	g_sas_args[6] = filenm3;
 
@@ -1565,14 +1591,14 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 
 	if (!run_program_after_pipe("Protein Protein", program, g_sas_args)){
 		fatal_error("Failed to run g_sas program at call_g_sas function\n");
-	}		
+	}
 	if (check_exists_file(computed_g_sas_value_file)){
 		value = Malloc(char,MAX_VALUE);
 		//get the last line of xvg file
 		last_line = get_last_line(computed_g_sas_value_file);
 		// Split last line by space and obtaing the first value
  		line_splited = strtok (last_line," ");
- 		//Set the value for hydrophobic objective		
+ 		//Set the value for hydrophobic objective
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		g_sas_values[0] = get_objective_value(value);
@@ -1584,11 +1610,11 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
  		//Set the value for total area objective
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
- 		g_sas_values[2] = get_objective_value(value); 		
+ 		g_sas_values[2] = get_objective_value(value);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
-  		}	    	
+  		}
 	    free(line_splited);
 	    free(last_line);
 	    free(value);
@@ -1598,18 +1624,18 @@ void call_g_sas(const char *local_execute, const char *path_gromacs_programs,
 		g_sas_values[0] = MAX_ENERGY;
 		//Hydrophilic
 		g_sas_values[1] = MIN_ENERGY;
-		//Total Area 
+		//Total Area
 		g_sas_values[2] = MAX_ENERGY;
 	}
 }
 
-/** Runs g_hbond program to compute the number of hydrogen bonds of the protein 
+/** Runs g_hbond program to compute the number of hydrogen bonds of the protein
 * The Group is Protein Protein
 */
 void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
-		const option_g_energy *opt_fitness, const char *computed_hbond_value_file){	
-	
+		const option_g_energy *opt_fitness, const char *computed_hbond_value_file){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -1651,7 +1677,7 @@ void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -1667,13 +1693,13 @@ void compute_hbond(solution_t *sol, const int *fit, const char *local_execute,
 	}
 }
 
-/** Runs g_hbond program to compute the number of hydrogen bonds of the protein 
+/** Runs g_hbond program to compute the number of hydrogen bonds of the protein
 * The Group is "MainChain+H MainChain+H"
 */
 void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execute,
 		const char *path_gromacs_programs, const char *pdbfile,
-		const option_g_energy *opt_fitness, const char *computed_hbond_value_file){	
-	
+		const option_g_energy *opt_fitness, const char *computed_hbond_value_file){
+
 	char *last_line, *line_splited;
 	char *value;
 
@@ -1715,7 +1741,7 @@ void compute_hbond_main(solution_t *sol, const int *fit, const char *local_execu
  		line_splited = strtok(NULL, " ");
  		strcpy(value, line_splited);
  		//Looking the end of line_splited
-	  	while (line_splited != NULL){	    	
+	  	while (line_splited != NULL){
     		line_splited = strtok(NULL, " ");
   		}
 		//Set the value of radius option in solution
@@ -1748,7 +1774,7 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	char pdbfile_aux[30];
 	char aux [20];
 	char aux_ind[5];
-	char msg [50];	
+	char msg [50];
 	option_g_energy *opt_objective;
 	int has_energy_objective;
 	int has_sas_objective;
@@ -1772,20 +1798,20 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 		// saving pdb file of protein
     	int2str(aux_ind,&ind);
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
-   	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+   	    save_pdb_file(in_para->path_local_execute, pdbfile_aux,
    	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-   	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
-    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+   	    //Building Generic tpr file. It will be used in all GROMACS execution
+    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs,
 	        	in_para->force_field, in_para->mdp_file);
-    	/*Check if call mdrun to calculate the energies. 
-    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+    	/*Check if call mdrun to calculate the energies.
+    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least
     	*/
     	if (has_energy_objective > 0){
-    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute,
 	    		in_para->path_gromacs_programs);
     	}
     	if (has_sas_objective > 0){
-			call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+			call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux,
 				in_para->computed_areas_g_sas_file, in_para->script_g_energy);
     	}
    	    // obtaing the values of objectivies
@@ -1796,11 +1822,11 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 						in_para->computed_radius_g_gyrate_file, in_para->script_g_energy);
    	    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
    	    	 			(opt_objective[ob] == gmx_elel_ener) ||
-   	    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+   	    	 			(opt_objective[ob] == gmx_edw_ener)){
    	    		compute_energy(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs,
    	    				option_g_energy_program[opt_objective[ob]].value_opt, in_para->script_g_energy);
-   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){
    	    		compute_energy_GBSA(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs,
    	    				option_g_energy_program[opt_objective[ob]].value_opt, in_para->script_g_energy);
@@ -1813,11 +1839,11 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
    	    	}else if ( opt_objective[ob] == gmx_hbond){
    		    	compute_hbond(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
-   	    				in_para->computed_g_hbond_file, in_para->script_g_energy);   	    		
+   	    				in_para->computed_g_hbond_file, in_para->script_g_energy);
    	    	}else if ( opt_objective[ob] == gmx_hbond_main){
    		    	compute_hbond_main(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
-   	    				in_para->computed_g_hbond_file, in_para->script_g_energy);   	    		
+   	    				in_para->computed_g_hbond_file, in_para->script_g_energy);
    	    	}
    	    }
    	    initialize_values_for_next_solution();
@@ -1830,13 +1856,13 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 
 /** Calculates the objectives of one solution by GROMACS
 */
-void get_gromacs_objectives_of_solution(solution_t *solution, 
+void get_gromacs_objectives_of_solution(solution_t *solution,
 	const input_parameters_t *in_para, const int *ind){
 	const protein_t *population_aux;
 	char pdbfile_aux[30];
 	char aux [20];
 	char aux_ind[5];
-	char msg [50];	
+	char msg [50];
 	option_g_energy *opt_objective;
 	int has_energy_objective;
 	int has_sas_objective;
@@ -1858,20 +1884,20 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 	// saving pdb file of protein
 	int2str(aux_ind,ind);
 	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
-	save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+	save_pdb_file(in_para->path_local_execute, pdbfile_aux,
 	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
-	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+	    //Building Generic tpr file. It will be used in all GROMACS execution
+	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs,
         	in_para->force_field, in_para->mdp_file);
-	/*Check if call mdrun to calculate the energies. 
-	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+	/*Check if call mdrun to calculate the energies.
+	 * When has_energy_objective is greater than 0, it means one energy objective exists at least
 	*/
 	if (has_energy_objective > 0){
-		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute,
     		in_para->path_gromacs_programs);
 	}
 	if (has_sas_objective > 0){
-		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux,
 			in_para->computed_areas_g_sas_file, in_para->script_g_energy);
 	}
     // obtaing the values of objectivies
@@ -1882,11 +1908,11 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 					in_para->computed_radius_g_gyrate_file, in_para->script_g_energy);
     	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
     	 			(opt_objective[ob] == gmx_elel_ener) ||
-    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+    	 			(opt_objective[ob] == gmx_edw_ener)){
     		compute_energy(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
     				option_g_energy_program[opt_objective[ob]].value_opt, in_para->script_g_energy);
-    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){
     		compute_energy_GBSA(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
     				option_g_energy_program[opt_objective[ob]].value_opt, in_para->script_g_energy );
@@ -1899,7 +1925,7 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
     	}else if ( opt_objective[ob] == gmx_hbond){
 	    	compute_hbond(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
-    				in_para->computed_g_hbond_file, in_para->script_g_energy);   	    		
+    				in_para->computed_g_hbond_file, in_para->script_g_energy);
     	}else if ( opt_objective[ob] == gmx_hbond_main){
 	    	compute_hbond_main(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs, pdbfile_aux, opt_objective,
@@ -1908,7 +1934,7 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
     }
     initialize_values_for_next_solution();
     clean_gromacs_simulation(in_para->path_local_execute);
-	
+
 	free(opt_objective);
 }
 #endif
@@ -1921,7 +1947,7 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 	char pdbfile_aux[30];
 	char aux [20];
 	char aux_ind[5];
-	char msg [50];	
+	char msg [50];
 	option_g_energy *opt_objective;
 	int has_energy_objective;
 	int has_sas_objective;
@@ -1945,20 +1971,20 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 		// saving pdb file of protein
     	int2str(aux_ind,&ind);
     	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
-   	    save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+   	    save_pdb_file(in_para->path_local_execute, pdbfile_aux,
    	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-   	    //Building Generic tpr file. It will be used in all GROMACS execution   	    
-    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+   	    //Building Generic tpr file. It will be used in all GROMACS execution
+    	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs,
 	        	in_para->force_field, in_para->mdp_file);
-    	/*Check if call mdrun to calculate the energies. 
-    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+    	/*Check if call mdrun to calculate the energies.
+    	 * When has_energy_objective is greater than 0, it means one energy objective exists at least
     	*/
     	if (has_energy_objective > 0){
-    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+    		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute,
 	    		in_para->path_gromacs_programs);
     	}
     	if (has_sas_objective > 0){
-			call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+			call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux,
 				in_para->computed_areas_g_sas_file);
     	}
    	    // obtaing the values of objectivies
@@ -1969,11 +1995,11 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 						in_para->computed_radius_g_gyrate_file);
    	    	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
    	    	 			(opt_objective[ob] == gmx_elel_ener) ||
-   	    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+   	    	 			(opt_objective[ob] == gmx_edw_ener)){
    	    		compute_energy(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs,
    	    				option_g_energy_program[opt_objective[ob]].value_opt);
-   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+   	    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){
    	    		compute_energy_GBSA(&solutions[ind], &ob, in_para->path_local_execute,
    	    				in_para->path_gromacs_programs,
    	    				option_g_energy_program[opt_objective[ob]].value_opt);
@@ -2003,13 +2029,13 @@ void get_gromacs_objectives(solution_t *solutions, const input_parameters_t *in_
 
 /** Calculates the objectives of one solution by GROMACS
 */
-void get_gromacs_objectives_of_solution(solution_t *solution, 
+void get_gromacs_objectives_of_solution(solution_t *solution,
 	const input_parameters_t *in_para, const int *ind){
 	const protein_t *population_aux;
 	char pdbfile_aux[30];
 	char aux [20];
 	char aux_ind[5];
-	char msg [50];	
+	char msg [50];
 	option_g_energy *opt_objective;
 	int has_energy_objective;
 	int has_sas_objective;
@@ -2031,20 +2057,20 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 	// saving pdb file of protein
 	int2str(aux_ind,ind);
 	build_pdb_file_name(pdbfile_aux, aux_ind, PREFIX_PDB_FILE_NAME_EA);
-	save_pdb_file(in_para->path_local_execute, pdbfile_aux, 
+	save_pdb_file(in_para->path_local_execute, pdbfile_aux,
 	    	&population_aux->p_topol->numatom, population_aux->p_atoms, NULL);
-	//Building Generic tpr file. It will be used in all GROMACS execution   	    
-	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs, 
+	//Building Generic tpr file. It will be used in all GROMACS execution
+	build_tpr_file(pdbfile_aux, in_para->path_local_execute, in_para->path_gromacs_programs,
         	in_para->force_field, in_para->mdp_file);
-	/*Check if call mdrun to calculate the energies. 
-	 * When has_energy_objective is greater than 0, it means one energy objective exists at least 
+	/*Check if call mdrun to calculate the energies.
+	 * When has_energy_objective is greater than 0, it means one energy objective exists at least
 	*/
 	if (has_energy_objective > 0){
-		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute, 
+		call_mdrun2energy(pdbfile_aux, in_para->path_local_execute,
     		in_para->path_gromacs_programs);
 	}
 	if (has_sas_objective > 0){
-		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux, 
+		call_g_sas(in_para->path_local_execute, in_para->path_gromacs_programs, pdbfile_aux,
 			in_para->computed_areas_g_sas_file);
 	}
     // obtaing the values of objectivies
@@ -2055,11 +2081,11 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
 					in_para->computed_radius_g_gyrate_file);
     	}else if ( (opt_objective[ob] == gmx_potential_ener) ||
     	 			(opt_objective[ob] == gmx_elel_ener) ||
-    	 			(opt_objective[ob] == gmx_edw_ener)){   	    		
+    	 			(opt_objective[ob] == gmx_edw_ener)){
     		compute_energy(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
     				option_g_energy_program[opt_objective[ob]].option_name);
-    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){   	    		
+    	}else if ( opt_objective[ob] == gmx_GBSA_Solvatation){
     		compute_energy_GBSA(solution, &ob, in_para->path_local_execute,
     				in_para->path_gromacs_programs,
     				option_g_energy_program[opt_objective[ob]].option_name);
@@ -2081,20 +2107,20 @@ void get_gromacs_objectives_of_solution(solution_t *solution,
     }
     initialize_values_for_next_solution();
     clean_gromacs_simulation(in_para->path_local_execute);
-	
+
 	free(opt_objective);
 }
 #endif
 
 /** Run of pdb2gmx for pattern of atom names
-* Output is the same name of pdbfile. 
+* Output is the same name of pdbfile.
 * WARNING: pdbfile will be written
 */
 void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_execute,
 		const char *path_gromacs_programs, const char *force_field){
 
-	const protein_t *protein_aux;	
-	
+	const protein_t *protein_aux;
+
 	char *pdbfile_aux;
 	char *force_field_aux;
 
@@ -2111,7 +2137,7 @@ void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_
 	//pdb
 	strcpy(pdbfile_aux, pdbfile);
 	pdb2gmx_args[1] = opt_f;
-	strcpy(filenm1, local_execute);	
+	strcpy(filenm1, local_execute);
 	strcat(filenm1, pdbfile_aux);
 	pdb2gmx_args[2] = filenm1;
 	//gro
@@ -2134,7 +2160,7 @@ void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_
 	//Hydrogen
 	pdb2gmx_args[11] = opt_ignh;
 
-	pdb2gmx_args[12] = NULL;	
+	pdb2gmx_args[12] = NULL;
 
 	if (!run_program(program, pdb2gmx_args)){
 		fatal_error("Failed to run pdb2gmx at call_pdb2gmx_for_pattern_atom_names function \n");
@@ -2142,4 +2168,215 @@ void call_pdb2gmx_for_pattern_atom_names(const char *pdbfile, const char *local_
 
 	free(pdbfile_aux);
 	free(force_field_aux);
+}
+
+void call_pdb2gmx_for_md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs, const char *force_field)
+{
+
+	char *pdbfile_aux;
+	char *force_field_aux;
+	char *pdb2gmx_args[13];
+	char *editconf_args[7];
+
+	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
+	force_field_aux = Malloc(char, MAX_FORCE_FIELD_NAME);
+	
+	/* pdb2gmx */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "pdb2gmx");
+	pdb2gmx_args[0] = program;
+	//pdb
+	strcpy(pdbfile_aux, pdbfile);
+	pdb2gmx_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, pdbfile_aux);
+	pdb2gmx_args[2] = filenm1;
+	//gro
+	pdb2gmx_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot.gro");
+	pdb2gmx_args[4] = filenm2;
+	//top
+	pdb2gmx_args[5] = opt_p;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "prot.top");
+	pdb2gmx_args[6] = filenm3;
+	//Hydrogen
+	pdb2gmx_args[7] = opt_ignh;
+	//Water
+	pdb2gmx_args[8] = opt_water;
+	pdb2gmx_args[9] = opt_none;
+	//force field
+	pdb2gmx_args[10] = opt_ff;
+	strcpy(force_field_aux, force_field);
+	pdb2gmx_args[11] = force_field_aux;
+
+	pdb2gmx_args[12] = NULL;
+
+	if (!run_program(program, pdb2gmx_args))
+	{
+		fatal_error("Failed to run pdb2gmx at call_pdb2gmx_for_md function \n");
+	}
+
+	/* editconf */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "editconf");
+	editconf_args[0] = program;
+	//Input gro
+	editconf_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, "prot.gro");
+	editconf_args[2] = filenm1;
+	//Output gro
+	editconf_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot.gro");
+	editconf_args[4] = filenm2;
+	//Center molecule in box
+	editconf_args[5] = opt_c;
+
+	editconf_args[6] = NULL;
+
+
+	if (!run_program(program, pdb2gmx_args))
+	{
+		fatal_error("Failed to run editconf at call_pdb2gmx_for_md function \n");
+	}
+
+	free(pdbfile_aux);
+	free(force_field_aux);
+
+}
+
+void call_mdrun2md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs, const char *mdp_file)
+{
+	char *pdbfile_aux;
+	char *mdp_file_aux;
+	char *mdrun_args[8];
+	char *grompp_args[10];
+
+	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
+	mdp_file_aux = Malloc(char, MAX_FILE_NAME);
+
+
+	/* grompp */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "grompp");
+	grompp_args[0] = program;
+	//mdp
+	grompp_args[1] = opt_f;
+	strcpy(mdp_file_aux, mdp_file);
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, mdp_file_aux);
+	grompp_args[2] = filenm1;
+	//top
+	grompp_args[3] = opt_c;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot.gro");
+	grompp_args[4] = filenm2;
+	//tpŕ
+	grompp_args[5] = opt_p;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "prot.top");
+	grompp_args[6] = filenm3;
+	//gro
+	grompp_args[7] = opt_o;
+	strcpy(filenm4, local_execute);
+	strcat(filenm4, "prot.tpr");
+	grompp_args[8] = filenm4;
+
+	grompp_args[9] = NULL;
+
+	if (!run_program(program, grompp_args))
+		fatal_error("Failed to run grompp at call_mdrun2md function \n");
+
+	/* mdrun */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "mdrun");
+	mdrun_args[0] = program;
+	//tpŕ
+	mdrun_args[1] = opt_s;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, prot_tpr);
+	mdrun_args[2] = filenm1;
+	//Be loud and noisy
+	mdrun_args[3] = opt_v;
+	//Set the default filename for all file options 
+	mdrun_args[4] = opt_deffnm;
+	//Output
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "mdout_mdp");
+	mdrun_args[5] = filenm2;
+	//Particle decomposition
+	mdrun_args[6] = opt_pd;
+
+	mdrun_args[7] = NULL;
+
+	if (!run_program(program, mdrun_args))
+		fatal_error("Failed to run mdrun at call_mdrun2md function \n");
+
+	free(pdbfile_aux);
+	free(mdp_file_aux);
+
+}
+
+void call_trjconv2md(const char *pdbfile, const char *local_execute, const char *path_gromacs_programs)
+{
+	char *pdbfile_aux;
+	char *editconf_args[6];
+	char *trjconv_args[10];
+
+	pdbfile_aux = Malloc(char, MAX_FILE_NAME);
+
+	/* editconf */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "editconf");
+	editconf_args[0] = program;
+	//Input gro
+	editconf_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, "prot.gro");
+	editconf_args[2] = filenm1;
+	//Output pdb
+	editconf_args[3] = opt_o;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "md_last.pdb");
+	editconf_args[4] = filenm2;
+
+	editconf_args[5] = NULL;
+
+	if (!run_program_after_pipe("C-alpha Protein", program, editconf_args))
+		fatal_error("Failed to run editconf at call_trjconv2md \n");
+	
+	/* trjconv */
+	strcpy(program, path_gromacs_programs);
+	strcat(program, "trjconv");
+	trjconv_args[0] = program;
+	//xtc
+	trjconv_args[1] = opt_f;
+	strcpy(filenm1, local_execute);
+	strcat(filenm1, "traj_xtc");
+	trjconv_args[2] = filenm1;
+	//tpr
+	trjconv_args[3] = opt_s;
+	strcpy(filenm2, local_execute);
+	strcat(filenm2, "prot_tpr");
+	trjconv_args[4] = filenm2;
+	//pdb
+	trjconv_args[5] = opt_o;
+	strcpy(filenm3, local_execute);
+	strcat(filenm3, "md.pdb");
+	trjconv_args[6] = filenm3;
+	//fit
+	trjconv_args[7] = opt_fit;
+	strcpy(filenm4, "rot+trans");
+	trjconv_args[8] = filenm4;
+
+	trjconv_args[9] = NULL;
+
+	if (!run_program_after_pipe("C-alpha Protein", program, trjconv_args))
+		fatal_error("Failed to run trjconv at call_trjconv2md \n");
+
+	free(pdbfile_aux);
+	
 }
