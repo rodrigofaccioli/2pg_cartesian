@@ -167,7 +167,7 @@ void load_pdb_atoms(char line[], pdb_atom_t *atoms, const int *l){
 }
 
 void writeHeader(FILE *pdbfile, float dif, const int *npdb ){
-	fprintf(pdbfile,"HEADER    PROTEIN %lf %d \n",dif,*npdb);
+	fprintf(pdbfile,"HEADER    PROTEIN %f %d \n",dif,*npdb);
 	fprintf(pdbfile,"COMPND\n");
 	fprintf(pdbfile,"SOURCE\n");
 }

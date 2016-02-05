@@ -109,7 +109,7 @@ static void write_top_residue_atom_info_side_chain(FILE *topolfile, const int *r
 			int2str(aux, &chi);
 			strcat(line, aux);
 			strcat(line, ":\n");
-			fprintf(topolfile, line);
+			fprintf(topolfile, "%s", line);
 			//Printing fixed atoms
 			strcpy(line, "\tFixed Atoms: ");
 			for (int n = 0; n < side_chains[*res].atoms_chi[chi-1].num_fixed; n++){

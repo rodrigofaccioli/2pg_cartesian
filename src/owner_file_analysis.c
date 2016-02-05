@@ -243,14 +243,14 @@ void save_analysis_files(const owner_file_t *solutions_f, const int *size, const
 	fprintf(d_file, "#Front represents a classification based on dominance critera\n");
 	fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");					
 	sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
 	sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
 	fprintf(d_file, "#Method represents name of method which is a solution\n");	
 	fprintf(d_file, "#\n");
 	fprintf(d_file, "#\n");
 	sprintf(line_f, "#Ranking  Front\tDominated\t%s\t\t%s\t\tMethod\n", c_obj, c_obj_2 );
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
     for (int s = 0; s < *size; s++){
 	   	fprintf(d_file, "%5d\t  %3d\t%5d\t\t%.10e\t%.10e\t%-40.40s\n", 
 		    		solutions_f[s].ranking,
@@ -277,16 +277,16 @@ void save_analysis_files(const owner_file_t *solutions_f, const int *size, const
 		    strcat(file_name,".xvg");
 		    d_file = open_file(file_name, fWRITE);
 			sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
-			fprintf(d_file, line_f);
+			fprintf(d_file, "%s", line_f);
 			sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
-			fprintf(d_file, line_f);		    
+			fprintf(d_file, "%s", line_f);		    
 			fprintf(d_file, "#Front represents a classification based on dominance critera\n");
 			fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");			
 			fprintf(d_file, "#Ranking represents classification based on all solutions\n");
 			fprintf(d_file, "#\n");
 			fprintf(d_file, "#\n");
 			sprintf(line_f, "#%s\t\t%s\t\tFront\tDominated\tRanking\n", c_obj, c_obj_2 );
-			fprintf(d_file, line_f);
+			fprintf(d_file, "%s", line_f);
 			//Preparing temporary solutions
 			how_many_front = compute_how_many_front_file_t(solutions_f, size, &front);
 			temp_aux = allocate_file_t(&how_many_front, numobj);
@@ -433,14 +433,14 @@ void save_analysis_files_no_objectives(const owner_file_t *solutions_f, const in
 	fprintf(d_file, "#Front represents a classification based on dominance critera\n");
 	fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");					
 	sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
 	sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
 	fprintf(d_file, "#Method represents name of method which is a solution\n");	
 	fprintf(d_file, "#\n");
 	fprintf(d_file, "#\n");
 	sprintf(line_f, "#Ranking  Front\tDominated\t%s\t\t%s\t\tMethod\n", c_obj, c_obj_2 );
-	fprintf(d_file, line_f);
+	fprintf(d_file, "%s", line_f);
     for (int s = 0; s < *size; s++){
 	   	fprintf(d_file, "%5d\t  %3d\t%5d\t\t%.10e\t%.10e\t%-40.40s\n", 
 		    		solutions_f[s].ranking,
@@ -467,16 +467,16 @@ void save_analysis_files_no_objectives(const owner_file_t *solutions_f, const in
 		    strcat(file_name,".xvg");
 		    d_file = open_file(file_name, fWRITE);
 			sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
-			fprintf(d_file, line_f);
+			fprintf(d_file, "%s", line_f);
 			sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
-			fprintf(d_file, line_f);		    
+			fprintf(d_file, "%s", line_f);		    
 			fprintf(d_file, "#Front represents a classification based on dominance critera\n");
 			fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");			
 			fprintf(d_file, "#Ranking represents classification based on all solutions\n");
 			fprintf(d_file, "#\n");
 			fprintf(d_file, "#\n");
 			sprintf(line_f, "#%s\t\t%s\t\tFront\tDominated\tRanking\n", c_obj, c_obj_2 );
-			fprintf(d_file, line_f);
+			fprintf(d_file, "%s", line_f);
 			//Preparing temporary solutions
 			how_many_front = compute_how_many_front_file_t(solutions_f, size, &front);
 			temp_aux = allocate_file_t(&how_many_front, numobj);
