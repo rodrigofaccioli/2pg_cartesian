@@ -28,7 +28,7 @@ set_source_files_properties(src/protpred-Gromacs-MC_Metropolis.c  PROPERTIES LAN
 set_source_files_properties(src/protpred-Gromacs-Mono.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Random_Algorithm.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c  PROPERTIES LANGUAGE CXX )
-set_source_files_properties(src/LoadConfig.cpp  PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/LoadConfig.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/ea_mono.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/topology.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/pdbio.c  PROPERTIES LANGUAGE CXX )
@@ -68,13 +68,14 @@ set_source_files_properties(src/protpred-Gromacs-Test_compute_objetivies.c PROPE
 set_source_files_properties(src/protpred-Gromacs-Test_random_number
 .c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Test_dm_refinement.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/maphash.c PROPERTIES LANGUAGE CXX )
 
 # set include
 include_directories(include)
 
 # add libries
 add_library(2PG_lib STATIC 
-src/LoadConfig.cpp 
+src/LoadConfig.c 
 src/ea_mono.c 
 src/topology.c 
 src/pdbio.c 
@@ -105,6 +106,7 @@ src/owner_file_analysis.c
 src/mc_metropolis.c
 src/random_algorithm.c
 src/diehdral.c
+src/maphash.c
 ) #end of 2PG_lib
 
 # add target

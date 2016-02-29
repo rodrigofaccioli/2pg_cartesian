@@ -57,8 +57,6 @@ static void initialize_parameters(input_parameters_t *param){
     param->StepNumber = 1000;
     param->started_generation = -1;
     param->how_many_rotations = 1;
-    param->mutations = NULL;
-    param->mutation_operator = Malloc(char, MAX_FILE_NAME);
 }
 
 static void set_parameter_fitness_energies(input_parameters_t *param,
@@ -167,6 +165,8 @@ void set_apply_how_many_rotations(input_parameters_t *param, char *param_how_man
 void deAllocateload_parameters(input_parameters_t *param){
     free(param->seq_protein_file_name );
 	free(param->initial_pop_file_name );
+	free(param->path_local_execute);
+	free(param->path_gromacs_programs);
 	free(param->computed_energies_gromacs_file);
 	free(param->energy_file_xvg);
 	free(param->computed_energy_value_file);
@@ -177,7 +177,8 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->force_field);
 	free(param->mdp_file);
 	free(param->apply_crossover);
-	free(param->mutation_operator);
+
+	
 	if (param->crossovers != NULL){
 		free(param->crossovers);
 	}
@@ -191,9 +192,8 @@ void deAllocateload_parameters(input_parameters_t *param){
 	if (param->script_g_energy != NULL){
 		free(param->script_g_energy);
 	}
-	if (param->mutations != NULL){
-		free(param->mutations);
-	}
+
+	free(param);
 }
 
 void load_parameters_from_file(input_parameters_t *param,
@@ -202,65 +202,65 @@ void load_parameters_from_file(input_parameters_t *param,
 
 	initialize_parameters(param);
 
-	LoadConfig conf(conf_file_name);
-	param->number_generation = atoi(conf.getParameterChar("NumberGeration"));
-	param->size_population = atoi(conf.getParameter("SizePopulation").c_str());
-	param->number_fitness = atoi(conf.getParameter("NumberObjective").c_str());
-	strcpy(param->path_gromacs_programs, conf.getParameterChar("Path_Gromacs_Programs"));
-	strcpy(param->seq_protein_file_name, conf.getParameterChar("SequenceAminoAcidsPathFileName"));
-	strcpy(param->path_local_execute, conf.getParameterChar("Local_Execute"));
+	LoadConfig *conf = file2map(conf_file_name);
+	
+	param->number_generation = atoi(conf->getParameterChar(conf->table, "NumberGeration"));
+	param->size_population = atoi(conf->getParameterChar(conf->table, "SizePopulation"));
+	param->number_fitness = atoi(conf->getParameterChar(conf->table, "NumberObjective"));
+	strcpy(param->path_gromacs_programs, conf->getParameterChar(conf->table, "Path_Gromacs_Programs"));
+	strcpy(param->seq_protein_file_name, conf->getParameterChar(conf->table, "SequenceAminoAcidsPathFileName"));
+	strcpy(param->path_local_execute, conf->getParameterChar(conf->table, "Local_Execute"));
 
-	strcpy(param->script_g_energy, conf.getParameterChar("Script_g_energy"));
+	strcpy(param->script_g_energy, conf->getParameterChar(conf->table, "Script_g_energy"));
 
-	strcpy(param->initial_pop_file_name, conf.getParameterChar("IniPopFileName"));
-	strcpy(param->computed_energies_gromacs_file, conf.getParameterChar("Computed_Energies_Gromacs_File"));
-	strcpy(param->energy_file_xvg, conf.getParameterChar("Energy_File_xvg"));
-	strcpy(param->computed_energy_value_file, conf.getParameterChar("Computed_Energy_Value_File"));
-	strcpy(param->computed_areas_g_sas_file, conf.getParameterChar("Computed_Areas_g_sas_File"));
-	strcpy(param->computed_radius_g_gyrate_file, conf.getParameterChar("Computed_Radius_g_gyrate_File"));
-	strcpy(param->computed_g_hbond_file,conf.getParameterChar("Computed_g_hbond_File"));
+	strcpy(param->initial_pop_file_name, conf->getParameterChar(conf->table, "IniPopFileName"));
+	strcpy(param->computed_energies_gromacs_file, conf->getParameterChar(conf->table, "Computed_Energies_Gromacs_File"));
+	strcpy(param->energy_file_xvg, conf->getParameterChar(conf->table, "Energy_File_xvg"));
+	strcpy(param->computed_energy_value_file, conf->getParameterChar(conf->table, "Computed_Energy_Value_File"));
+	strcpy(param->computed_areas_g_sas_file, conf->getParameterChar(conf->table, "Computed_Areas_g_sas_File"));
+	strcpy(param->computed_radius_g_gyrate_file, conf->getParameterChar(conf->table, "Computed_Radius_g_gyrate_File"));
+	strcpy(param->computed_g_hbond_file,conf->getParameterChar(conf->table, "Computed_g_hbond_File"));
+	set_parameter_fitness_energies(param,conf->getParameterChar(conf->table, "Fitness_Energy"));
+	param->individual_mutation_rate = atof(conf->getParameterChar(conf->table, "Individual_Mutation_Rate"));
 
-	set_parameter_fitness_energies(param,conf.getParameterChar("Fitness_Energy"));
-	param->individual_mutation_rate = atof(conf.getParameter("Individual_Mutation_Rate").c_str());
-
-	param->point_1_cros_rate = atof(conf.getParameter("1_point_cros_Rate").c_str());
-	set_apply_crossover(param,
-			conf.getParameterChar("apply_crossover"));
+	param->point_1_cros_rate = atof(conf->getParameterChar(conf->table, "1_point_cros_Rate"));
+	set_apply_crossover(param, conf->getParameterChar(conf->table, "apply_crossover"));
 	set_parameter_number_crossover(param);
 	set_crossovers(param);
 
-	set_parameter_objective_analysis(param,
-			conf.getParameterChar("objective_analisys"),
-			conf.getParameterChar("objective_analisys_dimo_source"),
-			conf.getParameterChar("Program_Run_GreedyTreeGenerator2PG") );
+	set_parameter_objective_analysis(param, conf->getParameterChar(conf->table, "objective_analisys"),
+			conf->getParameterChar(conf->table, "objective_analisys_dimo_source"),
+			conf->getParameterChar(conf->table, "Program_Run_GreedyTreeGenerator2PG"));
 
 
-    param->min_angle_mutation_phi = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_phi").c_str()));
-	param->max_angle_mutation_phi = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_phi").c_str()));
+    param->min_angle_mutation_phi = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "min_angle_mutation_phi")));
+	param->max_angle_mutation_phi = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "max_angle_mutation_phi")));
 
-    param->min_angle_mutation_psi = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_psi").c_str()));
-    param->max_angle_mutation_psi = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_psi").c_str()));
+    param->min_angle_mutation_psi = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "min_angle_mutation_psi")));
+    param->max_angle_mutation_psi = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "max_angle_mutation_psi")));
 
-    param->min_angle_mutation_omega = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_omega").c_str()));
-    param->max_angle_mutation_omega = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_omega").c_str()));
+    param->min_angle_mutation_omega = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "min_angle_mutation_omega")));
+    param->max_angle_mutation_omega = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "max_angle_mutation_omega")));
 
-    param->min_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf.getParameter("min_angle_mutation_side_chain").c_str()));
-    param->max_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf.getParameter("max_angle_mutation_side_chain").c_str()));
+    param->min_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "min_angle_mutation_side_chain")));
+    param->max_angle_mutation_side_chain = degree2radians_no_pointer(atof(conf->getParameterChar(conf->table, "max_angle_mutation_side_chain")));
 
 
-	strcpy(param->mdp_file,conf.getParameterChar("mdp_file_name"));
-	strcpy(param->force_field,conf.getParameterChar("force_field"));
+	strcpy(param->mdp_file,conf->getParameterChar(conf->table, "mdp_file_name"));
+	strcpy(param->force_field,conf->getParameterChar(conf->table, "force_field"));
 
-	param->MonteCarloSteps = atoi(conf.getParameter("MonteCarloSteps").c_str());
-	param->freq_mc = atoi(conf.getParameter("FrequencyMC").c_str());
-	param->temp_mc = atoi(conf.getParameter("TemperatureMC").c_str());
+	param->MonteCarloSteps = atoi(conf->getParameterChar(conf->table, "MonteCarloSteps"));
+	param->freq_mc = atoi(conf->getParameterChar(conf->table, "FrequencyMC"));
+	param->temp_mc = atoi(conf->getParameterChar(conf->table, "TemperatureMC"));
 
-	set_terminal_charge(param, conf.getParameterChar("c_terminal_charge"),
-		conf.getParameterChar("n_terminal_charge"));
+	set_terminal_charge(param, conf->getParameterChar(conf->table, "c_terminal_charge"),
+		conf->getParameterChar(conf->table, "n_terminal_charge"));
 
-	param->StepNumber = atoi(conf.getParameterChar("StepNumber"));
+	param->StepNumber = atoi(conf->getParameterChar(conf->table, "StepNumber"));
 
-	param->started_generation = atoi(conf.getParameterChar("Started_Generation"));
+	param->started_generation = atoi(conf->getParameterChar(conf->table, "Started_Generation"));
 
-    set_apply_how_many_rotations(param,conf.getParameterChar("How_Many_Rotation"));
+    set_apply_how_many_rotations(param,conf->getParameterChar(conf->table, "How_Many_Rotation"));
+
+    close_conf(conf);
 }

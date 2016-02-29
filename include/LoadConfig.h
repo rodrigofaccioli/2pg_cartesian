@@ -1,18 +1,21 @@
-#include <string>
-#include <fstream>
-#include <map>
+#ifndef LOADCONFIG_H
+#define LOADCONFIG_H
 
-class LoadConfig{
-   private:
-       std::ifstream fileConf;
-       std::map<std::string,std::string> dicParameters;
-       std::string trim(std::string s);
+#include <stdio.h>
+#include <stdlib.h>
 
-   public:
-	   //Com o const nao é permitido chamar metodos q nao sejam const
-	   LoadConfig(const std::string &pathFileName);
-	   ~LoadConfig();
-	   void file2Map();
-	   std::string getParameter(const std::string &Parameter);
-	   char* getParameterChar(const std::string &Parameter);
+#include "defines.h"
+#include "maphash.h"
+#include "messages.h"
+
+struct s_conf
+{	
+	char* (*getParameterChar) (HashTable_t *table, const char *string);
+	HashTable_t *table;
 };
+typedef struct s_conf LoadConfig;
+
+LoadConfig* file2map(const char* FileName);
+void close_conf(LoadConfig *conf);
+
+#endif
