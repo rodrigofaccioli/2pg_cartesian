@@ -76,6 +76,7 @@ int main(int argc, char *argv[]){
 /**************** START GETTING FRONT *************************/
 	//Allocating solutions to analysis
 	solutions_ana = loading_owner_file_solution_file_name_at_ending(&num_solutions, &in_param.number_fitness, path_file_name);
+	//solutions_ana = allocate_file_t(&num_solutions, &num_obj);
 
 	in_param.size_population = num_solutions;	
 	nsga2_solutions_p = allocate_nsga2_without_allocation_of_representation(&in_param);	
@@ -89,7 +90,7 @@ int main(int argc, char *argv[]){
 	set_dominance(dominance, solutions, &num_solutions); //solutions_p
 
 	//Coping values of dominance
-	for (int ind = 0; ind < num_solutions; ind++){
+	for (int ind = 0; ind < num_solutions; ind++){		
 		// Indicates number of solutions that are dominated by me
 		solutions_ana[ind].number_solutions_are_dominated = dominance[ind].max_dominated;
 	}	
@@ -116,7 +117,7 @@ int main(int argc, char *argv[]){
     sorting_solutions_by_front_dominance(solutions_ana, &num_solutions, &in_param.number_fitness);
 
     //Saving file
-	save_analysis_files_no_objectives(solutions_ana, &num_solutions, &in_param.number_fitness, column_1, column_2);
+	save_analysis_files_no_objectives_without_scientific(solutions_ana, &num_solutions, &in_param.number_fitness, column_1, column_2);
 /**************** FINISHED FINAL RESULTS *************************/
 	free(column_1);
 	free(column_2);

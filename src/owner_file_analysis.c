@@ -510,6 +510,122 @@ void save_analysis_files_no_objectives(const owner_file_t *solutions_f, const in
 	free(file_name);		
 }
 
+void save_analysis_files_no_objectives_without_scientific(const owner_file_t *solutions_f, const int *size, const int *numobj, const char *column_1, const char *column_2 ){
+	
+	FILE *d_file=NULL;
+	char *file_name=NULL;	
+	char *line_f=NULL;
+	char *aux_str=NULL;
+	char *c_front=NULL;	
+	char *c_obj=NULL;	
+	char *c_obj_2=NULL;
+	owner_file_t *temp_aux=NULL;
+	int ob1, ob2 = -1;
+	file_name = Malloc(char, 100);	
+	line_f = Malloc(char, MAX_LINE_FILE);
+    aux_str = Malloc(char, 60);
+    c_front = Malloc(char, 10);
+    c_obj = Malloc(char, MAX_RANDOM_STRING);
+    c_obj_2 = Malloc(char, MAX_RANDOM_STRING);
+    ob1 = 0;
+    ob2 = 1;
+    int front;
+    int i;
+    int how_many_front;
+    int ind_temp;
+
+    //Getting name of objectives
+    strcpy(c_obj, column_1);
+    strcpy(c_obj_2, column_2);
+
+ /**************** STARTING FRONT FILES *************************************/
+	front = 0;    
+    strcpy(file_name, "all_front_");
+    strcat(file_name,c_obj);
+    strcat(file_name,"_");    	    
+    strcat(file_name,c_obj_2);
+    strcat(file_name,".front");    
+    d_file = open_file(file_name, fWRITE);
+	fprintf(d_file, "#Ranking represents classification based on all solutions\n");    
+	fprintf(d_file, "#Front represents a classification based on dominance critera\n");
+	fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");					
+	sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
+	fprintf(d_file, "%s", line_f);
+	sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
+	fprintf(d_file, "%s", line_f);
+	fprintf(d_file, "#Method represents name of method which is a solution\n");	
+	fprintf(d_file, "#\n");
+	fprintf(d_file, "#\n");
+	sprintf(line_f, "#Ranking  Front\tDominated\t%s\t\t%s\tID\n", c_obj, c_obj_2 );
+	fprintf(d_file, "%s", line_f);
+    for (int s = 0; s < *size; s++){
+	   	fprintf(d_file, "%5d\t  %3d\t%5d\t\t%f\t%f\t%-40.40s\n", 
+		    		solutions_f[s].ranking,
+		    		solutions_f[s].front,
+		    		solutions_f[s].number_solutions_are_dominated,
+		    		solutions_f[s].obj_values[ob1],
+		    		solutions_f[s].obj_values[ob2],
+					solutions_f[s].file_name);
+    }
+    fclose(d_file);
+/**************** FINISHED FRONT FILES *************************************/
+
+/**************** STARTING XVG FILES *************************************/
+    front = 0;
+    i = 0;
+    while (i < *size){
+    	    strcpy(file_name, "plot_front_");
+    	    int2str(c_front, &front);
+    	    strcat(file_name,c_front);    	    
+    	    strcat(file_name,"_");
+    	    strcat(file_name,c_obj);
+    	    strcat(file_name,"_");    	    
+    	    strcat(file_name,c_obj_2);
+		    strcat(file_name,".xvg");
+		    d_file = open_file(file_name, fWRITE);
+			sprintf(line_f, "#%s is the first value used to apply dominance critera\n", c_obj);			
+			fprintf(d_file, "%s", line_f);
+			sprintf(line_f, "#%s is the second value used to apply dominance critera\n", c_obj_2);
+			fprintf(d_file, "%s", line_f);		    
+			fprintf(d_file, "#Front represents a classification based on dominance critera\n");
+			fprintf(d_file, "#Dominated represents number of solutions are dominated by solution\n");			
+			fprintf(d_file, "#Ranking represents classification based on all solutions\n");
+			fprintf(d_file, "#\n");
+			fprintf(d_file, "#\n");
+			sprintf(line_f, "#%s\t\t%s\t\tFront\tDominated\tRanking\n", c_obj, c_obj_2 );
+			fprintf(d_file, "%s", line_f);
+			//Preparing temporary solutions
+			how_many_front = compute_how_many_front_file_t(solutions_f, size, &front);
+			temp_aux = allocate_file_t(&how_many_front, numobj);
+			ind_temp = 0;
+		    while (solutions_f[i].front == front){
+		    	//Coping solutions to temporary that will be sorted
+		    	copy_file_owner(&temp_aux[ind_temp], &solutions_f[i], numobj);
+		    	ind_temp = ind_temp + 1;
+		    	i = i + 1;		    	
+		    }
+		    //Sorting temporary solutions by first value
+		    qsort(temp_aux, how_many_front, sizeof(owner_file_t), compare_first_value);
+		    for (int j = 0; j < how_many_front; j++){
+		    	fprintf(d_file, "%f\t%f\t%3d\t%5d\t%10d\n", 
+		    		temp_aux[j].obj_values[ob1],
+		    		temp_aux[j].obj_values[ob2],
+					temp_aux[j].front,
+					temp_aux[j].number_solutions_are_dominated,
+					temp_aux[j].ranking);
+		    }
+		    fclose(d_file); //close file of front		    
+		    desalocate_file_t(temp_aux, &how_many_front); //desalocate temporary
+		    front = front + 1; //Next front
+    }
+/**************** FINISHED XVG FILES *************************************/    
+    free(c_obj_2);
+    free(c_obj);
+	free(c_front);
+	free(line_f);
+	free(aux_str);
+	free(file_name);		
+}
 
 
 owner_file_t * loading_owner_file_solution(const int *num_solutions_r, 	const int *numobj_r, const char *path_file_name){

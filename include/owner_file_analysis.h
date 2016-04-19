@@ -19,6 +19,7 @@ int compute_how_many_front_file_t(const owner_file_t * solutions,
 int compare_first_value(const void *x, const void *y);
 void save_analysis_files(const owner_file_t *solutions_f, const int *size, const int *numobj, const type_fitness_energies_t *fitness_energies);
 void save_analysis_files_no_objectives(const owner_file_t *solutions_f, const int *size, const int *numobj, const char *column_1, const char *column_2 );
+void save_analysis_files_no_objectives_without_scientific(const owner_file_t *solutions_f, const int *size, const int *numobj, const char *column_1, const char *column_2 );
 int compare_front(const void *x, const void *y);
 int compare_dominated(const void *x, const void *y);
 void set_global_ranking(owner_file_t *file_names, const int *size);
