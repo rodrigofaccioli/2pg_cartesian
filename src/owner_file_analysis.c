@@ -556,7 +556,7 @@ void save_analysis_files_no_objectives_without_scientific(const owner_file_t *so
 	fprintf(d_file, "#Method represents name of method which is a solution\n");	
 	fprintf(d_file, "#\n");
 	fprintf(d_file, "#\n");
-	sprintf(line_f, "#Ranking  Front\tDominated\t%s\t\t%s\tID\n", c_obj, c_obj_2 );
+	sprintf(line_f, "#Ranking  Front\tDominated\t%s\t%s\tID\n", c_obj, c_obj_2 );
 	fprintf(d_file, "%s", line_f);
     for (int s = 0; s < *size; s++){
 	   	fprintf(d_file, "%5d\t  %3d\t%5d\t\t%f\t%f\t%-40.40s\n", 
