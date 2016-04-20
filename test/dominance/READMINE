@@ -1,0 +1,8 @@
+In this directory contains test for dominance criteria.
+
+mult_example - It is the file for input.
+multiobjetivomod.pdf - Example of values from mult_example
+
+
+Utilize: protpred-Gromacs-Sort_Method_by_Front_Dominance
+Example: /home/faccioli/workspace/2pg_cartesian/build/protpred-Gromacs-Sort_Method_by_Front_Dominance mult_example
