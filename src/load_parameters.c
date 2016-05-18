@@ -178,7 +178,7 @@ void deAllocateload_parameters(input_parameters_t *param){
 	free(param->mdp_file);
 	free(param->apply_crossover);
 
-	
+
 	if (param->crossovers != NULL){
 		free(param->crossovers);
 	}
@@ -193,7 +193,6 @@ void deAllocateload_parameters(input_parameters_t *param){
 		free(param->script_g_energy);
 	}
 
-	free(param);
 }
 
 void load_parameters_from_file(input_parameters_t *param,
@@ -203,7 +202,7 @@ void load_parameters_from_file(input_parameters_t *param,
 	initialize_parameters(param);
 
 	LoadConfig *conf = file2map(conf_file_name);
-	
+
 	param->number_generation = atoi(conf->getParameterChar(conf->table, "NumberGeration"));
 	param->size_population = atoi(conf->getParameterChar(conf->table, "SizePopulation"));
 	param->number_fitness = atoi(conf->getParameterChar(conf->table, "NumberObjective"));
