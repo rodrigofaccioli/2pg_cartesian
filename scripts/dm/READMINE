@@ -1,0 +1,12 @@
+In this directory contains all scripts for running Molecular Dynamics. 
+
+Molecular Dynamics can be used in several kind of scenarios. Each scenario is assigned a folder.
+
+* refinament
+      Molecular Dynamics are employed to refine a number of protein structures. 
+
+* initial_individual
+	Molecular Dynamics are employed to generate initial population.
+
+* minimization
+	Steep algorithm to minimize all pdb files in directory.

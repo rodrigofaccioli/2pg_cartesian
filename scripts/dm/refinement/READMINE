@@ -1,0 +1,17 @@
+Molecular Dynamics are used to refine protein structure.
+
+Steps to run Molecular Dynamics
+1) check name files of protein structures contain pdb. If not, use script in scripts/checking/rename_to_pdb.sh
+2) molecular_dynamics.sh starts the molecular dynamics in all nodes
+	./molecular_dynamics.sh nodefile path_to_pdbs gmxpath
+
+Important: 
+	* nodefile must be contain name of nodes. It is not necessary inform anything more.
+	* path_to_pdbs path where pdb files are. Here does NOT use / end of path
+	* gmxpath is where gromacs programs are in each node. These must be in same directory.
+
+3) reune.sh download all pdbs files
+4) junta_pdbs.sh final preparation to be read the pdb files
+
+
+

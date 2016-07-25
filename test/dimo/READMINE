@@ -1,0 +1,9 @@
+1) Execute to compute all objectives
+	protpred-Gromacs-Test_compute_objetivies configuracao.conf
+
+2) Creating the input for GreedyTreeGenerator that is DIMO program
+	python /home/faccioli/Programs/2pg_cartesian/scripts/dimo/reduz_objective.py /home/faccioli/Programs/2pg_cartesian/test/dimo/ 20 0 8 2pg_
+
+3) Running GreedyTreeGenerator program
+	cd <where colt.jar file is>
+	java -classpath ./:./colt.jar conflicts/GreedyTreeGenerator /home/faccioli/Programs/2pg_cartesian/test/dimo/2pg_0_20.txt -o /home/faccioli/Programs/2pg_cartesian/test/dimo/GreedyTreeGenerator_output.txt

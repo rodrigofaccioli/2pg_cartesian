@@ -1,0 +1,4 @@
+for server in $(cat nodes.txt); do
+  echo -e "$server"
+  scp -r "$1" "$server":"$2"
+done
