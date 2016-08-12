@@ -1,6 +1,7 @@
 #ifndef OLD_FUTIL_H
 #define OLD_FUTIL_H
 
+#include <stdio.h>
 #include "enums.h"
 
 enum mode_files{fREAD,fWRITE,fAPPEND};
