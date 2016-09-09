@@ -28,6 +28,8 @@ set_source_files_properties(src/protpred-Gromacs-MC_Metropolis.c  PROPERTIES LAN
 set_source_files_properties(src/protpred-Gromacs-Mono.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Random_Algorithm.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c  PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Sort_Method_Files_by_Dominance_and_Front.c  PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/protpred-Gromacs-Sort_Method_Files_by_Strength.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/LoadConfig.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/ea_mono.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/topology.c  PROPERTIES LANGUAGE CXX )
@@ -55,6 +57,9 @@ set_source_files_properties(src/solutionio.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/algorithms.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/ea_nsga2.c  PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/dominance.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/dominancep.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/spea2.c PROPERTIES LANGUAGE CXX )
+set_source_files_properties(src/nsga2.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/owner_file_analysis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/mc_metropolis.c PROPERTIES LANGUAGE CXX )
 set_source_files_properties(src/random_algorithm.c PROPERTIES LANGUAGE CXX )
@@ -102,6 +107,9 @@ src/solutionio.c
 src/algorithms.c 
 src/ea_nsga2.c 
 src/dominance.c
+src/dominancep.c
+src/spea2.c
+src/nsga2.c
 src/owner_file_analysis.c
 src/mc_metropolis.c
 src/random_algorithm.c
@@ -134,6 +142,12 @@ target_link_libraries(protpred-Gromacs-Random_Algorithm 2PG_lib)
 add_executable(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance src/protpred-Gromacs-Sort_Method_Files_by_Front_Dominance.c)
 target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Front_Dominance 2PG_lib)
 
+add_executable(protpred-Gromacs-Sort_Method_Files_by_Dominance_and_Front src/protpred-Gromacs-Sort_Method_Files_by_Dominance_and_Front.c)
+target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Dominance_and_Front 2PG_lib)
+
+add_executable(protpred-Gromacs-Sort_Method_Files_by_Strength src/protpred-Gromacs-Sort_Method_Files_by_Strength.c)
+target_link_libraries(protpred-Gromacs-Sort_Method_Files_by_Strength 2PG_lib)
+
 add_executable(protpred-Gromacs-Test_crossover src/protpred-Gromacs-Test_crossover.c)
 target_link_libraries(protpred-Gromacs-Test_crossover 2PG_lib)
 
@@ -163,7 +177,9 @@ install(TARGETS protpred-Gromacs-MC_Metropolis DESTINATION bin)
 install(TARGETS protpred-Gromacs-Mono DESTINATION bin)
 install(TARGETS protpred-Gromacs-Random_Algorithm DESTINATION bin)
 install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Front_Dominance DESTINATION bin)
+install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Strength DESTINATION bin)
 install(TARGETS protpred-Gromacs-Sort_Method_by_Front_Dominance DESTINATION bin)
+install(TARGETS protpred-Gromacs-Sort_Method_Files_by_Dominance_and_Front DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_crossover DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_compute_Diehdral DESTINATION bin)
 install(TARGETS protpred-Gromacs-Test_rotation DESTINATION bin)
